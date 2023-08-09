@@ -50,4 +50,4 @@ Trying to achieve a simple process of finding a beauty salon by offering feature
 
 ## api resource 
 
-Django DRF, postgresql (postGis) - to be published
+Python (Django DRF) with postgresql (+postGis) 

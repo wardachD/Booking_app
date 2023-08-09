@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1093354743941",
+    "firebase_url": "https://findovio-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "findovio",
+    "storage_bucket": "findovio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093354743941:android:e51f8636333c5ffe3021ec",
+        "android_client_info": {
+          "package_name": "com.dwardach.findovio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093354743941-4pd0t67spl13t7cqaedru1ll33hr6np4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVXCUqXoj_r9o7it_NxmlehkksAmrBSSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093354743941-4pd0t67spl13t7cqaedru1ll33hr6np4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

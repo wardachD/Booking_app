@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1093354743941-id9h1t0aafmaoufkvjicefl3d51bldse.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1093354743941-id9h1t0aafmaoufkvjicefl3d51bldse</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBBZZHcEP8exnfYqaFKUu4F1NsIp4QMHMM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1093354743941</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.findovio</string>
+	<key>PROJECT_ID</key>
+	<string>findovio</string>
+	<key>STORAGE_BUCKET</key>
+	<string>findovio.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1093354743941:ios:dd0d5321f847faa73021ec</string>
+	<key>DATABASE_URL</key>
+	<string>https://findovio-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

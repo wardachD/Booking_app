@@ -49,5 +49,4 @@ Trying to achieve a simple process of finding a beauty salon by offering feature
 
 
 ## api resource 
-
-Python (Django DRF) with postgresql (+postGis) 
+[API Booking App - Python (Django DRF) with postgresql (+postGis) ](https://github.com/wardachD/API_Booking_app)

@@ -48,19 +48,6 @@ class _RegisterScreenState extends State<RegisterScreen>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  /*handleSubmit() async {
-    // Validate user inputs using formkey
-    if (_formKey.currentState!.validate()) {
-      // Get inputs from the controllers
-      final email = _emailController.value.text;
-      final password = _passwordController.value.text;
-      // Check if it is login or register
-      if (_isLogin) {
-        await Auth().signInWithEmailAndPassword(email, password);
-      }
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
     final double topMargin = _isKeyboardVisible ? 50.0 : 150.0;
@@ -199,113 +186,116 @@ class _RegisterScreenState extends State<RegisterScreen>
                   ),
                 ),
               ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: Color.fromARGB(255, 73, 73, 73),
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                'Or continue with',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromARGB(255, 73, 73, 73),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: Color.fromARGB(255, 73, 73, 73),
-                                thickness: 1.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: heightWithKeyboard),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 58.0,
-                                child: ElevatedButton.icon(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    MdiIcons.facebook,
-                                    color: Colors.white,
-                                  ),
-                                  label: const Text('Facebook',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      )),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: SizedBox(
-                                height: 58.0,
-                                child: ElevatedButton.icon(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    MdiIcons.google,
-                                    color: Colors.black,
-                                  ),
-                                  label: const Text('Google',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      )),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 255, 255, 255),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      side:
-                                          const BorderSide(color: Colors.grey),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: heightWithKeyboard),
-                        RichText(
-                          text: const TextSpan(
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Color.fromARGB(255, 73, 73, 73)),
+              if (!_isKeyboardVisible)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Row(
                             children: [
-                              TextSpan(text: "Already have an account? "),
-                              TextSpan(
-                                text: "Sign in",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                              Expanded(
+                                child: Divider(
+                                  color: Color.fromARGB(255, 73, 73, 73),
+                                  thickness: 1.0,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  'Or continue with',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromARGB(255, 73, 73, 73),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: Color.fromARGB(255, 73, 73, 73),
+                                  thickness: 1.0,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: heightWithKeyboard),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 58.0,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      MdiIcons.facebook,
+                                      color: Colors.white,
+                                    ),
+                                    label: const Text('Facebook',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        )),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 58.0,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      MdiIcons.google,
+                                      color: Colors.black,
+                                    ),
+                                    label: const Text('Google',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        )),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        side: const BorderSide(
+                                            color: Colors.grey),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: heightWithKeyboard),
+                          RichText(
+                            text: const TextSpan(
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 73, 73, 73)),
+                              children: [
+                                TextSpan(text: "Already have an account? "),
+                                TextSpan(
+                                  text: "Sign in",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

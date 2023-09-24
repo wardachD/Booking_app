@@ -57,6 +57,19 @@ dependencies:
   flutter_map: ^5.0.0
   flutter_rating_bar: ^4.0.1
   provider: ^6.0.5
+  intl: ^0.18.1
+  flutter_native_splash: ^2.3.2
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo/logo_icon_this.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#000000"
+  image: assets/logo/logo.png
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +105,7 @@ flutter:
    - assets/images/barber.png
    - assets/gifs/empty.gif
    - assets/gifs/background-placeholder.gif
+   - assets/gifs/confirmed.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

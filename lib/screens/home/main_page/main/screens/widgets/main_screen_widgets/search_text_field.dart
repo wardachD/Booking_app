@@ -28,6 +28,13 @@ class _SearchTextFieldState extends State<SearchTextField> {
           fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
+            borderSide:
+                const BorderSide(color: Colors.grey), // Change the border color here
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: const BorderSide(
+                color: Colors.blue), // Change the focused border color here
           ),
           labelText: 'Search for a service...',
           prefixIcon: _isSearchVisible ? const Icon(Icons.search) : null,

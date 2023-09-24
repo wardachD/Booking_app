@@ -29,11 +29,13 @@ class AppPages {
     GetPage(name: Routes.INTRO_LOGIN, page: () => const LoginScreen()),
     GetPage(name: Routes.INTRO_REGISTER, page: () => const RegisterScreen()),
     GetPage(
-        name: Routes.HOME,
-        page: () => const HomeScreen(),
-        binding: HomeBinding()),
+        name: Routes.HOME, page: () => HomeScreen(), binding: HomeBinding()),
     GetPage(name: Routes.DISCOVER, page: () => const DiscoverScreen()),
-    GetPage(name: Routes.APPOINTMENTS, page: () => const AppointmentsScreen()),
+    GetPage(
+        name: Routes.APPOINTMENTS,
+        page: () => AppointmentsScreen(
+              appointmentDataFromRequest: Future.value(null),
+            )),
     GetPage(name: Routes.PROFILE, page: () => const ProfileScreen()),
     GetPage(
         name: Routes.DISCOVER_SEARCH,

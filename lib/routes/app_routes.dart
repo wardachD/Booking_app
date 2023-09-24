@@ -14,6 +14,7 @@ abstract class Routes {
   static const DISCOVER_SEARCH_ADDRESS = '/discover_search_address';
 // Appointments
   static const APPOINTMENTS = '/appointments';
+  static const APPOINTMENTS_SELECTED = '/appointments/selected_appointment';
 // Profile
   static const PROFILE = '/profile';
 }

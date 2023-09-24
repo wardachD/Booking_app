@@ -83,8 +83,8 @@ class _SalonServicesDetailsState extends State<SalonServicesDetails> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(service.title,
-                                    style:
-                                        const TextStyle(fontWeight: FontWeight.bold)),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
                                 Text(service.description),
                               ],
                             ),
@@ -100,8 +100,7 @@ class _SalonServicesDetailsState extends State<SalonServicesDetails> {
                                   Text('${service.price} zł',
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold)),
-                                  Text(
-                                      '${service.durationMinutes}m'),
+                                  Text('${service.durationMinutes}m'),
                                 ],
                               ),
                             ),

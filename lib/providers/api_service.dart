@@ -1,6 +1,7 @@
 import 'package:findovio/models/salon_reviews_model.dart';
 import 'package:findovio/models/salon_schedule.dart';
 import 'package:findovio/models/salon_working_hours.dart';
+import 'package:findovio/models/user_appointment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
@@ -9,10 +10,27 @@ import 'package:findovio/consts.dart';
 import 'package:findovio/models/salon_model.dart';
 
 Future<List<SalonModel>> fetchSalons(http.Client client) async {
-  final response = await client.get(Uri.parse(Consts.dbApiGetAll));
-  final responseBody = utf8.decode(response.bodyBytes);
-  return compute(parseSalons,
-      responseBody); // Używamy compute, aby uruchomić parsePhotos w osobnym izolacie.
+  try {
+    final response = await client.get(Uri.parse(Consts.dbApiGetAll));
+    final responseBody = utf8.decode(response.bodyBytes);
+    return compute(parseSalons, responseBody);
+  } catch (e) {
+    print('Error fetching salons: $e');
+    return []; // Return an empty list in case of error
+  }
+}
+
+Future<List<SalonModel>> fetchOneSalons(http.Client client, int salonID) async {
+  try {
+    final response = await client
+        .get(Uri.parse('${Consts.dbApiGetOne}$salonID/?format=json'));
+    print(('${Consts.dbApiGetOne}$salonID/?format=json'));
+    final responseBody = utf8.decode(response.bodyBytes);
+    return compute(parseSalons, responseBody);
+  } catch (e) {
+    print('Error fetching salons: $e');
+    return []; // Return an empty list in case of error
+  }
 }
 
 Future<List<SalonModel>> fetchSearchSalons(http.Client client,
@@ -96,4 +114,76 @@ List<SalonWorkingHours> parseWorkingHours(String responseBody) {
   return parsed
       .map<SalonWorkingHours>((json) => SalonWorkingHours.fromJson(json))
       .toList();
+}
+
+Future<String> sendPostRequest(Map<String, dynamic> dataToSend) async {
+  final url = Uri.parse(Consts.dbApiPostBooking);
+  final headers = <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+  };
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: jsonEncode(dataToSend), // Use the provided data as the body
+  );
+
+  if (response.statusCode == 201) {
+    return 'success';
+  }
+  if (response.statusCode == 400) {
+    return 'bad_request';
+  } else {
+    return 'no_connection';
+  }
+}
+
+Future<List<UserAppointment>> fetchAppointments(
+    http.Client client, String userId) async {
+  try {
+    final response =
+        await client.get(Uri.parse('${Consts.dbApiGetUserBookings}$userId'));
+
+    if (response.statusCode == 200) {
+      return compute(parseUserAppointment, utf8.decode(response.bodyBytes));
+    } else {
+      throw Exception('Failed to load appointments');
+    }
+  } catch (e) {
+    print('Error fetching appointments: $e');
+    return []; // Return an empty list in case of error
+  }
+}
+
+List<UserAppointment> parseUserAppointment(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed
+      .map<UserAppointment>((json) => UserAppointment.fromJson(json))
+      .toList();
+}
+
+class FetchSalonServiceException implements Exception {
+  final String message;
+  FetchSalonServiceException(this.message);
+}
+
+Future<Services> fetchSalonService(http.Client client, int service) async {
+  try {
+    final response = await client
+        .get(Uri.parse('${Consts.dbApiGetSalonService}$service/?format=json'));
+
+    if (response.statusCode == 200) {
+      return compute(parseSalonService, utf8.decode(response.bodyBytes));
+    } else {
+      throw FetchSalonServiceException('Failed to load appointments');
+    }
+  } catch (e) {
+    print('Error fetching appointments: $e');
+    throw FetchSalonServiceException('Error fetching appointments');
+  }
+}
+
+Services parseSalonService(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Services>((json) => Services.fromJson(json)).toList();
 }

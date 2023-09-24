@@ -1,3 +1,4 @@
+import 'package:findovio/consts.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -17,7 +18,7 @@ SalomonBottomBarItem _bottomBarItem({
         fontFamily: 'Magic',
       ),
     ),
-    selectedColor: Colors.grey,
+    selectedColor: AppColors.accentColor,
   );
 }
 

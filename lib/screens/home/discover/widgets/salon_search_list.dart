@@ -1,3 +1,4 @@
+import 'package:findovio/consts.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class SalonSearchList extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.backgroundColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Row(
@@ -65,14 +66,14 @@ class SalonSearchList extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.backgroundColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
                               const Icon(Icons.navigation),
-                              Text('${(salon.distanceFromQuery / 1000)
-                                      .toStringAsFixed(1)}km'),
+                              Text(
+                                  '${(salon.distanceFromQuery / 1000).toStringAsFixed(1)}km'),
                             ],
                           ),
                         ),
@@ -83,7 +84,7 @@ class SalonSearchList extends StatelessWidget {
                       padding: const EdgeInsets.all(5),
                       width: double.infinity,
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.backgroundColor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20),
@@ -98,10 +99,12 @@ class SalonSearchList extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.location_on, color: Colors.grey),
+                              const Icon(Icons.location_on,
+                                  color: AppColors.primaryLightColorText),
                               Text(
                                 '${salon.addressCity}, ${salon.addressPostalCode}, ${salon.addressStreet}',
-                                style: const TextStyle(color: Colors.grey),
+                                style: const TextStyle(
+                                    color: AppColors.primaryLightColorText),
                               ),
                             ],
                           ),

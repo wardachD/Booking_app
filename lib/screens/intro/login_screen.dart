@@ -6,7 +6,7 @@ import 'package:findovio/utilities/authentication/auth.dart';
 import '../../routes/app_pages.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -170,32 +170,33 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                color: Color.fromARGB(255, 73, 73, 73),
-                                thickness: 1.0,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                'Or continue with',
-                                style: TextStyle(
-                                  fontSize: 16,
+                        if (!_isKeyboardVisible) // Show the "Or continue with" lines, Facebook, and Google buttons only when the keyboard is not visible
+                          const Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
                                   color: Color.fromARGB(255, 73, 73, 73),
+                                  thickness: 1.0,
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                color: Color.fromARGB(255, 73, 73, 73),
-                                thickness: 1.0,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  'Or continue with',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromARGB(255, 73, 73, 73),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                              Expanded(
+                                child: Divider(
+                                  color: Color.fromARGB(255, 73, 73, 73),
+                                  thickness: 1.0,
+                                ),
+                              ),
+                            ],
+                          ),
                         SizedBox(height: heightWithKeyboard),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -251,20 +252,21 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                           ],
                         ),
                         SizedBox(height: heightWithKeyboard),
-                        RichText(
-                          text: const TextSpan(
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Color.fromARGB(255, 73, 73, 73)),
-                            children: [
-                              TextSpan(text: "Don't have an account? "),
-                              TextSpan(
-                                text: "Sign up",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        if (!_isKeyboardVisible)
+                          RichText(
+                            text: const TextSpan(
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 73, 73, 73)),
+                              children: [
+                                TextSpan(text: "Don't have an account? "),
+                                TextSpan(
+                                  text: "Sign up",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

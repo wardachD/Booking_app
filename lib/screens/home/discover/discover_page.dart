@@ -1,3 +1,4 @@
+import 'package:findovio/consts.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/screens/home/discover/widgets/salon_categories_list.dart';
@@ -41,7 +42,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Colors.grey[200],
+          color: AppColors.backgroundColor,
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +115,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         height: MediaQuery.sizeOf(context).height * 0.07,
                         padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.backgroundColor,
                           borderRadius: BorderRadius.circular(8.0),
                           boxShadow: [
                             BoxShadow(
@@ -326,7 +327,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         ).catchError((error) {
           // Handle error in API request
           // For example, show an error message or return an empty list
-          return [];
+          return Future.value([]);
         });
       }
     } else if (address.isNotEmpty) {
@@ -335,7 +336,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           .catchError((error) {
         // Handle error in API request
         // For example, show an error message or return an empty list
-        return [];
+        return Future.value([]);
       });
     } else {
       // Both keywords and address are empty, return an empty list

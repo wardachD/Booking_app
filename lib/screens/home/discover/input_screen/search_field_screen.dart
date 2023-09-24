@@ -1,3 +1,4 @@
+import 'package:findovio/screens/home/main_page/main/screens/Booking/screens/widgets/title_bar_with_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,37 +38,43 @@ class _SearchFieldScreenState extends State<SearchFieldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text(widget.isKeywordSearch ? 'Search Keywords' : 'Enter Address'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _textController,
-                focusNode: _textFocusNode,
-                decoration: InputDecoration(
-                  hintText: widget.isKeywordSearch
-                      ? 'Enter your search keywords...'
-                      : 'Enter your address...',
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: TitleBarWithBackButton(
+                    title: widget.isKeywordSearch
+                        ? 'Search Keywords'
+                        : 'Enter Address',
+                  ),
                 ),
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) {
-                  _search(context);
-                },
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  _search(context);
-                },
-                child: const Text('Search'),
-              ),
-            ],
+                TextFormField(
+                  controller: _textController,
+                  focusNode: _textFocusNode,
+                  decoration: InputDecoration(
+                    hintText: widget.isKeywordSearch
+                        ? 'Enter your search keywords...'
+                        : 'Enter your address...',
+                  ),
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) {
+                    _search(context);
+                  },
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    _search(context);
+                  },
+                  child: const Text('Search'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

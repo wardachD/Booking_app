@@ -1,4 +1,6 @@
 import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:findovio/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,13 +10,17 @@ import 'routes/app_pages.dart';
 import 'package:provider/provider.dart';
 
 Future<void> initializeFirebase() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 void main() async {
+  // Splash
+  WidgetsFlutterBinding.ensureInitialized();
   // Firebase moved from main thread
   await initializeFirebase();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.dark, // dark text for status bar
+      statusBarColor: Colors.transparent));
   runApp(
     ChangeNotifierProvider(
       create: (context) => UserDataProvider(),
@@ -33,15 +39,16 @@ class MyApp extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: authStream,
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        FlutterNativeSplash.remove();
         if (snapshot.connectionState == ConnectionState.active) {
           final bool isLoggedIn = snapshot.hasData;
           final initialRoute = isLoggedIn ? Routes.HOME : Routes.INTRO;
 
           return GetMaterialApp(
             getPages: AppPages.pages,
-            title: 'Findovio',
+            title: 'findovio',
             theme: ThemeData(
-              scaffoldBackgroundColor: const Color.fromARGB(255, 241, 241, 241),
+              scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
               colorScheme: ColorScheme.fromSeed(
                   seedColor: const Color.fromARGB(255, 245, 138, 38)),
               useMaterial3: true,

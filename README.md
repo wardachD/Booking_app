@@ -1,3 +1,7 @@
+<div align="center">
+<img src="https://raw.githubusercontent.com/wardachD/Booking_app/main/gh_center_logo.png" >
+</div>
+
 
 # Booking-app (findovio)
 

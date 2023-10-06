@@ -2,6 +2,7 @@ import 'package:findovio/consts.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/screens/home/discover/widgets/salon_categories_list.dart';
+import 'package:findovio/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,9 @@ import 'input_screen/search_field_screen.dart';
 import 'widgets/salon_search_list.dart';
 
 class DiscoverScreen extends StatefulWidget {
-  const DiscoverScreen({super.key});
+  final String? optionalCategry;
+
+  const DiscoverScreen({Key? key, this.optionalCategry}) : super(key: key);
 
   @override
   _DiscoverScreenState createState() => _DiscoverScreenState();
@@ -30,6 +33,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
 
+  late bool _isDistanceNeeded = false;
+
   @override
   void dispose() {
     _keywordController.dispose();
@@ -47,6 +52,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
+              if (widget.optionalCategry != null) ConstsWidgets.gapH12,
               GestureDetector(
                 onTap: () {
                   searchResult =
@@ -77,10 +84,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         child: Text(
                           _keywordController.text.isNotEmpty
                               ? _keywordController.text
-                              : 'search',
+                              : 'Co dzisiaj szukasz?',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 51, 51, 51),
                           ),
                         ),
                       ),
@@ -134,10 +142,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               child: Text(
                                 _addressController.text.isNotEmpty
                                     ? _addressController.text
-                                    : 'city',
+                                    : 'Gdzie?',
                                 style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 51, 51, 51),
                                 ),
                               ),
                             ),
@@ -150,6 +159,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   });
                                   searchResult = _onTapSearch();
                                   filteredSearchResult = searchResult;
+                                  unfilteredSearchResult = searchResult;
                                 },
                               ),
                           ],
@@ -174,6 +184,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             _selectedDistance = newValue!;
                             searchResult = _onTapSearch();
                             filteredSearchResult = searchResult;
+                            unfilteredSearchResult = searchResult;
                           });
                         },
                         items: _distanceOptions.map((distance) {
@@ -193,6 +204,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               Expanded(
                 child: SalonSearchList(
                   salonsSearchFuture: searchResult,
+                  isDistanceNeeded: _isDistanceNeeded,
                 ),
               )
             ],
@@ -210,7 +222,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         if (selectedCategories[category] == true) {
           // User tapped the same category again, show all results
           selectedCategory = null;
-          unfilteredSearchResult = unfilteredSearchResult;
+          searchResult = unfilteredSearchResult;
           setState(() {
             selectedCategories[category] = false;
           });
@@ -253,6 +265,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         radius = searchParams.radius ?? '2';
         keywords = _keywordController.text;
         setState(() {
+          _isDistanceNeeded = true;
           _addressController.text = address ?? '';
           _selectedDistance = radius!;
         });
@@ -261,42 +274,43 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         radius = _selectedDistance;
         keywords = searchParams.keywords;
         setState(() {
+          _isDistanceNeeded = false;
           _keywordController.text = keywords ?? '';
         });
       }
 
       if (keywords != "" && address != "") {
+        if (widget.optionalCategry != '') {
+          return fetchSearchSalons(http.Client(),
+              keywords: keywords,
+              address: address,
+              radius: radius,
+              category: widget.optionalCategry);
+        }
         // Send the API request with both keywords and address
         return fetchSearchSalons(http.Client(),
-                keywords: keywords, address: address, radius: radius)
-            .catchError((error) {
-          // Handle error in API request
-          // For example, show an error message
-          // Return an empty list in case of an error
-          return [];
-        });
+            keywords: keywords, address: address, radius: radius);
       } else if (keywords != "") {
+        if (widget.optionalCategry != '') {
+          return fetchSearchSalons(http.Client(),
+              keywords: keywords, category: widget.optionalCategry);
+        }
         // Send the API request with keywords only
-        return fetchSearchSalons(http.Client(), keywords: keywords)
-            .catchError((error) {
-          // Handle error in API request
-          // For example, show an error message
-          // Return an empty list in case of an error
-          return [];
-        });
+        return fetchSearchSalons(http.Client(), keywords: keywords);
       } else if (address != "") {
+        if (widget.optionalCategry != '') {
+          return fetchSearchSalons(http.Client(),
+              address: address,
+              radius: radius,
+              category: widget.optionalCategry);
+        }
         // Send the API request with address only
         return fetchSearchSalons(http.Client(),
-                address: address, radius: radius)
-            .catchError((error) {
-          // Handle error in API request
-          // For example, show an error message
-          // Return an empty list in case of an error
-          return [];
-        });
+            address: address, radius: radius);
       } else {
         // Return an empty list if both keywords and address are null
-        return fetchSearchSalons(http.Client());
+        return fetchSearchSalons(http.Client(),
+            category: widget.optionalCategry);
       }
     } else {
       // Return an empty list if searchParams is null
@@ -308,36 +322,47 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final keywords = _keywordController.text;
     final address = _addressController.text;
     final radius = _selectedDistance;
+    _isDistanceNeeded = false;
 
     if (keywords.isNotEmpty) {
       if (address.isNotEmpty) {
-        // Send the API request with both keywords and address
-        return fetchSearchSalons(http.Client(),
-                keywords: keywords, address: address, radius: radius)
-            .catchError((error) {
-          // Handle error in API request
-          // For example, show an error message or return an empty list
-          return [];
+        setState(() {
+          _isDistanceNeeded = true;
         });
+        // Send the API request with both keywords and address
+        if (widget.optionalCategry != '') {
+          return fetchSearchSalons(http.Client(),
+              keywords: keywords,
+              address: address,
+              radius: radius,
+              category: widget.optionalCategry);
+        }
+        return fetchSearchSalons(http.Client(),
+            keywords: keywords, address: address, radius: radius);
       } else {
+        setState(() {
+          _isDistanceNeeded = false;
+        });
         // Send the API request with keywords only
+        if (widget.optionalCategry != '') {
+          return fetchSearchSalons(http.Client(),
+              keywords: keywords, category: widget.optionalCategry);
+        }
         return fetchSearchSalons(
           http.Client(),
           keywords: keywords,
-        ).catchError((error) {
-          // Handle error in API request
-          // For example, show an error message or return an empty list
-          return Future.value([]);
-        });
+        );
       }
     } else if (address.isNotEmpty) {
-      // Send the API request with address only
-      return fetchSearchSalons(http.Client(), address: address, radius: radius)
-          .catchError((error) {
-        // Handle error in API request
-        // For example, show an error message or return an empty list
-        return Future.value([]);
+      setState(() {
+        _isDistanceNeeded = true;
       });
+      // Send the API request with address only
+      if (widget.optionalCategry != '') {
+        return fetchSearchSalons(http.Client(),
+            address: address, radius: radius, category: widget.optionalCategry);
+      }
+      return fetchSearchSalons(http.Client(), address: address, radius: radius);
     } else {
       // Both keywords and address are empty, return an empty list
       return Future.value([]);

@@ -18,7 +18,8 @@ SalomonBottomBarItem _bottomBarItem({
         fontFamily: 'Magic',
       ),
     ),
-    selectedColor: AppColors.accentColor,
+    selectedColor: const Color.fromARGB(255, 34, 34, 34),
+    unselectedColor: Color.fromARGB(255, 196, 196, 196),
   );
 }
 
@@ -28,29 +29,38 @@ class CustomBottomAppBar extends GetView<BottomAppBarIndexController> {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      padding: EdgeInsets.all(10),
+      surfaceTintColor: Colors.transparent,
+      color: Colors.white,
       child: Obx(
         () => SalomonBottomBar(
+          margin: EdgeInsets.all(0),
+          backgroundColor: Colors.white,
           currentIndex: controller.activeIndex.value,
           onTap: controller.setBottomAppBarIndex,
           items: [
             _bottomBarItem(
               icon: MdiIcons.home,
-              title: 'Home'.tr,
+              //title: 'Home'.tr,
+              title: '',
               color: Colors.white,
             ),
             _bottomBarItem(
               icon: MdiIcons.compass,
-              title: 'Discover'.tr,
+              // title: 'Discover'.tr,
+              title: '',
               color: Colors.white,
             ),
             _bottomBarItem(
               icon: MdiIcons.calendarHeart,
-              title: 'My Appointments'.tr,
+              // title: 'My Appointments'.tr,
+              title: '',
               color: Colors.white,
             ),
             _bottomBarItem(
               icon: MdiIcons.account,
-              title: 'Profile'.tr,
+              // title: 'Profile'.tr,
+              title: '',
               color: Colors.white,
             ),
           ],

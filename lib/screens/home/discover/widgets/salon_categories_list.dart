@@ -23,7 +23,7 @@ class _SalonCategoriesListState extends State<SalonCategoriesList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<SalonModel>>(
-      future: widget.salonsFuture,
+      future: widget.unfilteredSalonsFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<String> listOfCategory = [];

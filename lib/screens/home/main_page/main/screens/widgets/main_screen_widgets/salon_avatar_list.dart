@@ -89,7 +89,7 @@ class SalonAvatar extends StatelessWidget {
                           right: 15,
                           bottom: 15.0,
                           child: Container(
-                            height: MediaQuery.sizeOf(context).height * 0.10,
+                            height: MediaQuery.sizeOf(context).height * 0.11,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20.0),
@@ -102,7 +102,7 @@ class SalonAvatar extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.fromLTRB(5, 5, 5, 0),
                                   child: Text(salon.name,
-                                      style: GoogleFonts.playfairDisplay(
+                                      style: GoogleFonts.anybody(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600)),
                                 ),
@@ -134,7 +134,7 @@ class SalonAvatar extends StatelessWidget {
                         ),
                         Positioned(
                           left: 15,
-                          right: 250,
+                          right: MediaQuery.sizeOf(context).width * 0.6,
                           top: 15.0,
                           child: Container(
                             height: 30,
@@ -198,9 +198,13 @@ class SalonListElementAwait extends StatelessWidget {
                 bottom: 20,
               ),
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.4,
-                height: MediaQuery.of(context).size.height * 0.35,
-                child: Image.asset('assets/gifs/background-placeholder.gif'),
+                width: MediaQuery.of(context).size.width * 0.7,
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Image.asset(
+                  'assets/gifs/background-placeholder.gif',
+                  fit: BoxFit
+                      .cover, // Ustawia BoxFit.cover dla wypełnienia całości obrazka
+                ),
               ),
             ),
           ),

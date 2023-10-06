@@ -31,11 +31,7 @@ class AppPages {
     GetPage(
         name: Routes.HOME, page: () => HomeScreen(), binding: HomeBinding()),
     GetPage(name: Routes.DISCOVER, page: () => const DiscoverScreen()),
-    GetPage(
-        name: Routes.APPOINTMENTS,
-        page: () => AppointmentsScreen(
-              appointmentDataFromRequest: Future.value(null),
-            )),
+    GetPage(name: Routes.APPOINTMENTS, page: () => AppointmentsScreen()),
     GetPage(name: Routes.PROFILE, page: () => const ProfileScreen()),
     GetPage(
         name: Routes.DISCOVER_SEARCH,

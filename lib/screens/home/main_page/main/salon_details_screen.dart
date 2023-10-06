@@ -24,28 +24,66 @@ class SalonDetailsScreen extends StatefulWidget {
 }
 
 class _SalonDetailsScreenState extends State<SalonDetailsScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final SalonModel salonModel;
-  double _imageHeight = 0.0;
+  double _imageHeight = 300;
   double _initialSwipeOffset = 0.0;
   TabController? _tabController;
+  double _deltaOffset = 0.0;
+  double _currentOffset = 0.0;
+  late double currentOffset;
+  late double deltaOffset;
+  late AnimationController _animationControllerFromMax;
+  late AnimationController _animationControllerFromMin;
+  late Animation<double> _heightAnimationFromMax;
+  late Animation<double> _heightAnimationFromMin;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController!.addListener(_handleTabSelection);
+    _animationControllerFromMin = AnimationController(
+      vsync: this,
+      duration:
+          Duration(milliseconds: 300), // Czas trwania animacji (500 milisekund)
+    );
+    _animationControllerFromMax = AnimationController(
+      vsync: this,
+      duration:
+          Duration(milliseconds: 300), // Czas trwania animacji (500 milisekund)
+    );
+    _heightAnimationFromMin = Tween<double>(
+      begin: 0.0, // Początkowa wysokość
+      end: 400.0, // Końcowa wysokość
+    ).animate(_animationControllerFromMax)
+      ..addListener(() {
+        setState(() {
+          _imageHeight = _heightAnimationFromMin.value;
+        });
+      });
+    _heightAnimationFromMax = Tween<double>(
+      begin: 400.0, // Początkowa wysokość
+      end: 0.0, // Końcowa wysokość
+    ).animate(_animationControllerFromMin)
+      ..addListener(() {
+        setState(() {
+          _imageHeight = _heightAnimationFromMax.value;
+        });
+      });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _imageHeight = MediaQuery.of(context).size.width * 0.65;
+    _imageHeight = MediaQuery.sizeOf(context).width;
   }
 
   @override
   void dispose() {
     _tabController!.dispose();
+    _animationControllerFromMax.dispose();
+    _animationControllerFromMin.dispose();
     super.dispose();
   }
 
@@ -65,17 +103,24 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
     if (_tabController!.indexIsChanging) {
       setState(() {
         if (_tabController!.index == 0) {
-          _imageHeight = MediaQuery.of(context).size.width * 0.65;
+          if (_imageHeight != 300) {
+            increaseImageHeightWithAnimation();
+          }
         } else {
-          _imageHeight = 0.0;
+          if (_imageHeight != 0) {
+            decreaseImageHeightWithAnimation();
+          }
         }
       });
     }
   }
 
-  double imageOpacity() {
-    return (_imageHeight / (MediaQuery.of(context).size.width * 0.63))
-        .clamp(0.0, 1.0);
+  void decreaseImageHeightWithAnimation() {
+    _animationControllerFromMin.forward(from: 0.0);
+  }
+
+  void increaseImageHeightWithAnimation() {
+    _animationControllerFromMax.forward(from: 0.0);
   }
 
   _SalonDetailsScreenState(this.salonModel);
@@ -97,24 +142,30 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
                     (AllowMultipleGestureRecognizer instance) {
                       instance
                         ..onStart = (DragStartDetails details) {
+                          // muszę rozpocząć nagrywanie skrolla
                           _initialSwipeOffset = details.localPosition.dy;
                         }
                         ..onUpdate = (DragUpdateDetails details) {
+                          currentOffset = details.localPosition.dy;
+                          deltaOffset = currentOffset - _initialSwipeOffset;
                           setState(() {
-                            double currentOffset = details.localPosition.dy;
-                            if (_tabController!.index < 1) {
-                              _imageHeight = max(
-                                  0,
-                                  _imageHeight -
-                                      _initialSwipeOffset +
-                                      currentOffset);
-                              _initialSwipeOffset = currentOffset;
-                            } else {
-                              _imageHeight = 0;
+                            if (_tabController!.index == 0) {
+                              if (deltaOffset > 50) {
+                                if (_imageHeight != 300) {
+                                  increaseImageHeightWithAnimation();
+                                }
+                              }
+                              if (deltaOffset < -50) {
+                                if (_imageHeight != 0) {
+                                  decreaseImageHeightWithAnimation();
+                                }
+                              }
                             }
                           });
                         }
-                        ..onEnd = (DragEndDetails details) {};
+                        ..onEnd = (DragEndDetails details) {
+                          // Handle the end of the swipe if needed
+                        };
                     },
                   )
                 },
@@ -122,46 +173,56 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
                   length: 4,
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: salonDetailsTitle,
-                      ),
-                      const SizedBox(height: 10),
-                      Opacity(
-                        opacity: imageOpacity(),
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.sizeOf(context).width,
-                            maxHeight: MediaQuery.sizeOf(context).width * 0.65,
+                      Column(
+                        children: [
+                          Row(
+                            children: salonDetailsTitle,
                           ),
-                          height: _imageHeight,
-                          width: MediaQuery.sizeOf(context).width,
-                          child:
-                              CachedNetworkImage(imageUrl: salonModel.avatar),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ButtonsTabBar(
-                        controller: _tabController,
-                        radius: 16.0,
-                        height: 45,
-                        backgroundColorGlobal:
-                            const Color.fromARGB(255, 231, 230, 230),
-                        backgroundColor:
-                            const Color.fromARGB(255, 253, 162, 155),
-                        unselectedBackgroundColor:
-                            const Color.fromARGB(255, 231, 230, 230),
-                        unselectedLabelStyle:
-                            const TextStyle(color: Colors.black),
-                        labelStyle: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                        tabs: const [
-                          Tab(text: "services"),
-                          Tab(text: "reviews"),
-                          Tab(text: "portfolio"),
-                          Tab(text: "details"),
+                          const SizedBox(height: 10),
+                          Opacity(
+                            opacity: 1.0,
+                            child: SizedBox(
+                              child: CachedNetworkImage(
+                                imageUrl: salonModel.avatar,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  height: _imageHeight / 2.5,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ButtonsTabBar(
+                            controller: _tabController,
+                            radius: 16.0,
+                            height: 45,
+                            backgroundColorGlobal:
+                                const Color.fromARGB(255, 231, 230, 230),
+                            backgroundColor:
+                                const Color.fromARGB(255, 253, 162, 155),
+                            unselectedBackgroundColor:
+                                const Color.fromARGB(255, 231, 230, 230),
+                            unselectedLabelStyle:
+                                const TextStyle(color: Colors.black),
+                            labelStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                            tabs: const [
+                              Tab(text: "services"),
+                              Tab(text: "reviews"),
+                              Tab(text: "portfolio"),
+                              Tab(text: "details"),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
                         ],
                       ),
-                      const SizedBox(height: 5),
                       Expanded(
                         child: TabBarView(
                           controller: _tabController,
@@ -220,7 +281,7 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
           Text(
             salonModel.name,
             textAlign: TextAlign.center,
-            style: GoogleFonts.playfairDisplay(
+            style: GoogleFonts.anybody(
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),

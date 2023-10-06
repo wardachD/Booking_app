@@ -31,7 +31,7 @@ class ReviewsWidget extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(averageReview.toStringAsFixed(1),
-                  style: GoogleFonts.notoSerif(
+                  style: GoogleFonts.anybody(
                     fontWeight: FontWeight.w900,
                     fontSize: 48,
                   )),

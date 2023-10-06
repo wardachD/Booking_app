@@ -42,7 +42,7 @@ class BookingCard extends StatelessWidget {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.88,
           height: MediaQuery.of(context).size.height * 0.13,
-          margin: const EdgeInsets.only(right: 8.0, bottom: 20),
+          margin: const EdgeInsets.only(right: 8.0, bottom: 20, top: 5),
           padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: AppColors.backgroundColor,
@@ -73,21 +73,21 @@ class BookingCard extends StatelessWidget {
                         MonthsUtils.getMonthName(jsonToDate.month)
                             .substring(0, 3)
                             .toUpperCase(),
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.anybody(
                             color: AppColors.primaryColorText,
                             fontSize: 13,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '${jsonToDate.day}',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.anybody(
                             color: AppColors.primaryColorText,
                             fontSize: 24,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '${jsonToDate.year % 2000}',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.anybody(
                             color: AppColors.primaryColorText,
                             fontSize: 13,
                             fontWeight: FontWeight.bold),
@@ -107,7 +107,7 @@ class BookingCard extends StatelessWidget {
                     children: [
                       Text(
                         '${appointment.services[0].title} $isMoreServices',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.anybody(
                             color: AppColors.primaryColorText,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -131,7 +131,7 @@ class BookingCard extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     appointment.salonName,
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.anybody(
                                         color: const Color.fromARGB(
                                             255, 122, 122, 122),
                                         fontSize: 14,
@@ -150,7 +150,7 @@ class BookingCard extends StatelessWidget {
                                   const SizedBox(width: 6),
                                   Text(
                                     bookingHour,
-                                    style: GoogleFonts.montserrat(
+                                    style: GoogleFonts.anybody(
                                         color: AppColors.primaryLightColorText,
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600),

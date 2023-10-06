@@ -13,7 +13,7 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
+      margin: const EdgeInsets.only(right: 10),
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       height: MediaQuery.of(context).size.height * 0.045,
       decoration: BoxDecoration(
@@ -26,7 +26,7 @@ class CategoryCard extends StatelessWidget {
           ),
         ],
         color: isSelected ? Colors.white12 : Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(5.0),
       ),
       child: isSelected
           ? Row(

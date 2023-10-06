@@ -34,7 +34,10 @@ Future<List<SalonModel>> fetchOneSalons(http.Client client, int salonID) async {
 }
 
 Future<List<SalonModel>> fetchSearchSalons(http.Client client,
-    {String? keywords, String? address, String? radius}) async {
+    {String? keywords,
+    String? address,
+    String? radius,
+    String? category}) async {
   String query = '';
 
   if (keywords != null) {
@@ -53,6 +56,12 @@ Future<List<SalonModel>> fetchSearchSalons(http.Client client,
       query += '&';
     }
     query += 'address=$address&radius=$radius';
+  }
+  if (category != null) {
+    if (query.isNotEmpty) {
+      query += '&';
+    }
+    query += 'category=$category';
   }
 
   final response = await client.get(Uri.parse('${Consts.dbApiSearch}$query'));

@@ -1,4 +1,5 @@
 import 'package:findovio/consts.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/banner_card.dart';
 import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/upcoming_appointments.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class MainScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Title bar
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -29,10 +31,11 @@ class MainScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      'howdy ${user?.uid}   ',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      // 'howdy ${user?.uid}   ',
+                      'hej Maju    ',
+                      style: GoogleFonts.anybody(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                     const Icon(Icons.waving_hand_outlined),
@@ -40,46 +43,52 @@ class MainScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            ConstsWidgets.gapH8,
+            // Search bar
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 25.0, vertical: 5),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.withOpacity(0.4),
                       spreadRadius: 0,
-                      blurRadius: 1,
+                      blurRadius: 2,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [SearchTextField()],
                 ),
               ),
             ),
-            ConstsWidgets.gapH8,
+            ConstsWidgets.gapH16,
+            //Banner
+            BannerCard(),
+            ConstsWidgets.gapH12,
+            // Categories
             SizedBox(
               height: MediaQuery.sizeOf(context).height * 0.16,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 25.0, vertical: 5),
                 itemCount: categoryCustomList.length,
                 itemBuilder: (context, index) {
                   var customCategoryItem = categoryCustomList[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: GestureDetector(
-                      onTap: (() => Get.find<BottomAppBarIndexController>()
-                          .setBottomAppBarIndex(1)),
+                      onTap: (() {
+                        Get.find<BottomAppBarIndexController>()
+                            .setBottomAppBarIndexWithCategory(
+                                1, categoryCustomList[index].title);
+                      }),
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.40,
                         height: MediaQuery.of(context).size.height * 0.14,
@@ -106,7 +115,7 @@ class MainScreen extends StatelessWidget {
                               ConstsWidgets.gapH16,
                               Text(
                                 customCategoryItem.title,
-                                style: GoogleFonts.playfairDisplay(
+                                style: GoogleFonts.anybody(
                                     fontWeight: FontWeight.w500, fontSize: 16),
                                 textAlign: TextAlign.left,
                               ),
@@ -119,8 +128,9 @@ class MainScreen extends StatelessWidget {
                 },
               ),
             ),
+            // Upcoming appointments - disabled when no appointments coming in
             UpcomingAppointments(userId: user!.uid),
-            ConstsWidgets.gapH8,
+            // Nearby salons
             const NearbySalons(),
           ],
         ),

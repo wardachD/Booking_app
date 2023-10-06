@@ -13,7 +13,6 @@ class NearbySalons extends StatelessWidget {
       future: fetchSalons(http.Client()),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          print(snapshot.error);
           return const Center(
             child: Text('An error has occurred!'),
           );

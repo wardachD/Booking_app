@@ -26,7 +26,7 @@ class TitleBarWithBackButton extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.playfairDisplay(
+              style: GoogleFonts.anybody(
                 fontSize: 23,
                 fontWeight: FontWeight.bold,
               ),

@@ -51,15 +51,9 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
   }
 
   @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    final keyboardHeight = WidgetsBinding.instance.window.viewInsets.bottom;
-    final isKeyboardVisible = keyboardHeight > 0;
-    if (_isKeyboardVisible != isKeyboardVisible) {
-      setState(() {
-        _isKeyboardVisible = isKeyboardVisible;
-      });
-    }
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -134,7 +128,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
                       children: [
                         Text(
                           'salon',
-                          style: GoogleFonts.playfairDisplay(
+                          style: GoogleFonts.anybody(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -147,7 +141,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
                       children: [
                         Text(
                           'date',
-                          style: GoogleFonts.playfairDisplay(
+                          style: GoogleFonts.anybody(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -161,7 +155,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
                       children: [
                         Text(
                           'time',
-                          style: GoogleFonts.playfairDisplay(
+                          style: GoogleFonts.anybody(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -180,7 +174,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
                       children: [
                         Text(
                           'price',
-                          style: GoogleFonts.playfairDisplay(
+                          style: GoogleFonts.anybody(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -193,7 +187,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
                       children: [
                         Text(
                           'services',
-                          style: GoogleFonts.playfairDisplay(
+                          style: GoogleFonts.anybody(
                             fontWeight: FontWeight.bold,
                           ),
                         ),

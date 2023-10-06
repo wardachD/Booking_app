@@ -70,7 +70,7 @@ class SalonDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('ABOUT US',
-                        style: GoogleFonts.playfairDisplay(
+                        style: GoogleFonts.anybody(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         )),
@@ -84,7 +84,7 @@ class SalonDetails extends StatelessWidget {
                     ),
                     const SizedBox(height: 25),
                     Text('OUR STAFF',
-                        style: GoogleFonts.playfairDisplay(
+                        style: GoogleFonts.anybody(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         )),

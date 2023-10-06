@@ -45,12 +45,13 @@ class MyApp extends StatelessWidget {
           final initialRoute = isLoggedIn ? Routes.HOME : Routes.INTRO;
 
           return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
             getPages: AppPages.pages,
             title: 'findovio',
             theme: ThemeData(
               scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: const Color.fromARGB(255, 245, 138, 38)),
+                  seedColor: Color.fromARGB(255, 255, 255, 255)),
               useMaterial3: true,
             ),
             initialRoute: initialRoute,

@@ -50,7 +50,7 @@ dependencies:
   buttons_tabbar2:
     path: ./assets/edited-plugins/buttons_tabbar-main/
   google_fonts: ^5.1.0
-  scroll_to_hide: ^1.0.5
+  scroll_to_hide: ^2.0.1
   photo_view: ^0.14.0
   latlong2: ^0.9.0
   url_launcher: ^6.1.12
@@ -60,6 +60,8 @@ dependencies:
   intl: ^0.18.1
   flutter_native_splash: ^2.3.2
   flutter_launcher_icons: ^0.13.1
+  chewie: ^1.7.1
+  video_player: ^2.7.2
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -68,7 +70,7 @@ flutter_launcher_icons:
   min_sdk_android: 21
 
 flutter_native_splash:
-  color: "#000000"
+  color: "#FFFFFF"
   image: assets/logo/logo.png
 
 dev_dependencies:
@@ -106,6 +108,7 @@ flutter:
    - assets/gifs/empty.gif
    - assets/gifs/background-placeholder.gif
    - assets/gifs/confirmed.gif
+   - assets/gifs/welcomebanner.mp4
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

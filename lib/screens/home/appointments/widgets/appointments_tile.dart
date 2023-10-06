@@ -32,7 +32,7 @@ class AppointmentTile extends StatelessWidget {
         MonthsUtils.getMonthName(dateToDateTime.month).substring(0, 3);
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: AppColors.backgroundColor,
@@ -74,7 +74,7 @@ class AppointmentTile extends StatelessWidget {
                     ConstsWidgets.gapH4,
                     Text(
                       userAppointment.salonName,
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.anybody(
                         color: AppColors.primaryLightColorText,
                       ),
                     ),
@@ -109,7 +109,8 @@ class AppointmentTile extends StatelessWidget {
                             ? const Icon(Icons.access_time,
                                 size: 18,
                                 color: Color.fromRGBO(241, 209, 94, 1))
-                            : const Icon(Icons.cancel, size: 18, color: Colors.red)),
+                            : const Icon(Icons.cancel,
+                                size: 18, color: Colors.red)),
                     const SizedBox(
                         width: 5.0), // Add some spacing between icon and text
                     Text(

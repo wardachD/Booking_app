@@ -34,7 +34,7 @@ Widget reviewsCard(context, Review review) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(review.userId,
-                        style: GoogleFonts.notoSans(
+                        style: GoogleFonts.anybody(
                             letterSpacing: 0.1,
                             fontSize: 18,
                             fontWeight: FontWeight.w500)),

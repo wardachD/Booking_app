@@ -1,3 +1,4 @@
+import 'package:findovio/models/firebase_py_register_model.dart';
 import 'package:findovio/screens/home/appointments/appointments_screen.dart';
 import 'package:findovio/screens/home/discover/discover_page.dart';
 import 'package:findovio/screens/home/profile/profile_screen.dart';

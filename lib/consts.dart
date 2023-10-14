@@ -13,6 +13,10 @@ abstract class Consts {
       'http://185.180.204.182:8000/api/user-appointments/?format=json&user_id=';
   static const dbApiGetSalonService =
       'http://185.180.204.182:8000/api/services/';
+  static const dbApiRegisterFirebaseUser =
+      'http://185.180.204.182:8000/api/firebase-users/';
+  static const dbApiGetFirebaseUserByUid =
+      'http://185.180.204.182:8000/api/firebase-users/id/';
 }
 
 abstract class ConstsWidgets {

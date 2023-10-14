@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../routes/app_pages.dart';
 
@@ -12,22 +13,20 @@ class LoginOrRegisterScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('Book services you love hassle-free',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Bergamasco',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35.0)),
+                    style: GoogleFonts.anybody(
+                        fontWeight: FontWeight.bold, fontSize: 35.0)),
                 Padding(
                   padding: EdgeInsets.fromLTRB(50, 5, 50, 0),
                   child: Text(
                       'find a new stylist, book last-minute nails, or treat yourself to a relaxing massage',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.anybody(
                         fontSize: 18.0,
                         color: Color.fromARGB(255, 88, 88, 88),
                       )),
@@ -45,7 +44,7 @@ class LoginOrRegisterScreen extends StatelessWidget {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () => {
-                      Get.offNamed(Routes.INTRO_LOGIN),
+                      Get.toNamed(Routes.INTRO_LOGIN),
                     },
                     child: const Text('Log in'),
                   ),
@@ -55,7 +54,7 @@ class LoginOrRegisterScreen extends StatelessWidget {
                   height: 50,
                   child: ElevatedButton(
                       onPressed: () => {
-                            Get.offNamed(Routes.INTRO_REGISTER),
+                            Get.toNamed(Routes.INTRO_REGISTER),
                           },
                       child: const Text('Register')),
                 ),

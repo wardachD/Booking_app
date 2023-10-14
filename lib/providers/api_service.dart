@@ -1,3 +1,5 @@
+import 'package:findovio/models/firebase_py_get_model.dart';
+import 'package:findovio/models/firebase_py_register_model.dart';
 import 'package:findovio/models/salon_reviews_model.dart';
 import 'package:findovio/models/salon_schedule.dart';
 import 'package:findovio/models/salon_working_hours.dart';
@@ -31,6 +33,29 @@ Future<List<SalonModel>> fetchOneSalons(http.Client client, int salonID) async {
     print('Error fetching salons: $e');
     return []; // Return an empty list in case of error
   }
+}
+
+Future<FirebasePyGetModel> fetchFirebasePyUser(
+    http.Client client, String userUid) async {
+  try {
+    final response = await client.get(
+        Uri.parse('${Consts.dbApiGetFirebaseUserByUid}$userUid/?format=json'));
+    final responseBody = utf8.decode(response.bodyBytes);
+    print(responseBody);
+    final user = parseFirebasePyUser(responseBody);
+
+    return user;
+  } catch (e) {
+    print('Error fetching Firebase user: $e');
+    // Jeśli wystąpi błąd, nadal zwracamy pustego użytkownika, ale nie przerywamy działania aplikacji
+    return Future
+        .value(); // Może musisz dostosować to do swojego modelu FirebasePyGetModel
+  }
+}
+
+FirebasePyGetModel parseFirebasePyUser(String responseBody) {
+  final parsed = jsonDecode(responseBody) as Map<String, dynamic>;
+  return FirebasePyGetModel.fromJson(parsed);
 }
 
 Future<List<SalonModel>> fetchSearchSalons(http.Client client,
@@ -72,6 +97,35 @@ Future<List<SalonModel>> fetchSearchSalons(http.Client client,
 List<SalonModel> parseSalons(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
   return parsed.map<SalonModel>((json) => SalonModel.fromJson(json)).toList();
+}
+
+FirebasePyRegisterModel parseRegister(String responseBody) {
+  final parsed = jsonDecode(responseBody) as Map<String, dynamic>;
+  return FirebasePyRegisterModel.fromJson(parsed);
+}
+
+Future<String> sendPostRegisterRequest(
+    FirebasePyRegisterModel userModel) async {
+  final url = Uri.parse(Consts.dbApiRegisterFirebaseUser);
+  final headers = <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+  };
+  final dataToSend = userModel.toJson();
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: jsonEncode(dataToSend),
+  );
+  print(jsonEncode(dataToSend));
+
+  if (response.statusCode == 201) {
+    return 'success';
+  }
+  if (response.statusCode == 400) {
+    return 'bad_request';
+  } else {
+    return 'no_connection';
+  }
 }
 
 Future<List<Review>> fetchReviews(int salonId) async {

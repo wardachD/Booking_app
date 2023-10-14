@@ -14,17 +14,17 @@ class TitleBar extends StatelessWidget {
     }
 
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.09,
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.height * 0.05,
       child: Text(
         text,
         textAlign: TextAlign.start,
-        style: GoogleFonts.playfairDisplay(
+        style: GoogleFonts.anybody(
           color: const Color.fromARGB(255, 31, 31, 31),
-          fontWeight: FontWeight.w600,
-          fontSize: 29,
+          fontWeight: FontWeight.w900,
+          fontSize: 22,
           height: 1,
-          letterSpacing: 1,
+          letterSpacing: 0.1,
         ),
       ),
     );
@@ -44,17 +44,17 @@ class TitleBarWithoutHeight extends StatelessWidget {
     }
 
     return SizedBox(
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(context).size.width * 0.8,
       height: MediaQuery.of(context).size.height * 0.05,
       child: Text(
         text,
         textAlign: TextAlign.start,
-        style: GoogleFonts.playfairDisplay(
+        style: GoogleFonts.anybody(
           color: const Color.fromARGB(255, 31, 31, 31),
-          fontWeight: FontWeight.w600,
-          fontSize: 29,
+          fontWeight: FontWeight.w900,
+          fontSize: 22,
           height: 1,
-          letterSpacing: 1,
+          letterSpacing: 0.21,
         ),
       ),
     );

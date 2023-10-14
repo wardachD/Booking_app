@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:findovio/routes/app_pages.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
+
+  @override
+  void dispose() {}
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +21,16 @@ class IntroScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset('assets/images/splash_login.png'),
-                const Text('Discover local professionals',
+                Text('Discover local professionals',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Bergamasco',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35.0)),
-                const Padding(
+                    style: GoogleFonts.anybody(
+                        fontWeight: FontWeight.bold, fontSize: 35.0)),
+                Padding(
                   padding: EdgeInsets.fromLTRB(50, 5, 50, 25),
                   child: Text(
                       'Browse for beauty, wellness and all sort of services',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.anybody(
                         fontSize: 18.0,
                         color: Color.fromARGB(255, 61, 61, 61),
                       )),

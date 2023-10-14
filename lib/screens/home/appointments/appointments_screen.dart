@@ -5,6 +5,7 @@ import 'package:findovio/models/user_appointment.dart';
 import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -53,10 +54,18 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
       child: SafeArea(
         child: Scaffold(
           body: Container(
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 5),
+            padding:
+                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
             child: Column(
               children: [
-                const TitleBar(text: 'My\nappointments'),
+                const SizedBox(height: 4),
+                const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TitleBar(text: "umówione wizyty"),
+                    Icon(Icons.calendar_today),
+                  ],
+                ),
                 ButtonsTabBar(
                   controller: _tabController,
                   radius: 16.0,

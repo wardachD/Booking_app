@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:findovio/utilities/authentication/auth.dart';
 
@@ -52,26 +53,26 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
     final double heightWithKeyboard = _isKeyboardVisible ? 5.0 : 25.0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.fromLTRB(25, topMargin, 25, 25),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              const Text(
+              Text(
                 'Hello Again!',
-                style: TextStyle(
+                style: GoogleFonts.anybody(
                   fontSize: 36,
-                  fontFamily: 'Bergamasco',
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16.0),
-              const Text(
+              const SizedBox(height: 8.0),
+              Text(
                 'Welcome back, we \nmissed you!',
-                style: TextStyle(
+                style: GoogleFonts.anybody(
                   fontSize: 18,
-                  color: Color.fromARGB(255, 73, 73, 73),
+                  color: const Color.fromARGB(255, 73, 73, 73),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -119,11 +120,11 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                 ),
               ),
               const SizedBox(height: 24.0),
-              const Align(
+              Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   'Forgot password?',
-                  style: TextStyle(
+                  style: GoogleFonts.anybody(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -155,10 +156,10 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Sign In',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                    style: GoogleFonts.anybody(
+                      color: const Color.fromARGB(255, 255, 255, 255),
                     ),
                   ),
                 ),
@@ -171,25 +172,27 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (!_isKeyboardVisible) // Show the "Or continue with" lines, Facebook, and Google buttons only when the keyboard is not visible
-                          const Row(
+                          Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: Color.fromARGB(255, 73, 73, 73),
                                   thickness: 1.0,
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   'Or continue with',
-                                  style: TextStyle(
+                                  style: GoogleFonts.anybody(
                                     fontSize: 16,
-                                    color: Color.fromARGB(255, 73, 73, 73),
+                                    color:
+                                        const Color.fromARGB(255, 73, 73, 73),
                                   ),
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: Color.fromARGB(255, 73, 73, 73),
                                   thickness: 1.0,
@@ -233,8 +236,8 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                                     MdiIcons.google,
                                     color: Colors.black,
                                   ),
-                                  label: const Text('Google',
-                                      style: TextStyle(
+                                  label: Text('Google',
+                                      style: GoogleFonts.anybody(
                                         color: Colors.black,
                                       )),
                                   style: ElevatedButton.styleFrom(
@@ -254,15 +257,16 @@ class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
                         SizedBox(height: heightWithKeyboard),
                         if (!_isKeyboardVisible)
                           RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: const TextStyle(
                                   fontSize: 16,
                                   color: Color.fromARGB(255, 73, 73, 73)),
                               children: [
-                                TextSpan(text: "Don't have an account? "),
+                                const TextSpan(text: "Don't have an account? "),
                                 TextSpan(
                                   text: "Sign up",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: GoogleFonts.anybody(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),

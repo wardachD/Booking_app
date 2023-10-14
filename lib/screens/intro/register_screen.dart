@@ -1,7 +1,16 @@
+import 'dart:async';
+
+import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:findovio/globals/user_data_global.dart';
+import 'package:findovio/models/firebase_py_register_model.dart';
+import 'package:findovio/providers/api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:findovio/utilities/authentication/auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes/app_pages.dart';
 
@@ -15,16 +24,22 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen>
     with WidgetsBindingObserver {
   bool _isKeyboardVisible = false;
+  bool _isFirstTimePressed = false;
+  User? user;
+  String? res;
+  String? resPy;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _isFirstTimePressed = false;
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _isFirstTimePressed = true;
     super.dispose();
   }
 
@@ -40,13 +55,50 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  int countSpecialCharacters(String input, bool countDigits) {
+    RegExp digitRegex = RegExp(r'\d');
+    RegExp specialCharRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
+
+    Iterable<RegExpMatch> matches;
+
+    if (countDigits) {
+      matches = digitRegex.allMatches(input);
+    } else {
+      matches = specialCharRegex.allMatches(input);
+    }
+
+    return matches.length;
+  }
+
+  void isPasswordValid() {
+    RegExp passwordRegex = RegExp(r'^(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$');
+    String password = _passwordController.value.text;
+    bool hasMinimumLength = passwordRegex.hasMatch(password);
+
+    if (hasMinimumLength) {
+      setState(() {
+        passValidator = true;
+      });
+    }
+    if (!hasMinimumLength) {
+      setState(() {
+        passValidator = false;
+      });
+    }
+  }
+
   // Use this form key to validate user's input
   final _formKey = GlobalKey<FormState>();
 
   // Use this to store user inputs
+  bool passValidator = false;
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  StreamController<String> _passwordStreamController =
+      StreamController<String>();
+  final RegExp _specialCharRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
+  final RegExp _specialNumbRegex = RegExp(r'\d');
 
   @override
   Widget build(BuildContext context) {
@@ -54,26 +106,26 @@ class _RegisterScreenState extends State<RegisterScreen>
     final double heightWithKeyboard = _isKeyboardVisible ? 5.0 : 25.0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.fromLTRB(25, topMargin, 25, 25),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              const Text(
+              Text(
                 'Hello Again!',
-                style: TextStyle(
+                style: GoogleFonts.anybody(
                   fontSize: 36,
-                  fontFamily: 'Bergamasco',
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
+              Text(
                 'Welcome back, we \nmissed you!',
-                style: TextStyle(
+                style: GoogleFonts.anybody(
                   fontSize: 18,
-                  color: Color.fromARGB(255, 73, 73, 73),
+                  color: const Color.fromARGB(255, 73, 73, 73),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -123,11 +175,30 @@ class _RegisterScreenState extends State<RegisterScreen>
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.grey[400]!),
+                  border: Border.all(
+                      color: !_isFirstTimePressed
+                          ? Colors.grey[400]!
+                          : passValidator
+                              ? Colors.green
+                              : Colors.red),
                 ),
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
+                  onTap: () {
+                    setState(() {
+                      _isFirstTimePressed = true;
+                    });
+                  },
+                  onTapOutside: (event) {
+                    setState(() {
+                      _isFirstTimePressed = false;
+                    });
+                  },
+                  onChanged: (text) {
+                    _passwordStreamController.add(text);
+                    isPasswordValid();
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Enter your password';
@@ -141,12 +212,30 @@ class _RegisterScreenState extends State<RegisterScreen>
                   ),
                 ),
               ),
+              StreamBuilder<String>(
+                stream: _passwordStreamController.stream,
+                initialData: '',
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  String password = snapshot.data ?? '';
+                  return Visibility(
+                    visible: _isFirstTimePressed,
+                    child: Visibility(
+                      visible: !passValidator,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.0),
+                        child: passwordCharsLeftWidget(context, password),
+                      ),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 24.0),
-              const Align(
+              Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   'Forgot password?',
-                  style: TextStyle(
+                  style: GoogleFonts.anybody(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -158,19 +247,33 @@ class _RegisterScreenState extends State<RegisterScreen>
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    var res = await Auth.registerWithEmailAndPassword(
+                    final FirebaseAuth _auth = FirebaseAuth.instance;
+                    res = await Auth.registerWithEmailAndPassword(
                         _emailController.value.text,
                         _passwordController.value.text);
+                    if (res == null) {
+                      user = _auth.currentUser;
+                      var userModel = FirebasePyRegisterModel(
+                          firebaseName: _fullNameController.text,
+                          firebaseEmail: user?.email,
+                          firebaseUid: user?.uid);
+                      resPy = await sendPostRegisterRequest(userModel);
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor:
-                            res == null ? Colors.green : Colors.red,
+                        backgroundColor: res == null && resPy == 'success'
+                            ? Colors.green
+                            : Colors.red,
                         content: res == null
-                            ? const Text("Registered Successfully!")
+                            ? resPy == 'success'
+                                ? const Text("Both servers registered you!")
+                                : const Text("Registered Successfully!")
                             : const Text("Something wrong!"),
                       ),
                     );
-                    if (res == null) Get.offNamed(Routes.HOME);
+                    if (res == null && resPy == 'success') {
+                      Get.offNamed(Routes.HOME);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -178,10 +281,10 @@ class _RegisterScreenState extends State<RegisterScreen>
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Sign In',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                    style: GoogleFonts.anybody(
+                      color: const Color.fromARGB(255, 255, 255, 255),
                     ),
                   ),
                 ),
@@ -194,25 +297,27 @@ class _RegisterScreenState extends State<RegisterScreen>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: Color.fromARGB(255, 73, 73, 73),
                                   thickness: 1.0,
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   'Or continue with',
-                                  style: TextStyle(
+                                  style: GoogleFonts.anybody(
                                     fontSize: 16,
-                                    color: Color.fromARGB(255, 73, 73, 73),
+                                    color:
+                                        const Color.fromARGB(255, 73, 73, 73),
                                   ),
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: Color.fromARGB(255, 73, 73, 73),
                                   thickness: 1.0,
@@ -233,8 +338,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                                       MdiIcons.facebook,
                                       color: Colors.white,
                                     ),
-                                    label: const Text('Facebook',
-                                        style: TextStyle(
+                                    label: Text('Facebook',
+                                        style: GoogleFonts.anybody(
                                           color: Colors.white,
                                         )),
                                     style: ElevatedButton.styleFrom(
@@ -257,8 +362,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                                       MdiIcons.google,
                                       color: Colors.black,
                                     ),
-                                    label: const Text('Google',
-                                        style: TextStyle(
+                                    label: Text('Google',
+                                        style: GoogleFonts.anybody(
                                           color: Colors.black,
                                         )),
                                     style: ElevatedButton.styleFrom(
@@ -278,15 +383,17 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ),
                           SizedBox(height: heightWithKeyboard),
                           RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: GoogleFonts.anybody(
                                   fontSize: 16,
-                                  color: Color.fromARGB(255, 73, 73, 73)),
+                                  color: const Color.fromARGB(255, 73, 73, 73)),
                               children: [
-                                TextSpan(text: "Already have an account? "),
+                                const TextSpan(
+                                    text: "Already have an account? "),
                                 TextSpan(
                                   text: "Sign in",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: GoogleFonts.anybody(
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -299,6 +406,49 @@ class _RegisterScreenState extends State<RegisterScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container passwordCharsLeftWidget(BuildContext context, String password) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.83,
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.red,
+              blurRadius: 0.5,
+              spreadRadius: 0.0,
+              offset: Offset(0, 2),
+            )
+          ]),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            '${8 - password.length} characters',
+            style: TextStyle(
+                color: password.length < 8
+                    ? const Color.fromARGB(255, 26, 26, 26)
+                    : Colors.transparent),
+          ),
+          Text(
+            '${1 - countSpecialCharacters(password, false)} special',
+            style: TextStyle(
+                color: countSpecialCharacters(password, false) < 1
+                    ? const Color.fromARGB(255, 26, 26, 26)
+                    : Colors.transparent),
+          ),
+          Text(
+            '${1 - countSpecialCharacters(password, true)} number',
+            style: TextStyle(
+                color: countSpecialCharacters(password, true) < 1
+                    ? const Color.fromARGB(255, 26, 26, 26)
+                    : Colors.transparent),
+          ),
+        ],
       ),
     );
   }

@@ -48,12 +48,26 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       body: SafeArea(
         child: Container(
           color: AppColors.backgroundColor,
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
-              if (widget.optionalCategry != null) ConstsWidgets.gapH12,
+              const SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.optionalCategry == '')
+                    const TitleBar(text: 'co dziś znajdziemy?'),
+                  if (widget.optionalCategry == '') const Icon(Icons.search),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
+                  if (widget.optionalCategry != '') const Icon(Icons.search),
+                ],
+              ),
               GestureDetector(
                 onTap: () {
                   searchResult =
@@ -84,7 +98,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         child: Text(
                           _keywordController.text.isNotEmpty
                               ? _keywordController.text
-                              : 'Co dzisiaj szukasz?',
+                              : 'Fryzjer, paznokcie, barber...',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,

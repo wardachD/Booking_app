@@ -1,3 +1,4 @@
+import 'package:findovio/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -6,15 +7,21 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: const Center(
-        child: Text(
-          'Witaj, to jest zawartość mojej strony!',
-          style: TextStyle(fontSize: 24.0),
-        ),
-      ),
-    );
+        body: SafeArea(
+      child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          child: const Column(
+            children: [
+              SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TitleBar(text: "twój profil"),
+                  Icon(Icons.face),
+                ],
+              ),
+            ],
+          )),
+    ));
   }
 }

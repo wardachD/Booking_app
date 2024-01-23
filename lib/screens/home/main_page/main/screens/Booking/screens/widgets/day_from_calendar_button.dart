@@ -1,8 +1,7 @@
-import 'package:findovio/consts.dart';
 import 'package:flutter/material.dart';
 
-class dayFromCalendar extends StatelessWidget {
-  const dayFromCalendar({
+class DayFromCalendar extends StatelessWidget {
+  const DayFromCalendar({
     super.key,
     required this.itemWidth,
     required this.isCurrentDateSelected,
@@ -25,22 +24,22 @@ class dayFromCalendar extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
       padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 10.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(25.0),
         border: Border.all(
           color: isCurrentDateSelected
-              ? AppColors.accentColor // Border color when selected
+              ? Colors.orange // Border color when selected
               : hasTimeSlots
-                  ? AppColors
-                      .accentColor // Transparent border when has time slots
+                  ? const Color.fromARGB(255, 255, 168,
+                      87) // Transparent border when has time slots
                   : const Color.fromARGB(
-                      255, 243, 243, 243), // Border color when no time slots
+                      255, 255, 255, 255), // Border color when no time slots
         ),
         color: isCurrentDateSelected
-            ? AppColors.accentColor
+            ? Colors.orange
             : hasTimeSlots
-                ? const Color.fromARGB(0, 255, 255, 255)
-                : const Color.fromARGB(255, 243, 243,
-                    243), // <-- Zmieniamy tło w zależności od wyboru
+                ? const Color.fromARGB(255, 255, 255, 255)
+                : const Color.fromARGB(255, 247, 247,
+                    247), // <-- Zmieniamy tło w zależności od wyboru
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

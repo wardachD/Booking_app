@@ -1,4 +1,11 @@
 import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:findovio/providers/advertisements_provider.dart';
+import 'package:findovio/providers/discover_page_filters.dart';
+import 'package:findovio/providers/favorite_salons_provider.dart';
+import 'package:findovio/providers/firebase_py_user_provider.dart';
+import 'package:findovio/screens/home/discover/provider/animated_top_bar_provider.dart';
+import 'package:findovio/screens/home/discover/provider/keywords_provider.dart';
+import 'package:findovio/screens/home/discover/provider/optional_category_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:findovio/firebase_options.dart';
@@ -22,8 +29,33 @@ void main() async {
       statusBarIconBrightness: Brightness.dark, // dark text for status bar
       statusBarColor: Colors.transparent));
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserDataProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserDataProvider(),
+        ),
+        ChangeNotifierProvider(create: (context) => FirebasePyUserProvider()),
+        ChangeNotifierProvider(
+            create: (context) => DiscoverPageFilterProvider()),
+        ChangeNotifierProvider(
+          create: (context) => AdvertisementProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FavoriteSalonsProvider(),
+        ),
+
+        // Discover page
+        // Keywords
+        ChangeNotifierProvider(create: (_) => KeywordProvider()),
+        // Animation
+        ChangeNotifierProvider(
+          create: (context) => AnimatedTopBarProvider(),
+        ),
+        // Optional category
+        ChangeNotifierProvider(
+          create: (context) => OptionalCategoryProvider(),
+        ),
+      ],
       child: MyApp(),
     ),
   );
@@ -36,6 +68,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userProvider =
+        Provider.of<FirebasePyUserProvider>(context, listen: false);
+    var userDataProvider =
+        Provider.of<UserDataProvider>(context, listen: false);
+
     return StreamBuilder<User?>(
       stream: authStream,
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
@@ -44,6 +81,10 @@ class MyApp extends StatelessWidget {
           final bool isLoggedIn = snapshot.hasData;
           final initialRoute = isLoggedIn ? Routes.HOME : Routes.INTRO;
 
+          // Get the user UID if available
+          getAvailableUserPyUid(
+              isLoggedIn, snapshot, userProvider, userDataProvider);
+
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             getPages: AppPages.pages,
@@ -51,8 +92,9 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: Color.fromARGB(255, 255, 255, 255)),
+                  seedColor: const Color.fromARGB(255, 255, 255, 255)),
               useMaterial3: true,
+              fontFamily: 'NotoSans',
             ),
             initialRoute: initialRoute,
           );
@@ -67,5 +109,19 @@ class MyApp extends StatelessWidget {
         }
       },
     );
+  }
+
+  Future<void> getAvailableUserPyUid(
+      bool isLoggedIn,
+      AsyncSnapshot<User?> snapshot,
+      FirebasePyUserProvider userProvider,
+      UserDataProvider userDataProvider) async {
+    if (isLoggedIn) {
+      final userUid = snapshot.data?.uid;
+      if (userUid != null) {
+        userProvider.setUserUid(userUid);
+      }
+      userDataProvider.setUserUid(userUid!);
+    }
   }
 }

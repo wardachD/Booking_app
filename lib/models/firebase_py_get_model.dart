@@ -1,19 +1,26 @@
 class FirebasePyGetModel {
   final int id;
-  final String firebaseName;
+  String firebaseName;
   final String firebaseEmail;
   final String firebaseUid;
   final DateTime timestamp;
   final String? avatar;
+  String? userCity;
+  String? userStreet;
+  String? userGender;
+  String? userPhoneNumber;
 
-  FirebasePyGetModel({
-    required this.id,
-    required this.firebaseName,
-    required this.firebaseEmail,
-    required this.firebaseUid,
-    required this.timestamp,
-    this.avatar,
-  });
+  FirebasePyGetModel(
+      {required this.id,
+      required this.firebaseName,
+      required this.firebaseEmail,
+      required this.firebaseUid,
+      required this.timestamp,
+      this.avatar,
+      this.userCity,
+      this.userGender,
+      this.userPhoneNumber,
+      this.userStreet});
 
   factory FirebasePyGetModel.fromJson(Map<String, dynamic> json) {
     return FirebasePyGetModel(
@@ -35,5 +42,25 @@ class FirebasePyGetModel {
       'timestamp': timestamp.toIso8601String(),
       'avatar': avatar,
     };
+  }
+
+  void setFireBaseName(String fireBaseName) {
+    firebaseName = fireBaseName;
+  }
+
+  void setUserCity(String city) {
+    userCity = city;
+  }
+
+  void setUserStreet(String street) {
+    userStreet = street;
+  }
+
+  void setUserGender(String gender) {
+    userGender = gender;
+  }
+
+  void setUserPhoneNumber(String phoneNumber) {
+    userPhoneNumber = phoneNumber;
   }
 }

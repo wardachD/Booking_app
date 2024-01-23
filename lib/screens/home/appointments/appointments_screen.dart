@@ -1,11 +1,10 @@
-import 'package:buttons_tabbar2/buttons_tabbar.dart';
 import 'package:findovio/consts.dart';
 import 'package:findovio/controllers/user_data_provider.dart';
 import 'package:findovio/models/user_appointment.dart';
 import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/widgets/title_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,15 +13,20 @@ import 'widgets/upcoming_appointments_list.dart';
 class AppointmentsScreen extends StatefulWidget {
   final bool? isBridgeNavigation; // Optional boolean variable
 
-  AppointmentsScreen({Key? key, this.isBridgeNavigation}) : super(key: key);
+  const AppointmentsScreen({Key? key, this.isBridgeNavigation})
+      : super(key: key);
 
   @override
-  _AppointmentsScreenState createState() => _AppointmentsScreenState();
+  State<AppointmentsScreen> createState() => _AppointmentsScreenState();
 }
 
 class _AppointmentsScreenState extends State<AppointmentsScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
+  Future<List<UserAppointment>>? appointmentDataFromRequest;
+  void _manuallyUpdate() {
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -41,73 +45,87 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
     super.dispose();
   }
 
-  Future<List<UserAppointment>> fetchData() async {
-    final user = Provider.of<UserDataProvider>(context).user;
-    return fetchAppointments(http.Client(), user!.uid);
+  Future<List<UserAppointment>> fetchData(User user) async {
+    return fetchAppointments(http.Client(), user.uid);
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<List<UserAppointment>>? appointmentDataFromRequest = fetchData();
+    final user = Provider.of<UserDataProvider>(context).user;
+    if (user != null) {
+      appointmentDataFromRequest = fetchData(user);
+    }
     return DefaultTabController(
       length: 3,
-      child: SafeArea(
-        child: Scaffold(
-          body: Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 4),
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 15.0),
+                child: Column(
                   children: [
-                    TitleBar(text: "umówione wizyty"),
-                    Icon(Icons.calendar_today),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.only(left: 5),
+                      child: Stack(children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 10.0),
+                          clipBehavior: Clip.none,
+                          width: MediaQuery.sizeOf(context).width * 0.2,
+                          height: 13, // Adjust the height of the line as needed
+                          color: Colors.orange,
+                        ),
+                        const Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TitleBar(text: "umówione wizyty"),
+                            Icon(Icons.calendar_today),
+                          ],
+                        ),
+                      ]),
+                    ),
                   ],
                 ),
-                ButtonsTabBar(
+              ),
+              TabBar(
+                indicatorColor: Colors.orange,
+                labelColor: Colors.black,
+                controller: _tabController,
+                unselectedLabelStyle: const TextStyle(color: Colors.black),
+                labelStyle: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+                tabs: const [
+                  Tab(text: "Przyszłe"),
+                  Tab(text: "Skończone"),
+                  Tab(text: "Anulowane"),
+                ],
+              ),
+              ConstsWidgets.gapH8,
+              Expanded(
+                child: TabBarView(
                   controller: _tabController,
-                  radius: 16.0,
-                  height: 45,
-                  backgroundColorGlobal:
-                      const Color.fromARGB(255, 231, 230, 230),
-                  backgroundColor: const Color.fromARGB(255, 253, 162, 155),
-                  unselectedBackgroundColor:
-                      const Color.fromARGB(255, 231, 230, 230),
-                  unselectedLabelStyle: const TextStyle(color: Colors.black),
-                  labelStyle: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                  tabs: const [
-                    Tab(text: "Upcoming"),
-                    Tab(text: "Completed"),
-                    Tab(text: "Cancelled"),
-                  ],
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: <Widget>[
-                      UpcomingAppointmentsList(
+                  children: <Widget>[
+                    UpcomingAppointmentsList(
                         widget: widget,
                         appointmentDataFromRequest: appointmentDataFromRequest,
                         statusToShow: AppointmentStatus.confirmed,
-                      ),
-                      UpcomingAppointmentsList(
+                        callback: _manuallyUpdate),
+                    UpcomingAppointmentsList(
                         widget: widget,
                         appointmentDataFromRequest: appointmentDataFromRequest,
                         statusToShow: AppointmentStatus.finished,
-                      ),
-                      UpcomingAppointmentsList(
+                        callback: _manuallyUpdate),
+                    UpcomingAppointmentsList(
                         widget: widget,
                         appointmentDataFromRequest: appointmentDataFromRequest,
                         statusToShow: AppointmentStatus.cancelled,
-                      ),
-                    ],
-                  ),
+                        callback: _manuallyUpdate),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

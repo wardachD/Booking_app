@@ -10,7 +10,7 @@ class SalonReviews extends StatefulWidget {
   const SalonReviews({super.key, required this.salonId});
 
   @override
-  _SalonReviewsState createState() => _SalonReviewsState();
+  State<SalonReviews> createState() => _SalonReviewsState();
 }
 
 class _SalonReviewsState extends State<SalonReviews> {

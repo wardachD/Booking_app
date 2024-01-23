@@ -12,24 +12,27 @@ class SalonModel {
   final num distanceFromQuery;
   final int errorCode;
   final String flutterCategory;
+  final String flutterGender;
   final List<Categories> categories;
+  final double review;
 
-  const SalonModel({
-    required this.id,
-    required this.name,
-    required this.addressCity,
-    required this.addressPostalCode,
-    required this.addressStreet,
-    required this.addressNumber,
-    required this.location,
-    required this.about,
-    required this.avatar,
-    required this.phoneNumber,
-    required this.distanceFromQuery,
-    required this.errorCode,
-    required this.flutterCategory,
-    required this.categories,
-  });
+  const SalonModel(
+      {required this.id,
+      required this.name,
+      required this.addressCity,
+      required this.addressPostalCode,
+      required this.addressStreet,
+      required this.addressNumber,
+      required this.location,
+      required this.about,
+      required this.avatar,
+      required this.phoneNumber,
+      required this.distanceFromQuery,
+      required this.errorCode,
+      required this.flutterCategory,
+      required this.flutterGender,
+      required this.categories,
+      required this.review});
 
   factory SalonModel.fromJson(Map<String, dynamic> json) {
     return SalonModel(
@@ -46,8 +49,10 @@ class SalonModel {
       distanceFromQuery: json['distance_from_query'] as num,
       errorCode: json['error_code'] as int,
       flutterCategory: json['flutter_category'] as String,
+      flutterGender: json['flutter_gender_type'] as String,
       categories: List<Categories>.from((json['categories'] as List)
           .map((categories) => Categories.fromJson(categories))),
+      review: json['review'] as double,
     );
   }
 
@@ -66,7 +71,9 @@ class SalonModel {
     data['distance_from_query'] = distanceFromQuery;
     data['error_code'] = errorCode;
     data['flutter_category'] = flutterCategory;
+    data['flutter_gender_type'] = flutterGender;
     data['categories'] = categories.map((v) => v.toJson()).toList();
+    data['review'] = review;
     return data;
   }
 }

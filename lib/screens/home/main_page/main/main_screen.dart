@@ -1,20 +1,23 @@
+import 'dart:io';
+
+import 'package:animate_gradient/animate_gradient.dart';
 import 'package:findovio/consts.dart';
-import 'package:findovio/globals/user_data_global.dart';
-import 'package:findovio/models/firebase_py_get_model.dart';
-import 'package:findovio/models/firebase_py_register_model.dart';
-import 'package:findovio/providers/api_service.dart';
-import 'package:findovio/routes/app_pages.dart';
-import 'package:findovio/screens/home/main_page/main/controllers/firebase_logout.dart';
-import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/banner_card.dart';
-import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/upcoming_appointments.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
-import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:findovio/models/firebase_py_get_model.dart';
+import 'package:findovio/providers/advertisements_provider.dart';
+import 'package:findovio/providers/firebase_py_user_provider.dart';
+import 'package:findovio/routes/app_pages.dart';
+import 'package:findovio/screens/home/discover/provider/optional_category_provider.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/findovio_advertisement_widget.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/category_tile.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/upcoming_appointments.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/salon_details_widgets/advertisements_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'screens/widgets/main_screen_widgets/nearby_salons.dart';
 import 'screens/widgets/main_screen_widgets/list_of_categories.dart';
 import 'package:findovio/controllers/bottom_app_bar_index_controller.dart';
@@ -24,117 +27,131 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late Future<FirebasePyGetModel> userPy;
+  late User? user;
+  late FirebasePyGetModel? userPy;
 
   @override
   void initState() {
     super.initState();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      userPy = fetchFirebasePyUser(http.Client(), user.uid);
+    if (Provider.of<FirebasePyUserProvider>(context, listen: false).user ==
+        null) {
+      Provider.of<AdvertisementProvider>(context, listen: false)
+          .fetchAdvertisements();
+      Provider.of<FirebasePyUserProvider>(context, listen: false).fetchData();
     }
   }
 
+  final animateGradient = AnimateGradient(
+      duration: const Duration(milliseconds: 1200),
+      primaryBegin: Alignment.centerRight,
+      primaryEnd: Alignment.centerRight,
+      secondaryBegin: Alignment.centerLeft,
+      secondaryEnd: Alignment.centerLeft,
+      primaryColors: [
+        Color.fromARGB(202, 255, 255, 255),
+        Color.fromARGB(160, 255, 172, 64)
+      ],
+      secondaryColors: [
+        Color.fromARGB(113, 255, 172, 64),
+        Color.fromARGB(101, 255, 255, 255)
+      ]);
+
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    user = FirebaseAuth.instance.currentUser;
+    userPy = Provider.of<FirebasePyUserProvider>(context).user;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
           children: [
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FutureBuilder<FirebasePyGetModel>(
-                      future: userPy,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasData) {
-                            return Row(
-                              children: [
-                                Text(
-                                  'hej, ${snapshot.data?.firebaseName}  ',
-                                  style: GoogleFonts.anybody(
-                                    letterSpacing: 0.1,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  softWrap: true,
-                                ),
-                                const Icon(Icons.waving_hand_outlined),
-                              ],
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading user data');
-                          }
-                        }
-                        return const CircularProgressIndicator();
-                      },
-                    ),
+                child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 14.0, horizontal: 19.0),
+              child: Stack(
+                children: [
+                  // Orange line background
+                  if (userPy?.firebaseName != null)
                     Container(
-                      height: MediaQuery.sizeOf(context).height * 0.035,
-                      width: MediaQuery.sizeOf(context).height * 0.035,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: Colors.white,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, 2),
-                              blurRadius: 1.0,
-                            )
-                          ]),
-                      child: GestureDetector(
-                        onTap: () => signOut(),
-                        child: const Icon(Icons.logout_rounded),
-                      ),
+                      margin: const EdgeInsets.only(top: 18.0),
+                      clipBehavior: Clip.none,
+                      width: MediaQuery.sizeOf(context).width * 0.2,
+                      height: 11, // Adjust the height of the line as needed
+                      color: Colors.orange,
                     ),
-                  ],
-                ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          if (userPy?.firebaseName == null)
+                            Container(
+                              width: 120,
+                              height: 24,
+                              child: animateGradient,
+                            ),
+                          if (userPy?.firebaseName != null)
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              child: Text(
+                                'hej, ${userPy?.firebaseName}  ',
+                                style: const TextStyle(
+                                  letterSpacing: 0.1,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                softWrap: true,
+                              ),
+                            ),
+                          Text('😁'),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 10),
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          color: AppColors.lightColorTextField,
+                        ),
+                        child: GestureDetector(
+                          onTap: () => signOut(context),
+                          child: const Icon(Icons.logout_outlined),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            ConstsWidgets.gapH8,
+            )),
+            ConstsWidgets.gapH4,
+
             // Search bar
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 25.0, vertical: 5),
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 0,
-                      blurRadius: 2,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [SearchTextField()],
                 ),
               ),
             ),
-            ConstsWidgets.gapH16,
-            //Banner
-            BannerCard(),
-            ConstsWidgets.gapH12,
-            // Categories
+
+            //Categories
             SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.16,
+              height: 50,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding:
@@ -149,50 +166,39 @@ class _MainScreenState extends State<MainScreen> {
                         Get.find<BottomAppBarIndexController>()
                             .setBottomAppBarIndexWithCategory(
                                 1, categoryCustomList[index].title);
+                        Provider.of<OptionalCategoryProvider>(context,
+                                listen: false)
+                            .updateField(categoryCustomList[index].title);
                       }),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.40,
-                        height: MediaQuery.of(context).size.height * 0.14,
-                        decoration: BoxDecoration(
-                          color: customCategoryItem.color,
-                          borderRadius: BorderRadius.circular(20.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 1,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          width: MediaQuery.sizeOf(context).width,
-                          padding: const EdgeInsets.all(18.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(customCategoryItem.icon, size: 32),
-                              ConstsWidgets.gapH16,
-                              Text(
-                                customCategoryItem.title,
-                                style: GoogleFonts.anybody(
-                                    fontWeight: FontWeight.w500, fontSize: 16),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CategoryTile(
+                                customCategoryItem: customCategoryItem),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   );
                 },
               ),
             ),
+            ConstsWidgets.gapH4,
+
+            //const BannerCard(),
+            //ConstsWidgets.gapH12,
             // Upcoming appointments - disabled when no appointments coming in
-            UpcomingAppointments(userId: user!.uid),
+            if (user != null) UpcomingAppointments(userId: user!.uid),
+
+            //Banner
+            const AdvertisementsWidget(optionalString: ''),
+            ConstsWidgets.gapH12,
+
             // Nearby salons
             const NearbySalons(),
+
+            // Findovio Advertisement
+            FindovioAdvertisementWidget(),
           ],
         ),
       ),
@@ -200,11 +206,31 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-Future signOut() async {
+Future<void> _deleteCacheDir() async {
+  Directory tempDir = await getTemporaryDirectory();
+
+  if (tempDir.existsSync()) {
+    tempDir.deleteSync(recursive: true);
+  }
+}
+
+Future<void> _deleteAppDir() async {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+
+  if (appDocDir.existsSync()) {
+    appDocDir.deleteSync(recursive: true);
+  }
+}
+
+Future<void> signOut(BuildContext context) async {
   try {
-    FirebaseAuth.instance.signOut;
+    await FirebaseAuth.instance.signOut();
+    _deleteAppDir();
+    _deleteCacheDir();
+    context.read<FirebasePyUserProvider>().clearData();
+    Provider.of<UserDataProvider>(context, listen: false).refreshUser();
     Get.offAllNamed(Routes.INTRO);
   } catch (e) {
-    print('Error during logout: $e');
+    print(e);
   }
 }

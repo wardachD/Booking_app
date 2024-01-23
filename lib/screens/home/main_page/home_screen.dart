@@ -1,4 +1,3 @@
-import 'package:findovio/models/firebase_py_register_model.dart';
 import 'package:findovio/screens/home/appointments/appointments_screen.dart';
 import 'package:findovio/screens/home/discover/discover_page.dart';
 import 'package:findovio/screens/home/profile/profile_screen.dart';
@@ -40,7 +39,7 @@ class HomeScreen extends GetView<BottomAppBarIndexController> {
         );
       case 2:
         controller.optionalCategory.value = '';
-        return AppointmentsScreen();
+        return const AppointmentsScreen();
       case 3:
         controller.optionalCategory.value = '';
         return const ProfileScreen();

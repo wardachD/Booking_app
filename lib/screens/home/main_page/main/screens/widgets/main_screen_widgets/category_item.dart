@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CategoryItem {
   final String title;
-  final IconData icon;
+  final String imagePath;
   final Color? color;
 
-  CategoryItem({required this.title, required this.icon, required this.color});
+  CategoryItem(
+      {required this.title, required this.imagePath, required this.color});
 }

@@ -1,8 +1,8 @@
 class MonthsUtils {
   static const List<String> _monthNames = [
     "", // Placeholder for index 0
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "Styczeń", "Marzec", "Luty", "Kwiecień", "Maj", "Czerwiec",
+    "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
   ];
 
   static String getMonthName(int month) {

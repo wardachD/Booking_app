@@ -1,44 +1,113 @@
+import 'dart:async';
+
 import 'package:findovio/consts.dart';
+import 'package:findovio/models/category_card.dart';
+import 'package:findovio/models/discover_page_keywords_list.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/providers/api_service.dart';
-import 'package:findovio/screens/home/discover/widgets/salon_categories_list.dart';
-import 'package:findovio/widgets/title_bar.dart';
+import 'package:findovio/providers/discover_page_filters.dart';
+import 'package:findovio/screens/home/discover/provider/animated_top_bar_provider.dart';
+import 'package:findovio/screens/home/discover/provider/keywords_provider.dart';
+import 'package:findovio/screens/home/discover/provider/optional_category_provider.dart';
+import 'package:findovio/screens/home/discover/widgets/animated_top_bar.dart';
+import 'package:findovio/screens/home/discover/widgets/bottom_sheet.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/list_of_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'input_screen/search_field_screen.dart';
 import 'widgets/salon_search_list.dart';
 
 class DiscoverScreen extends StatefulWidget {
-  final String? optionalCategry;
+  String? optionalCategry;
 
-  const DiscoverScreen({Key? key, this.optionalCategry}) : super(key: key);
+  DiscoverScreen({Key? key, this.optionalCategry}) : super(key: key);
 
   @override
-  _DiscoverScreenState createState() => _DiscoverScreenState();
+  State<DiscoverScreen> createState() => _DiscoverScreenState();
 }
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
-  String _selectedDistance = '10'; // Default selected distance
+  String _selectedDistance = '35'; // Default selected distance
   String? selectedCategory;
-  Map<String, bool> selectedCategories = {};
+  String? selectedLocalizations;
+  bool _sortByDistance = false;
+  bool _isSearchActive = false;
+  bool _showAppbar = true;
+  List<DiscoverPageKeywordsList>? keywordsList;
+  KeywordProvider keywordProvider = KeywordProvider();
+  StreamController<List<SalonModel>> _filteredSearchStreamController =
+      StreamController<List<SalonModel>>();
 
   late Future<List<SalonModel>> searchResult = Future.value([]);
+  late Future<List<SalonModel>> searchResultWithFilters = Future.value([]);
   late Future<List<SalonModel>> filteredSearchResult = Future.value([]);
   late Future<List<SalonModel>> unfilteredSearchResult = Future.value([]);
-
-  final List<String> _distanceOptions = ['2', '5', '10', '30', '50'];
+  late List<SalonModel> unFilteredSearch = List.empty();
+  late List<SalonModel> filteredSearch = List.empty();
+  List<SalonModel> list = [];
 
   final TextEditingController _keywordController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  late DiscoverPageFilterProvider userDataProvider =
+      DiscoverPageFilterProvider();
+  late OptionalCategoryProvider tempOptionalCategoryProvider =
+      OptionalCategoryProvider();
 
   late bool _isDistanceNeeded = false;
+
+  void changeIsSearchActiveToFalse(bool newValue) {
+    setState(() {
+      _isSearchActive = newValue;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<AnimatedTopBarProvider>(context, listen: false).setDefault();
+    String tempOptionalCategory = tempOptionalCategoryProvider.optionalCategory;
+
+    if (tempOptionalCategory != '') {
+      widget.optionalCategry = tempOptionalCategory;
+    }
+  }
+
+  Future<void> _fetchKeywords() async {
+    keywordProvider = Provider.of<KeywordProvider>(context, listen: false);
+    try {
+      List<DiscoverPageKeywordsList> fetchedKeywords =
+          await fetchKeywordsList(http.Client());
+
+      // Use the setKeywords method of KeywordProvider to provide the list
+      keywordProvider.setKeywords(fetchedKeywords);
+      print("done");
+    } catch (error) {
+      // Handle errors if needed
+      print('Error fetching keywords: $error');
+    }
+    print('done');
+  }
+
+  @override
+  void didChangeDependencies() {
+    // Keep the optionalCategory updated each time rebuild happen
+
+    userDataProvider = Provider.of<DiscoverPageFilterProvider>(context);
+    tempOptionalCategoryProvider =
+        Provider.of<OptionalCategoryProvider>(context);
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
     _keywordController.dispose();
     _addressController.dispose();
+    userDataProvider.setAllToEmptyWithoutNotification();
+    tempOptionalCategoryProvider.setDefault();
     super.dispose();
   }
 
@@ -48,179 +117,259 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       body: SafeArea(
         child: Container(
           color: AppColors.backgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.optionalCategry == '')
-                    const TitleBar(text: 'co dziś znajdziemy?'),
-                  if (widget.optionalCategry == '') const Icon(Icons.search),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
-                  if (widget.optionalCategry != '') const Icon(Icons.search),
-                ],
-              ),
               GestureDetector(
-                onTap: () {
-                  searchResult =
-                      _navigateToSearchInputPage(isKeywordSearch: true);
-                  filteredSearchResult = searchResult;
-                  unfilteredSearchResult = searchResult;
-                },
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
-                  height: MediaQuery.sizeOf(context).height * 0.07,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 1,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _keywordController.text.isNotEmpty
-                              ? _keywordController.text
-                              : 'Fryzjer, paznokcie, barber...',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 51, 51, 51),
-                          ),
-                        ),
-                      ),
-                      if (_keywordController.text.isNotEmpty)
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            setState(() {
-                              _keywordController.text = '';
-                            });
-                            searchResult = _onTapSearch();
-                            filteredSearchResult = searchResult;
-                            unfilteredSearchResult = searchResult;
-                          },
-                        ),
-                    ],
-                  ),
-                ),
+                onTap: () => showDropdownMenu(context),
+                child: AnimatedTopBar(
+                    context: context,
+                    showAppbar: _showAppbar,
+                    optionalCategry: Provider.of<OptionalCategoryProvider>(
+                            context,
+                            listen: false)
+                        .optionalCategory),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        searchResult =
-                            _navigateToSearchInputPage(isKeywordSearch: false);
+              Container(
+                padding: AppMargins.defaultMargin,
+                child: Column(
+                  children: [
+                    InkWell(
+                      splashColor: Colors.orangeAccent,
+                      onTap: () async {
+                        _fetchKeywords();
+                        list = await _navigateToSearchInputPage(
+                            isKeywordSearch: true);
+                        _filteredSearchStreamController.sink.add(list);
                         filteredSearchResult = searchResult;
                         unfilteredSearchResult = searchResult;
                       },
                       child: Container(
-                        height: MediaQuery.sizeOf(context).height * 0.07,
-                        padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(14.0, 0, 0, 0),
+                        height: MediaQuery.sizeOf(context).height * 0.06,
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundColor,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 1,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                          color: AppColors.lightColorTextField,
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.location_pin),
-                            const SizedBox(width: 8),
+                            const Icon(Icons.search),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                _addressController.text.isNotEmpty
-                                    ? _addressController.text
-                                    : 'Gdzie?',
+                                _keywordController.text.isNotEmpty
+                                    ? _keywordController.text
+                                    : 'Fryzjer, paznokcie, barber...',
                                 style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 51, 51, 51),
-                                ),
+                                    color: Color.fromARGB(255, 97, 97, 97)),
                               ),
                             ),
-                            if (_addressController.text.isNotEmpty)
+                            if (_keywordController.text.isNotEmpty)
                               IconButton(
                                 icon: const Icon(Icons.close),
-                                onPressed: () {
-                                  setState(() {
-                                    _addressController.text = '';
-                                  });
-                                  searchResult = _onTapSearch();
-                                  filteredSearchResult = searchResult;
-                                  unfilteredSearchResult = searchResult;
+                                onPressed: () async {
+                                  _sortByDistance = false;
+                                  _keywordController.text = '';
+                                  _isSearchActive = false;
+                                  userDataProvider.setAllToEmpty();
+                                  //searchResult = _onTapSearch();
+                                  var listTemp = await _onTapSearch();
+                                  _filteredSearchStreamController.sink
+                                      .add(listTemp);
+                                  // filteredSearchResult = searchResult;
+                                  // unfilteredSearchResult = searchResult;
                                 },
                               ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: MediaQuery.sizeOf(context).height * 0.07,
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        borderRadius: BorderRadius.circular(8),
-                        value: _selectedDistance,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedDistance = newValue!;
-                            searchResult = _onTapSearch();
-                            filteredSearchResult = searchResult;
-                            unfilteredSearchResult = searchResult;
-                          });
-                        },
-                        items: _distanceOptions.map((distance) {
-                          return DropdownMenuItem<String>(
-                            value: distance,
-                            child: Text('$distance km'),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              showFilters(),
-              const SizedBox(height: 16),
-              Expanded(
-                child: SalonSearchList(
-                  salonsSearchFuture: searchResult,
-                  isDistanceNeeded: _isDistanceNeeded,
+                    const SizedBox(height: 8),
+                  ],
                 ),
-              )
+              ),
+              if (_isSearchActive)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.83,
+                        child: Stack(
+                          children: [
+                            SingleChildScrollView(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14),
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    key: userDataProvider.userData.city != ''
+                                        ? Key('withCity')
+                                        : Key('withoutCity'),
+                                    child: CategoryCard(
+                                      category: 'filtry',
+                                      isSelected: userDataProvider
+                                                  .userData.city !=
+                                              '' ||
+                                          userDataProvider.userData.category !=
+                                              '',
+                                      icon: MdiIcons.filterVariant,
+                                      option: 0,
+                                    ),
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        showDragHandle: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return CustomBottomSheet(
+                                            filterOption: 'Filtry',
+                                            salonList: list,
+                                            callbackFetch: updateSearchResults,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  if (userDataProvider.userData.category != '')
+                                    InkWell(
+                                      splashColor: Colors.orangeAccent,
+                                      child: CategoryCard(
+                                        category:
+                                            userDataProvider.userData.category,
+                                        isSelected: userDataProvider
+                                                    .userData.category ==
+                                                ''
+                                            ? false
+                                            : true,
+                                        icon: MdiIcons.close,
+                                        option: 3,
+                                        callback: () => {updateSearchResults()},
+                                      ),
+                                      onTap: () {},
+                                    ),
+                                  InkWell(
+                                    splashColor: Colors.orangeAccent,
+                                    onTap: () async {
+                                      await showModalBottomSheet(
+                                        barrierColor:
+                                            const Color.fromARGB(225, 0, 0, 0),
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (BuildContext context) {
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.95,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top: Radius.circular(20)),
+                                              child: Container(
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.white,
+                                                ),
+                                                child: SearchFieldScreen(
+                                                  isKeywordSearch: false,
+                                                  salonListToTakeCities: list,
+                                                  callbackFetch:
+                                                      updateSearchResults,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: CategoryCard(
+                                      category:
+                                          userDataProvider.userData.city == ''
+                                              ? 'Lokalizacja'
+                                              : userDataProvider.userData.city,
+                                      isSelected:
+                                          userDataProvider.userData.city == ''
+                                              ? false
+                                              : true,
+                                      icon: MdiIcons.close,
+                                      option: 1,
+                                      callback: () {
+                                        _sortByDistance = false;
+                                        updateSearchResults();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (userDataProvider.userData.city != '' &&
+                                userDataProvider.userData.category != '')
+                              Positioned(
+                                  right: 0,
+                                  child: Container(
+                                    width: 15,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.045,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.centerRight,
+                                        end: Alignment.centerLeft,
+                                        colors: [
+                                          Color.fromARGB(255, 255, 255, 255),
+                                          const Color.fromARGB(
+                                              0, 255, 255, 255),
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                          ],
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 150),
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.only(bottom: 5, right: 15),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        height: MediaQuery.of(context).size.height * 0.045,
+                        width: MediaQuery.sizeOf(context).width * 0.105,
+                        decoration: BoxDecoration(
+                          color: !_sortByDistance
+                              ? AppColors.lightColorTextField
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          border: !_sortByDistance
+                              ? Border.all(
+                                  color: AppColors.lightColorTextField,
+                                )
+                              : Border.all(color: Colors.orange),
+                        ),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _sortByDistance = !_sortByDistance;
+                                  });
+                                },
+                                child: Icon(
+                                  MdiIcons.sort,
+                                  size: 18,
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: Container(
+                  margin: AppMargins.defaultMargin,
+                  child: SalonSearchList(
+                    salonsSearchFuture: _filteredSearchStreamController.stream,
+                    isDistanceNeeded: _isDistanceNeeded,
+                    sortByDistance: _sortByDistance,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -228,46 +377,77 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  SalonCategoriesList showFilters() {
-    return SalonCategoriesList(
-      salonsFuture: searchResult,
-      unfilteredSalonsFuture: unfilteredSearchResult,
-      onCategorySelected: (category) {
-        if (selectedCategories[category] == true) {
-          // User tapped the same category again, show all results
-          selectedCategory = null;
-          searchResult = unfilteredSearchResult;
-          setState(() {
-            selectedCategories[category] = false;
-          });
-        } else {
-          // User selected a new category, filter results
-          selectedCategory = category;
-          searchResult = _filterSearchResultsByCategory(category);
-          setState(() {
-            // Unselect all categories
-            selectedCategories.updateAll((key, value) => false);
-            // Select the tapped one
-            selectedCategories[category] = true;
-          });
-        }
-      },
-    );
-  }
-
-  Future<List<SalonModel>> _filterSearchResultsByCategory(String category) {
-    return searchResult.then((salons) {
-      return salons
-          .where((salon) => salon.flutterCategory == category)
-          .toList();
+  void showDropdownMenu(BuildContext context) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    List<PopupMenuEntry<String>> popupMenuItems = [
+      const PopupMenuItem(
+        value: '', // Add a default value
+        child:
+            Text('Wszystkie kategorie'), // Display text for the default value
+      ),
+      ...categoryCustomList.map((categoryItem) {
+        return PopupMenuItem(
+          value: categoryItem.title,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: categoryItem.title ==
+                    Provider.of<OptionalCategoryProvider>(context,
+                            listen: false)
+                        .optionalCategory
+                ? BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  )
+                : null,
+            child: Row(
+              children: [
+                Image.asset(
+                  categoryItem.imagePath,
+                  width: 24,
+                  height: 24,
+                ),
+                const SizedBox(width: 8),
+                Text(categoryItem.title),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    ];
+    // Show the dropdown menu anchored to the widget's position
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromPoints(
+          overlay.localToGlobal(Offset.zero),
+          overlay.localToGlobal(overlay.size.bottomRight(Offset.zero)),
+        ),
+        Offset.zero & overlay.size,
+      ),
+      items: popupMenuItems,
+      elevation: 8,
+    ).then((value) {
+      if (value != null) {
+        setState(() {
+          Provider.of<OptionalCategoryProvider>(context, listen: false)
+              .updateField(value);
+        });
+        // Perform actions based on the selected value
+      }
     });
   }
 
   Future<List<SalonModel>> _navigateToSearchInputPage(
       {required bool isKeywordSearch}) async {
     final searchParams = await Get.to<SearchParameters>(
-      () => SearchFieldScreen(isKeywordSearch: isKeywordSearch),
+      () => SearchFieldScreen(
+        isKeywordSearch: isKeywordSearch,
+      ),
     );
+    String tempOptionalCategory =
+        Provider.of<OptionalCategoryProvider>(context, listen: false)
+            .optionalCategory;
 
     if (searchParams != null) {
       String? keywords;
@@ -276,57 +456,65 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
       if (!isKeywordSearch) {
         address = searchParams.address;
-        radius = searchParams.radius ?? '2';
+        radius = searchParams.radius ?? '25';
         keywords = _keywordController.text;
-        setState(() {
-          _isDistanceNeeded = true;
-          _addressController.text = address ?? '';
-          _selectedDistance = radius!;
-        });
+        _isDistanceNeeded = true;
+        _addressController.text = address ?? '';
+        _selectedDistance = radius;
       } else {
         address = _addressController.text;
         radius = _selectedDistance;
         keywords = searchParams.keywords;
-        setState(() {
-          _isDistanceNeeded = false;
-          _keywordController.text = keywords ?? '';
-        });
+        _isDistanceNeeded = false;
+        _keywordController.text = keywords ?? '';
       }
 
       if (keywords != "" && address != "") {
-        if (widget.optionalCategry != '') {
+        if (tempOptionalCategory != '') {
+          setState(() {
+            _isSearchActive = true;
+          });
           return fetchSearchSalons(http.Client(),
               keywords: keywords,
               address: address,
               radius: radius,
-              category: widget.optionalCategry);
+              category: tempOptionalCategory);
         }
+        setState(() {
+          _isSearchActive = true;
+        });
         // Send the API request with both keywords and address
         return fetchSearchSalons(http.Client(),
             keywords: keywords, address: address, radius: radius);
       } else if (keywords != "") {
-        if (widget.optionalCategry != '') {
+        if (tempOptionalCategory != '') {
           return fetchSearchSalons(http.Client(),
-              keywords: keywords, category: widget.optionalCategry);
+              keywords: keywords, category: tempOptionalCategory);
         }
+        setState(() {
+          _isSearchActive = true;
+        });
         // Send the API request with keywords only
         return fetchSearchSalons(http.Client(), keywords: keywords);
       } else if (address != "") {
-        if (widget.optionalCategry != '') {
+        if (tempOptionalCategory != '') {
           return fetchSearchSalons(http.Client(),
-              address: address,
-              radius: radius,
-              category: widget.optionalCategry);
+              address: address, radius: radius, category: tempOptionalCategory);
         }
         // Send the API request with address only
         return fetchSearchSalons(http.Client(),
             address: address, radius: radius);
       } else {
+        setState(() {
+          _isSearchActive = true;
+        });
         // Return an empty list if both keywords and address are null
-        return fetchSearchSalons(http.Client(),
-            category: widget.optionalCategry);
+        return fetchSearchSalons(http.Client(), category: tempOptionalCategory);
       }
     } else {
+      setState(() {
+        _isSearchActive = false;
+      });
       // Return an empty list if searchParams is null
       return [];
     }
@@ -334,33 +522,33 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Future<List<SalonModel>> _onTapSearch() {
     final keywords = _keywordController.text;
-    final address = _addressController.text;
+    final address = userDataProvider.userData.city;
     final radius = _selectedDistance;
     _isDistanceNeeded = false;
-
+    print(keywords);
+    print(address);
+    String tempOptionalCategory =
+        Provider.of<OptionalCategoryProvider>(context, listen: false)
+            .optionalCategory;
     if (keywords.isNotEmpty) {
       if (address.isNotEmpty) {
-        setState(() {
-          _isDistanceNeeded = true;
-        });
+        _isDistanceNeeded = true;
         // Send the API request with both keywords and address
-        if (widget.optionalCategry != '') {
+        if (tempOptionalCategory != '') {
           return fetchSearchSalons(http.Client(),
               keywords: keywords,
               address: address,
               radius: radius,
-              category: widget.optionalCategry);
+              category: tempOptionalCategory);
         }
         return fetchSearchSalons(http.Client(),
             keywords: keywords, address: address, radius: radius);
       } else {
-        setState(() {
-          _isDistanceNeeded = false;
-        });
+        _isDistanceNeeded = false;
         // Send the API request with keywords only
         if (widget.optionalCategry != '') {
           return fetchSearchSalons(http.Client(),
-              keywords: keywords, category: widget.optionalCategry);
+              keywords: keywords, category: tempOptionalCategory);
         }
         return fetchSearchSalons(
           http.Client(),
@@ -368,18 +556,32 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         );
       }
     } else if (address.isNotEmpty) {
-      setState(() {
-        _isDistanceNeeded = true;
-      });
+      _isDistanceNeeded = true;
       // Send the API request with address only
       if (widget.optionalCategry != '') {
         return fetchSearchSalons(http.Client(),
-            address: address, radius: radius, category: widget.optionalCategry);
+            address: address, radius: radius, category: tempOptionalCategory);
       }
       return fetchSearchSalons(http.Client(), address: address, radius: radius);
     } else {
       // Both keywords and address are empty, return an empty list
       return Future.value([]);
     }
+  }
+
+  Future<List<SalonModel>> filteredList(
+      Future<List<SalonModel>> searchSalonList) async {
+    dynamic salonList;
+    searchSalonList.then((value) => salonList);
+    return Future.value(searchSalonList);
+  }
+
+  void updateSearchResults() async {
+    var searchResultNoFilter = await _onTapSearch();
+    filteredSearch = searchResultNoFilter.where((result) {
+      return result.flutterGender.contains(userDataProvider.userData.gender) &&
+          result.flutterCategory.contains(userDataProvider.userData.category);
+    }).toList();
+    _filteredSearchStreamController.sink.add(filteredSearch);
   }
 }

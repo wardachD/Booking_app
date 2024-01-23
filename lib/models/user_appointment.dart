@@ -1,4 +1,7 @@
 import 'package:findovio/models/salon_schedule.dart';
+import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 import 'salon_model.dart';
 
@@ -45,6 +48,36 @@ class UserAppointment {
       timeslots: List<SalonSchedule>.from(json['timeslots']
           .map((timeslots) => SalonSchedule.fromJson(timeslots))),
     );
+  }
+
+  String? getFormattedDateOfBooking() {
+    try {
+      // Initialize locale data before formatting the date
+      initializeDateFormatting('pl_PL', null);
+
+      // Parse the date string to a DateTime object
+      DateTime date = DateTime.parse(dateOfBooking);
+
+      // Format the DateTime object to the desired format
+      String formattedDate = DateFormat('MMM d, y', 'pl_PL').format(date);
+
+      return formattedDate.capitalizeFirst;
+    } catch (e) {
+      // Handle error if locale initialization fails
+      print('Error initializing locale data: $e');
+      // Return a default value or handle the case when the date is not formatted yet
+      return ''; // Return an empty string or default value for now
+    }
+  }
+
+  String getFormattedFirstTimeSlot() {
+    // Parsuj ciąg czasu do obiektu DateTime
+    DateTime time = DateFormat('HH:mm:ss').parse(timeslots[0].timeFrom);
+
+    // Formatuj obiekt DateTime do pożądanego formatu (bez sekund)
+    String formattedTime = DateFormat('HH:mm').format(time);
+
+    return formattedTime;
   }
 }
 

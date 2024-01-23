@@ -62,6 +62,20 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   chewie: ^1.7.1
   video_player: ^2.7.2
+  dotted_border: ^2.1.0
+  path_provider: ^2.1.1
+  animate_gradient: ^0.0.2+1
+  maps_launcher: ^2.2.0
+  flutter_phone_direct_caller: ^2.1.1
+  app_settings: ^5.1.1
+  share_plus: ^7.2.1
+  share: ^2.0.4
+  internet_connection_checker_plus: ^2.1.0
+  flutter_rating_stars: ^1.0.3+4
+  smooth_star_rating_null_safety: ^1.0.4+2
+  geolocator: ^10.1.0
+  permission_handler: ^11.0.1
+  geocoding: ^2.1.1
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -105,10 +119,28 @@ flutter:
    - assets/images/makeup.png
    - assets/images/massage.png
    - assets/images/barber.png
+   - assets/images/intro_bg.png
+   - assets/images/pusto_tutaj.png
+   - assets/images/znajdz_to.png
+   - assets/images/help.png
+   - assets/images/empty1.png
+   - assets/images/empty2.png
+   - assets/images/empty3.png
    - assets/gifs/empty.gif
    - assets/gifs/background-placeholder.gif
    - assets/gifs/confirmed.gif
    - assets/gifs/welcomebanner.mp4
+   - assets/images/loginregister.png
+   - assets/icons/apple-logo.png
+   - assets/icons/facebook.png
+   - assets/icons/google.png
+   - assets/icons/nail.png
+   - assets/icons/makeup.png
+   - assets/icons/comb.png
+   - assets/icons/massage.png
+   - assets/icons/barber.png
+   - assets/icons/pedicure.png
+   - assets/icons/manicure.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -120,15 +152,24 @@ flutter:
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
-  
   fonts:
-    - family: Bergamasco
+    - family: NotoSans
       fonts:
-       - asset: assets/fonts/Bergamasco-Regular.ttf
-       - asset: assets/fonts/Bergamasco-Bold.ttf
-       - asset: assets/fonts/Bergamasco-Thin.ttf
-       - asset: assets/fonts/Bergamasco-Regular-Italic.ttf
-         style: italic
-  
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+        - asset: assets/fonts/NotoSans/NotoSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/NotoSans/NotoSans-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/NotoSans/NotoSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/NotoSans/NotoSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSans/NotoSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSans/NotoSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSans/NotoSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSans/NotoSans-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/NotoSans/NotoSans-Black.ttf
+          weight: 900

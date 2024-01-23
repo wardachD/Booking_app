@@ -1,66 +1,78 @@
-import 'package:findovio/models/category_card.dart';
-import 'package:findovio/models/salon_model.dart';
-import 'package:flutter/material.dart';
+// import 'package:findovio/models/category_card.dart';
+// import 'package:findovio/models/salon_model.dart';
+// import 'package:flutter/material.dart';
 
-class SalonCategoriesList extends StatefulWidget {
-  final Future<List<SalonModel>> salonsFuture;
-  final Future<List<SalonModel>> unfilteredSalonsFuture;
-  final Function(String) onCategorySelected;
-  const SalonCategoriesList(
-      {Key? key,
-      required this.salonsFuture,
-      required this.unfilteredSalonsFuture,
-      required this.onCategorySelected})
-      : super(key: key);
+// class SalonCategoriesList extends StatefulWidget {
+//   final Future<List<SalonModel>> salonsFuture;
+//   final Future<List<SalonModel>> unfilteredSalonsFuture;
+//   final Function(String, String)
+//       onFilterSelected; // New argument for filtering by category and location
 
-  @override
-  _SalonCategoriesListState createState() => _SalonCategoriesListState();
-}
+//   const SalonCategoriesList({
+//     Key? key,
+//     required this.salonsFuture,
+//     required this.unfilteredSalonsFuture,
+//     required this.onFilterSelected,
+//   }) : super(key: key);
 
-class _SalonCategoriesListState extends State<SalonCategoriesList> {
-  Map<String, bool> selectedCategories = {};
+//   @override
+//   _SalonCategoriesListState createState() => _SalonCategoriesListState();
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<SalonModel>>(
-      future: widget.unfilteredSalonsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<String> listOfCategory = [];
-          for (var salon in snapshot.data!) {
-            if (!listOfCategory.contains(salon.flutterCategory)) {
-              listOfCategory.add(salon.flutterCategory);
-            }
-          }
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: listOfCategory.map((name) {
-                return GestureDetector(
-                  onTap: () {
-                    widget.onCategorySelected(name);
-                    setState(() {
-                      if (selectedCategories.containsKey(name)) {
-                        selectedCategories[name] = !selectedCategories[name]!;
-                      } else {
-                        selectedCategories[name] = true;
-                      }
-                    });
-                  },
-                  child: CategoryCard(
-                    category: name,
-                    isSelected: selectedCategories[name] ?? false,
-                  ),
-                );
-              }).toList(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return const CircularProgressIndicator();
-        }
-      },
-    );
-  }
-}
+// class _SalonCategoriesListState extends State<SalonCategoriesList> {
+//   Map<String, bool> selectedCategories = {};
+//   String selectedCategory = ""; // Track selected category
+//   String selectedLocation = ""; // Track selected location
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder<List<SalonModel>>(
+//       future: widget.unfilteredSalonsFuture,
+//       builder: (context, snapshot) {
+//         if (snapshot.hasData) {
+//           List<String> listOfCategories = [];
+//           List<String> listOfLocations = [];
+
+//           // Extract categories and locations from the salon data
+//           for (var salon in snapshot.data!) {
+//             if (!listOfCategories.contains(salon.flutterCategory)) {
+//               listOfCategories.add(salon.flutterCategory);
+//             }
+
+//             if (!listOfLocations.contains(salon.location)) {
+//               listOfLocations.add(salon.location);
+//             }
+//           }
+//           return Column(
+//             children: [
+//               // Filter by Category
+//               SingleChildScrollView(
+//                 scrollDirection: Axis.horizontal,
+//                 child: Row(
+//                   children: listOfCategories.map((category) {
+//                     return GestureDetector(
+//                       onTap: () {
+//                         widget.onFilterSelected(category, selectedLocation);
+//                         setState(() {
+//                           selectedCategory = category;
+//                         });
+//                       },
+//                       child: CategoryCard(
+//                         category: category,
+//                         isSelected: selectedCategory == category,
+//                       ),
+//                     );
+//                   }).toList(),
+//                 ),
+//               ),
+//             ],
+//           );
+//         } else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else {
+//           return const CircularProgressIndicator();
+//         }
+//       },
+//     );
+//   }
+// }

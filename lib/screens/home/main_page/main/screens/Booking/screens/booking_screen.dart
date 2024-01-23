@@ -23,7 +23,7 @@ class BookingScreen extends StatefulWidget {
       required this.workingHours});
 
   @override
-  _BookingScreenState createState() => _BookingScreenState();
+  State<BookingScreen> createState() => _BookingScreenState();
 }
 
 class _BookingScreenState extends State<BookingScreen> {
@@ -73,8 +73,8 @@ class _BookingScreenState extends State<BookingScreen> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: const TitleBarWithBackButton(
-                  title: 'Confirm Services',
+                child: TitleBarWithBackButton(
+                  title: 'potwierdź usługi',
                 ),
               ),
               const SizedBox(height: 20),
@@ -83,15 +83,43 @@ class _BookingScreenState extends State<BookingScreen> {
                     itemCount: widget.services.length,
                     itemBuilder: (context, index) {
                       return Card(
+                        color: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        shadowColor: const Color.fromARGB(255, 112, 112, 112),
                         child: ListTile(
-                            title: Text(widget.services[index].title),
-                            subtitle: Text(widget.services[index].description),
+                            title: Text(
+                              widget.services[index].title,
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 32, 32, 32),
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(
+                              widget.services[index].description,
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 32, 32, 32),
+                                  fontWeight: FontWeight.w500),
+                            ),
                             trailing: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   GestureDetector(
-                                    child: Icon(MdiIcons.delete),
+                                    child: Container(
+                                        width: 25,
+                                        height: 25,
+                                        decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(25)),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.orange,
+                                                offset: Offset(0, 1),
+                                                blurRadius: 0.5,
+                                              )
+                                            ]),
+                                        child: Icon(MdiIcons.minus)),
                                     onTap: () {
                                       setState(() {
                                         widget.services.removeAt(index);
@@ -99,7 +127,12 @@ class _BookingScreenState extends State<BookingScreen> {
                                       });
                                     },
                                   ),
-                                  Text('${widget.services[index].price} zł')
+                                  Text('${widget.services[index].price} zł',
+                                      style: const TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 32, 32, 32),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 13))
                                 ])),
                       );
                     }),
@@ -109,25 +142,83 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: AppColors.accentColor,
-        child: TextButton(
-          onPressed: () {
-            Get.to(() => BookingSchedule(
-                salon: widget.salon,
-                services: widget.services,
-                schedule: widget.schedule,
-                workingHours: widget.workingHours,
-                duration: totalDuration,
-                price: totalPrice,
-                amountOfTimeslots: timeslotsNeeded));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Rezerwuj za $totalPrice zł',
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        height: MediaQuery.sizeOf(context).height * 0.15,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                color: Color.fromARGB(52, 0, 0, 0),
+                blurRadius: 12.0,
+                offset: Offset(0, 3)),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Razem',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 32, 32, 32),
+                          fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      'W tym 23% vat',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 26, 26, 26),
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14),
+                    ),
+                  ],
+                ),
+                Text(
+                  '${totalPrice.toString()} PLN',
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 32, 32, 32),
+                      fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
-          ),
+            ConstsWidgets.gapH8,
+            GestureDetector(
+              onTap: () {
+                Get.to(() => BookingSchedule(
+                    salon: widget.salon,
+                    services: widget.services,
+                    schedule: widget.schedule,
+                    workingHours: widget.workingHours,
+                    duration: totalDuration,
+                    price: totalPrice,
+                    amountOfTimeslots: timeslotsNeeded));
+              },
+              child: Container(
+                alignment: Alignment.center,
+                width: MediaQuery.sizeOf(context).width,
+                height: 45,
+                decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(12)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Zarezerwuj     ',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    Icon(MdiIcons.arrowRight, color: Colors.white, size: 18)
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox()
+          ],
         ),
       ),
     );

@@ -1,4 +1,6 @@
 import 'package:findovio/consts.dart';
+import 'package:findovio/screens/home/appointments/widgets/appointment_tile_placeholder.dart';
+import 'package:findovio/screens/home/appointments/widgets/hidable_advertisements.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/models/user_appointment.dart';
 import 'package:findovio/screens/home/appointments/appointments_screen.dart';
@@ -7,26 +9,24 @@ import 'package:findovio/screens/home/appointments/widgets/appointments_tile.dar
 class UpcomingAppointmentsList extends StatefulWidget {
   final AppointmentsScreen widget;
   final String statusToShow;
-  late Future<List<UserAppointment>>?
-      appointmentDataFromRequest; // Add this line
+  final Future<List<UserAppointment>>? appointmentDataFromRequest;
+  final VoidCallback callback;
 
-  UpcomingAppointmentsList({
+  const UpcomingAppointmentsList({
     Key? key,
     required this.widget,
     required this.appointmentDataFromRequest,
-    required this.statusToShow, // Add this parameter
+    required this.statusToShow,
+    required this.callback,
   }) : super(key: key);
 
   @override
-  _UpcomingAppointmentsListState createState() =>
+  State<UpcomingAppointmentsList> createState() =>
       _UpcomingAppointmentsListState();
 }
 
 class _UpcomingAppointmentsListState extends State<UpcomingAppointmentsList> {
-  Future<List<UserAppointment>>? newAppointmentDataFromRequest;
   late List<UserAppointment> filteredAppointments;
-  late Future<bool>
-      areListsEqual; // Add a flag to track if data has been fetched
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +34,29 @@ class _UpcomingAppointmentsListState extends State<UpcomingAppointmentsList> {
       future: widget.appointmentDataFromRequest,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const Column(
+            children: [
+              SizedBox(
+                height: 277, // Adjust the height as needed
+                child: AppointmentTilePlaceholder(),
+              ),
+            ],
+          );
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Text('Błąd: ${snapshot.error}');
         } else if (snapshot.hasData) {
           // Filter appointments with status 'canceled'
-          if (widget.statusToShow == AppointmentStatus.confirmed) {
+          if (widget.statusToShow == AppointmentStatus.confirmed ||
+              widget.statusToShow == AppointmentStatus.confirmed) {
             filteredAppointments = snapshot.data!
                 .where((appointment) =>
                     appointment.status == AppointmentStatus.confirmed ||
                     appointment.status == AppointmentStatus.pending)
+                .toList();
+          } else if (widget.statusToShow == AppointmentStatus.finished) {
+            filteredAppointments = snapshot.data!
+                .where((appointment) =>
+                    appointment.status == AppointmentStatus.finished)
                 .toList();
           } else {
             filteredAppointments = snapshot.data!
@@ -53,20 +66,32 @@ class _UpcomingAppointmentsListState extends State<UpcomingAppointmentsList> {
           }
 
           if (filteredAppointments.isEmpty) {
-            return const Text('No appointments available.');
+            return Padding(
+              padding: EdgeInsets.zero,
+              child: HidableColumnWidget(),
+            );
           }
 
-          return ListView.builder(
-            // I want to see the nearest schedule first
-            itemCount: filteredAppointments.length,
-            itemBuilder: (context, index) {
-              print('done 2');
-              final appointment = filteredAppointments[index];
-              return AppointmentTile(userAppointment: appointment);
-            },
+          return Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+            child: ListView.builder(
+              // I want to see the nearest schedule first
+              itemCount: filteredAppointments.length,
+              itemBuilder: (context, index) {
+                final appointment = filteredAppointments[index];
+                return AppointmentTile(
+                  userAppointment: appointment,
+                  callback: widget.callback,
+                );
+              },
+            ),
           );
         } else {
-          return const Text('No appointments available.');
+          return Padding(
+            padding: EdgeInsets.zero,
+            child: HidableColumnWidget(),
+          );
         }
       },
     );

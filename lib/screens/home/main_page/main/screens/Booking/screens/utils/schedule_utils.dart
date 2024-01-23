@@ -17,7 +17,6 @@ DateTime normalizeDate(DateTime date) {
 List<SalonSchedule> filterAvailableTimeSlots(
     List<SalonSchedule> schedules, int requiredSlots) {
   List<SalonSchedule> availableSlots = [];
-  print('RequiredSlots: $requiredSlots');
   for (int i = 0; i <= schedules.length - requiredSlots; i++) {
     bool isConsecutive = true;
     for (int j = 0; j < requiredSlots - 1; j++) {

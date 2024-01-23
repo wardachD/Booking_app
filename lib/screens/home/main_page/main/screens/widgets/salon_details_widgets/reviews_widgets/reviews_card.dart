@@ -1,18 +1,23 @@
 import 'package:findovio/models/salon_reviews_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:intl/intl.dart';
 
 import '../commands/reviews_functions.dart';
 
 Widget reviewsCard(context, Review review) {
-  return Card(
+  return Container(
     margin: const EdgeInsets.all(16),
-    color: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 2,
+            color: Color.fromARGB(255, 187, 187, 187),
+          )
+        ]),
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -20,21 +25,12 @@ Widget reviewsCard(context, Review review) {
         children: [
           Row(
             children: [
-              Container(
-                height: MediaQuery.sizeOf(context).height * 0.07,
-                width: MediaQuery.sizeOf(context).height * 0.07,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 145, 247, 148),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(review.userId,
-                        style: GoogleFonts.anybody(
+                        style: const TextStyle(
                             letterSpacing: 0.1,
                             fontSize: 18,
                             fontWeight: FontWeight.w500)),
@@ -56,11 +52,9 @@ Widget reviewsCard(context, Review review) {
                 unratedColor: const Color.fromARGB(0, 255, 255, 255),
                 itemBuilder: (context, _) => const Icon(
                   Icons.star,
-                  color: Color.fromARGB(255, 250, 207, 77),
+                  color: Colors.orangeAccent,
                 ),
-                onRatingUpdate: (rating) {
-                  print(rating);
-                },
+                onRatingUpdate: (rating) {},
               ),
             ],
           ),

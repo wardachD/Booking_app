@@ -1,44 +1,75 @@
+import 'package:findovio/consts.dart';
+import 'package:findovio/providers/discover_page_filters.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class CategoryCard extends StatelessWidget {
   final String category;
   final bool isSelected;
+  final IconData icon;
+  final int option;
+  final VoidCallback? callback;
 
   const CategoryCard({
     required this.category,
     required this.isSelected,
+    required this.icon,
+    required this.option,
+    this.callback,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 10),
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      height: MediaQuery.of(context).size.height * 0.045,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 0,
-            blurRadius: 1,
-            offset: const Offset(0, 2), // zmienia położenie cieni
-          ),
-        ],
-        color: isSelected ? Colors.white12 : Colors.white,
-        borderRadius: BorderRadius.circular(5.0),
+    var isVisible = true;
+    final userDataProvider = Provider.of<DiscoverPageFilterProvider>(context);
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 100),
+      transitionBuilder: (child, animation) {
+        return ScaleTransition(
+          scale: animation,
+          child: child,
+        );
+      },
+      child: Container(
+        key: ValueKey<bool>(isSelected),
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(left: 8, bottom: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: MediaQuery.of(context).size.height * 0.045,
+        decoration: BoxDecoration(
+          color: !isSelected ? AppColors.lightColorTextField : Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          border: !isSelected
+              ? Border.all(
+                  color: AppColors.lightColorTextField,
+                )
+              : Border.all(color: Colors.orange),
+        ),
+        child: Row(
+          children: [
+            if (isSelected || category == "filtry")
+              GestureDetector(
+                onTap: () async {
+                  if (option == 1) {
+                    userDataProvider.setCity('');
+                    callback!();
+                  }
+                  if (option == 3) {
+                    userDataProvider.setCategory('');
+                    callback!();
+                  }
+
+                  isVisible = false;
+                },
+                child: Icon(icon, size: 18),
+              ),
+            if (isSelected || category == "filtry") SizedBox(width: 10),
+            Text('${category.capitalize}'),
+          ],
+        ),
       ),
-      child: isSelected
-          ? Row(
-              children: [
-                Text(category),
-                const Icon(
-                  Icons.close,
-                  size: 20,
-                ),
-              ],
-            )
-          : Text(category),
     );
   }
 }

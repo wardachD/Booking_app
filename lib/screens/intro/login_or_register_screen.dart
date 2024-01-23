@@ -1,6 +1,7 @@
+import 'package:findovio/consts.dart';
+import 'package:findovio/screens/intro/widgets/intro_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../routes/app_pages.dart';
 
@@ -10,58 +11,79 @@ class LoginOrRegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Book services you love hassle-free',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.anybody(
-                        fontWeight: FontWeight.bold, fontSize: 35.0)),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(50, 5, 50, 0),
-                  child: Text(
-                      'find a new stylist, book last-minute nails, or treat yourself to a relaxing massage',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.anybody(
-                        fontSize: 18.0,
-                        color: Color.fromARGB(255, 88, 88, 88),
-                      )),
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/intro_bg.png'),
+            fit: BoxFit.cover,
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: 130,
-                  height: 50,
-                  child: ElevatedButton(
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 100,
+                    ),
+                    Image.asset(
+                      'assets/images/loginregister.png',
+                      width: MediaQuery.sizeOf(context).width * 0.6,
+                    ),
+                    ConstsWidgets.gapH20,
+                    ConstsWidgets.gapH20,
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      child: const Text('Z kontem możesz więcej',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22.0)),
+                    ),
+                    ConstsWidgets.gapH8,
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 5, 0, 25),
+                      child: Text(
+                          'nowa stylistka, masaż lub wiele innych już na Ciebie czeka',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Color.fromARGB(255, 61, 61, 61),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              padding: const EdgeInsets.fromLTRB(25, 0, 25, 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IntroButton(
+                    text: 'Załóż konto',
+                    backgroundColor: const Color.fromARGB(55, 255, 255, 255),
+                    textColor: const Color.fromARGB(255, 61, 61, 61),
+                    onPressed: () => {
+                      Get.toNamed(Routes.INTRO_REGISTER),
+                    },
+                  ),
+                  IntroButton(
+                    text: 'Zaloguj się',
+                    backgroundColor: const Color.fromARGB(255, 31, 31, 31),
+                    textColor: Colors.white,
                     onPressed: () => {
                       Get.toNamed(Routes.INTRO_LOGIN),
                     },
-                    child: const Text('Log in'),
                   ),
-                ),
-                SizedBox(
-                  width: 130,
-                  height: 50,
-                  child: ElevatedButton(
-                      onPressed: () => {
-                            Get.toNamed(Routes.INTRO_REGISTER),
-                          },
-                      child: const Text('Register')),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:findovio/consts.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -19,7 +18,7 @@ SalomonBottomBarItem _bottomBarItem({
       ),
     ),
     selectedColor: const Color.fromARGB(255, 34, 34, 34),
-    unselectedColor: Color.fromARGB(255, 196, 196, 196),
+    unselectedColor: const Color.fromARGB(255, 196, 196, 196),
   );
 }
 
@@ -29,12 +28,12 @@ class CustomBottomAppBar extends GetView<BottomAppBarIndexController> {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       surfaceTintColor: Colors.transparent,
       color: Colors.white,
       child: Obx(
         () => SalomonBottomBar(
-          margin: EdgeInsets.all(0),
+          margin: const EdgeInsets.all(0),
           backgroundColor: Colors.white,
           currentIndex: controller.activeIndex.value,
           onTap: controller.setBottomAppBarIndex,

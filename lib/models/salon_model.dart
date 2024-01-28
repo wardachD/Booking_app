@@ -15,6 +15,7 @@ class SalonModel {
   final String flutterGender;
   final List<Categories> categories;
   final double review;
+  final List<int> salonProperties;
 
   const SalonModel(
       {required this.id,
@@ -32,7 +33,8 @@ class SalonModel {
       required this.flutterCategory,
       required this.flutterGender,
       required this.categories,
-      required this.review});
+      required this.review,
+      required this.salonProperties});
 
   factory SalonModel.fromJson(Map<String, dynamic> json) {
     return SalonModel(
@@ -53,6 +55,10 @@ class SalonModel {
       categories: List<Categories>.from((json['categories'] as List)
           .map((categories) => Categories.fromJson(categories))),
       review: json['review'] as double,
+      salonProperties: (json['codes'] as List<dynamic>?)
+              ?.map((code) => code as int)
+              .toList() ??
+          <int>[],
     );
   }
 
@@ -74,6 +80,7 @@ class SalonModel {
     data['flutter_gender_type'] = flutterGender;
     data['categories'] = categories.map((v) => v.toJson()).toList();
     data['review'] = review;
+    data['codes'] = salonProperties;
     return data;
   }
 }

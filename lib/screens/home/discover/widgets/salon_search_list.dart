@@ -11,13 +11,15 @@ class SalonSearchList extends StatefulWidget {
   final Stream<List<SalonModel>> salonsSearchFuture;
   final bool isDistanceNeeded;
   final bool sortByDistance;
+  final bool? isCompact;
 
-  const SalonSearchList({
-    Key? key,
-    required this.salonsSearchFuture,
-    required this.isDistanceNeeded,
-    required this.sortByDistance,
-  }) : super(key: key);
+  const SalonSearchList(
+      {Key? key,
+      required this.salonsSearchFuture,
+      required this.isDistanceNeeded,
+      required this.sortByDistance,
+      this.isCompact})
+      : super(key: key);
 
   @override
   State<SalonSearchList> createState() => _SalonSearchListState();
@@ -28,6 +30,7 @@ class _SalonSearchListState extends State<SalonSearchList> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   bool _showAppbar = true;
   bool _isOnTop = true;
+  bool _isSearchWithDistance = false;
   bool isScrollingDown = false;
 
   @override
@@ -74,19 +77,6 @@ class _SalonSearchListState extends State<SalonSearchList> {
             return Text('Error: ${snapshot.error}');
           } else {
             var salons = snapshot.data;
-            // if (salons!.isEmpty) {
-
-            //   return Center(
-            //     child: Column(
-            //       mainAxisAlignment: MainAxisAlignment.end,
-            //       children: [
-            //         Image.asset('assets/images/znajdz_to.png',
-            //             width: MediaQuery.sizeOf(context).width * 0.9),
-            //         const SizedBox(height: 60),
-            //       ],
-            //     ),
-            //   );
-            // }
             if (widget.sortByDistance) {
               salons!.sort(
                   (a, b) => a.distanceFromQuery.compareTo(b.distanceFromQuery));
@@ -111,13 +101,54 @@ class _SalonSearchListState extends State<SalonSearchList> {
                       itemCount: salons.length,
                       itemBuilder: (context, index) {
                         var salon = salons[index];
-                        return GestureDetector(
-                          onTap: () {
-                            // Navigate to SalonDetailsScreen when a salon is tapped
-                            Get.to(() => SalonDetailsScreen(salonModel: salon));
-                          },
-                          child: SalonAvatar(salon: salon),
-                        );
+
+                        if (widget.isDistanceNeeded) {
+                          return GestureDetector(
+                              onTap: () {
+                                // Navigate to SalonDetailsScreen when a salon is tapped
+                                Get.to(() =>
+                                    SalonDetailsScreen(salonModel: salon));
+                              },
+                              child: widget.sortByDistance
+                                  ? widget.isCompact == false
+                                      ? SalonAvatar(
+                                          salon: salon,
+                                          showDistanes: true,
+                                        )
+                                      : CompactSalonTile(
+                                          salon: salon, showDistances: true)
+                                  : widget.isCompact == false
+                                      ? SalonAvatar(
+                                          salon: salon,
+                                          showDistanes: true,
+                                        )
+                                      : CompactSalonTile(
+                                          salon: salon, showDistances: true));
+                        }
+
+                        if (!widget.isDistanceNeeded) {
+                          return GestureDetector(
+                              onTap: () {
+                                // Navigate to SalonDetailsScreen when a salon is tapped
+                                Get.to(() =>
+                                    SalonDetailsScreen(salonModel: salon));
+                              },
+                              child: widget.sortByDistance
+                                  ? widget.isCompact == false
+                                      ? SalonAvatar(
+                                          salon: salon,
+                                          showDistanes: false,
+                                        )
+                                      : CompactSalonTile(
+                                          salon: salon, showDistances: false)
+                                  : widget.isCompact == false
+                                      ? SalonAvatar(
+                                          salon: salon,
+                                          showDistanes: false,
+                                        )
+                                      : CompactSalonTile(
+                                          salon: salon, showDistances: false));
+                        }
                       },
                     )
                   : Center(

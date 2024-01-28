@@ -17,6 +17,5 @@ class UserDataProvider extends ChangeNotifier {
 
   void refreshUser() {
     user = FirebaseAuth.instance.currentUser;
-    notifyListeners();
   }
 }

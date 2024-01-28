@@ -35,6 +35,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   String? selectedCategory;
   String? selectedLocalizations;
   bool _sortByDistance = false;
+  bool _isCompact = false;
   bool _isSearchActive = false;
   bool _showAppbar = true;
   List<DiscoverPageKeywordsList>? keywordsList;
@@ -192,168 +193,200 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.83,
-                        child: Stack(
-                          children: [
-                            SingleChildScrollView(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    key: userDataProvider.userData.city != ''
-                                        ? Key('withCity')
-                                        : Key('withoutCity'),
-                                    child: CategoryCard(
-                                      category: 'filtry',
-                                      isSelected: userDataProvider
-                                                  .userData.city !=
-                                              '' ||
-                                          userDataProvider.userData.category !=
-                                              '',
-                                      icon: MdiIcons.filterVariant,
-                                      option: 0,
-                                    ),
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                        showDragHandle: true,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return CustomBottomSheet(
-                                            filterOption: 'Filtry',
-                                            salonList: list,
-                                            callbackFetch: updateSearchResults,
-                                          );
-                                        },
-                                      );
-                                    },
+                      Stack(
+                        children: [
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  key: userDataProvider.userData.city != ''
+                                      ? Key('withCity')
+                                      : Key('withoutCity'),
+                                  child: CategoryCard(
+                                    category: 'filtry',
+                                    isSelected:
+                                        userDataProvider.userData.city != '' ||
+                                            userDataProvider
+                                                    .userData.category !=
+                                                '',
+                                    icon: MdiIcons.filterVariant,
+                                    option: 0,
                                   ),
-                                  if (userDataProvider.userData.category != '')
-                                    InkWell(
-                                      splashColor: Colors.orangeAccent,
-                                      child: CategoryCard(
-                                        category:
-                                            userDataProvider.userData.category,
-                                        isSelected: userDataProvider
-                                                    .userData.category ==
-                                                ''
-                                            ? false
-                                            : true,
-                                        icon: MdiIcons.close,
-                                        option: 3,
-                                        callback: () => {updateSearchResults()},
-                                      ),
-                                      onTap: () {},
-                                    ),
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      showDragHandle: true,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CustomBottomSheet(
+                                          filterOption: 'Filtry',
+                                          salonList: list,
+                                          callbackFetch: updateSearchResults,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                if (userDataProvider.userData.category != '')
                                   InkWell(
                                     splashColor: Colors.orangeAccent,
-                                    onTap: () async {
-                                      await showModalBottomSheet(
-                                        barrierColor:
-                                            const Color.fromARGB(225, 0, 0, 0),
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return FractionallySizedBox(
-                                            heightFactor: 0.95,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                              child: Container(
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.white,
-                                                ),
-                                                child: SearchFieldScreen(
-                                                  isKeywordSearch: false,
-                                                  salonListToTakeCities: list,
-                                                  callbackFetch:
-                                                      updateSearchResults,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
                                     child: CategoryCard(
                                       category:
-                                          userDataProvider.userData.city == ''
-                                              ? 'Lokalizacja'
-                                              : userDataProvider.userData.city,
+                                          userDataProvider.userData.category,
                                       isSelected:
-                                          userDataProvider.userData.city == ''
+                                          userDataProvider.userData.category ==
+                                                  ''
                                               ? false
                                               : true,
                                       icon: MdiIcons.close,
-                                      option: 1,
-                                      callback: () {
-                                        _sortByDistance = false;
-                                        updateSearchResults();
+                                      option: 3,
+                                      callback: () => {updateSearchResults()},
+                                    ),
+                                    onTap: () {},
+                                  ),
+                                InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  onTap: () async {
+                                    await showModalBottomSheet(
+                                      barrierColor:
+                                          const Color.fromARGB(225, 0, 0, 0),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return FractionallySizedBox(
+                                          heightFactor: 0.95,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20)),
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                              ),
+                                              child: SearchFieldScreen(
+                                                isKeywordSearch: false,
+                                                salonListToTakeCities: list,
+                                                callbackFetch:
+                                                    updateSearchResults,
+                                              ),
+                                            ),
+                                          ),
+                                        );
                                       },
+                                    );
+                                  },
+                                  child: CategoryCard(
+                                    category:
+                                        userDataProvider.userData.city == ''
+                                            ? 'Lokalizacja'
+                                            : userDataProvider.userData.city,
+                                    isSelected:
+                                        userDataProvider.userData.city == ''
+                                            ? false
+                                            : true,
+                                    icon: MdiIcons.close,
+                                    option: 1,
+                                    callback: () {
+                                      _sortByDistance = false;
+                                      updateSearchResults();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (userDataProvider.userData.city != '' &&
+                              userDataProvider.userData.category != '')
+                            Positioned(
+                                right: 0,
+                                child: Container(
+                                  width: 15,
+                                  height: MediaQuery.of(context).size.height *
+                                      0.045,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.centerRight,
+                                      end: Alignment.centerLeft,
+                                      colors: [
+                                        Color.fromARGB(255, 255, 255, 255),
+                                        const Color.fromARGB(0, 255, 255, 255),
+                                      ],
                                     ),
                                   ),
-                                ],
+                                )),
+                        ],
+                      ),
+                      if (userDataProvider.userData.city != '')
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _sortByDistance = !_sortByDistance;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 150),
+                            alignment: Alignment.centerRight,
+                            margin: const EdgeInsets.only(bottom: 5, right: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            height: MediaQuery.of(context).size.height * 0.045,
+                            width: MediaQuery.sizeOf(context).width * 0.105,
+                            decoration: BoxDecoration(
+                              color: !_sortByDistance
+                                  ? AppColors.lightColorTextField
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                              border: !_sortByDistance
+                                  ? Border.all(
+                                      color: AppColors.lightColorTextField,
+                                    )
+                                  : Border.all(color: Colors.orange),
+                            ),
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 1500),
+                              child: Icon(
+                                _sortByDistance
+                                    ? MdiIcons.star
+                                    : MdiIcons.navigationVariantOutline,
+                                size: 18,
                               ),
                             ),
-                            if (userDataProvider.userData.city != '' &&
-                                userDataProvider.userData.category != '')
-                              Positioned(
-                                  right: 0,
-                                  child: Container(
-                                    width: 15,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.045,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.centerRight,
-                                        end: Alignment.centerLeft,
-                                        colors: [
-                                          Color.fromARGB(255, 255, 255, 255),
-                                          const Color.fromARGB(
-                                              0, 255, 255, 255),
-                                        ],
-                                      ),
-                                    ),
-                                  )),
-                          ],
+                          ),
                         ),
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 150),
-                        alignment: Alignment.centerRight,
-                        margin: const EdgeInsets.only(bottom: 5, right: 15),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        height: MediaQuery.of(context).size.height * 0.045,
-                        width: MediaQuery.sizeOf(context).width * 0.105,
-                        decoration: BoxDecoration(
-                          color: !_sortByDistance
-                              ? AppColors.lightColorTextField
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: !_sortByDistance
-                              ? Border.all(
-                                  color: AppColors.lightColorTextField,
-                                )
-                              : Border.all(color: Colors.orange),
-                        ),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _sortByDistance = !_sortByDistance;
-                                  });
-                                },
-                                child: Icon(
-                                  MdiIcons.sort,
-                                  size: 18,
-                                )),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isCompact = !_isCompact;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 150),
+                          alignment: Alignment.centerRight,
+                          margin: const EdgeInsets.only(bottom: 5, right: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          height: MediaQuery.of(context).size.height * 0.045,
+                          width: MediaQuery.sizeOf(context).width * 0.105,
+                          decoration: BoxDecoration(
+                            color: !_isCompact
+                                ? AppColors.lightColorTextField
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                            border: !_isCompact
+                                ? Border.all(
+                                    color: AppColors.lightColorTextField,
+                                  )
+                                : Border.all(color: Colors.orange),
+                          ),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 1500),
+                            child: Icon(
+                              _isCompact
+                                  ? MdiIcons.viewCompact
+                                  : MdiIcons.viewCompactOutline,
+                              size: 18,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -367,6 +400,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     salonsSearchFuture: _filteredSearchStreamController.stream,
                     isDistanceNeeded: _isDistanceNeeded,
                     sortByDistance: _sortByDistance,
+                    isCompact: _isCompact,
                   ),
                 ),
               ),

@@ -731,15 +731,15 @@ class _AppointmentTileState extends State<AppointmentTile> {
                                         onTap: () {
                                           // Zmiana oceny po kliknięciu
                                           myState(() {
-                                            userRating = index + 1;
+                                            userStarOpinion = index + 1;
                                             // Zapisz ocenę
                                           });
                                         },
                                         child: Icon(
-                                          index < userRating.floor()
+                                          index < userStarOpinion.floor()
                                               ? Icons.star
                                               : Icons.star_border,
-                                          color: index < userRating.floor()
+                                          color: index < userStarOpinion.floor()
                                               ? Colors.orange
                                               : null,
                                           size: 32,

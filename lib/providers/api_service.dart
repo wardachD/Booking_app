@@ -199,6 +199,7 @@ SalonModel parseSalon(String responseBody) {
 
 List<SalonModel> parseSalons(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  print(parsed);
   return parsed.map<SalonModel>((json) => SalonModel.fromJson(json)).toList();
 }
 

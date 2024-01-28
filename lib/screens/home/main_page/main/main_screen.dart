@@ -173,8 +173,16 @@ class _MainScreenState extends State<MainScreen> {
                       child: Column(
                         children: [
                           Expanded(
-                            child: CategoryTile(
-                                customCategoryItem: customCategoryItem),
+                            child: Container(
+                              height: 5,
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: AppColors.lightColorTextField,
+                              ),
+                              child: CategoryTile(
+                                  customCategoryItem: customCategoryItem),
+                            ),
                           ),
                         ],
                       ),

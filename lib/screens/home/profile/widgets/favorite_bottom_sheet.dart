@@ -74,7 +74,10 @@ class _FavoriteBottomSheetState extends State<FavoriteBottomSheet> {
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     children: userDataProvider.salons
-                        .map((salon) => SalonAvatar(salon: salon))
+                        .map((salon) => SalonAvatar(
+                              salon: salon,
+                              showDistanes: false,
+                            ))
                         .toList(),
                   ),
                 ),

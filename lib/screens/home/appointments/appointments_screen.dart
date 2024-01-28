@@ -51,9 +51,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserDataProvider>(context).user;
-    if (user != null) {
-      appointmentDataFromRequest = fetchData(user);
+    final userD = Provider.of<UserDataProvider>(context, listen: false);
+    userD.refreshUser();
+    if (userD.user != null) {
+      appointmentDataFromRequest = fetchData(userD.user!);
     }
     return DefaultTabController(
       length: 3,

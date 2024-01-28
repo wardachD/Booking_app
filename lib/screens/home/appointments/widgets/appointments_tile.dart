@@ -393,14 +393,10 @@ class _AppointmentTileState extends State<AppointmentTile> {
         );
 
         // Simulate sending the request (Replace this with your actual HTTP request)
-        await Future.delayed(const Duration(seconds: 2)); // Simulating a delay
 
         // Assuming sendPostReviewRequest is your function to send the request
         String result = await sendPostReviewRequest(dataToSend);
-        if (context != null && context.mounted) {
-          // Close the CircularProgressIndicator dialog
-          Navigator.pop(context);
-        }
+
         // Handle the response based on the result (Success/Error)
         if (result == 'success') {
           if (context != null && context.mounted) {
@@ -408,9 +404,6 @@ class _AppointmentTileState extends State<AppointmentTile> {
               barrierColor: Colors.transparent,
               context: context,
               builder: (BuildContext context) {
-                Future.delayed(const Duration(seconds: 3), () {
-                  Navigator.of(context).pop();
-                });
                 return Center(
                   heightFactor: 1,
                   widthFactor: 1,
@@ -431,7 +424,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.check_circle, size: 48, color: Colors.green),
@@ -443,15 +436,22 @@ class _AppointmentTileState extends State<AppointmentTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        ElevatedButton(
+                          onPressed: () => {Navigator.pop(context)},
+                          child: Text(
+                            'Ok',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
             );
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.of(context).pop();
-            });
           }
 
 // Zniknięcie dialogu po 2 sekundach
@@ -482,7 +482,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.check_circle,
@@ -496,15 +496,22 @@ class _AppointmentTileState extends State<AppointmentTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        ElevatedButton(
+                          onPressed: () => {Navigator.pop(context)},
+                          child: Text(
+                            'Ok',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
             );
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.of(context).pop();
-            });
           }
         } else {
           // Handle no connection scenario
@@ -513,9 +520,6 @@ class _AppointmentTileState extends State<AppointmentTile> {
               barrierColor: Colors.transparent,
               context: context,
               builder: (BuildContext context) {
-                Future.delayed(const Duration(seconds: 3), () {
-                  Navigator.of(context).pop();
-                });
                 return Center(
                   heightFactor: 1,
                   widthFactor: 1,
@@ -536,7 +540,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.check_circle,
@@ -550,15 +554,22 @@ class _AppointmentTileState extends State<AppointmentTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        ElevatedButton(
+                          onPressed: () => {Navigator.pop(context)},
+                          child: Text(
+                            'Ok',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
             );
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.of(context).pop();
-            });
           }
         }
       } catch (e) {
@@ -567,9 +578,6 @@ class _AppointmentTileState extends State<AppointmentTile> {
             barrierColor: Colors.transparent,
             context: context,
             builder: (BuildContext context) {
-              Future.delayed(const Duration(seconds: 3), () {
-                Navigator.of(context).pop();
-              });
               return Center(
                 heightFactor: 1,
                 widthFactor: 1,
@@ -602,15 +610,22 @@ class _AppointmentTileState extends State<AppointmentTile> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      ElevatedButton(
+                        onPressed: () => {Navigator.pop(context)},
+                        child: Text(
+                          'Ok',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               );
             },
           );
-          Future.delayed(const Duration(seconds: 3), () {
-            Navigator.of(context).pop();
-          });
         }
       }
     }

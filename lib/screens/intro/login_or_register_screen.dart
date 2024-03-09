@@ -68,7 +68,7 @@ class LoginOrRegisterScreen extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(55, 255, 255, 255),
                     textColor: const Color.fromARGB(255, 61, 61, 61),
                     onPressed: () => {
-                      Get.toNamed(Routes.INTRO_REGISTER),
+                      Get.toNamed(Routes.INTRO_REGISTER_EMAIL_NAME),
                     },
                   ),
                   IntroButton(

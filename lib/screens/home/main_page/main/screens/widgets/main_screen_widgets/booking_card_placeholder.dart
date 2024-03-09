@@ -5,30 +5,37 @@ import 'package:flutter/material.dart';
 class BookingCardPlaceholder extends StatelessWidget {
   const BookingCardPlaceholder({Key? key}) : super(key: key);
 
+  Widget animatedBG(double x, double y) {
+    return SizedBox(
+      width: x,
+      height: y,
+      child: AnimateGradient(
+          duration: const Duration(milliseconds: 1200),
+          primaryBegin: Alignment.centerRight,
+          primaryEnd: Alignment.centerRight,
+          secondaryBegin: Alignment.centerLeft,
+          secondaryEnd: Alignment.centerLeft,
+          primaryColors: const [
+            Color.fromARGB(202, 255, 255, 255),
+            Color.fromARGB(159, 238, 238, 238),
+          ],
+          secondaryColors: const [
+            Color.fromARGB(159, 238, 238, 238),
+            Color.fromARGB(202, 255, 255, 255),
+          ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var animateGradient = AnimateGradient(
-        duration: const Duration(milliseconds: 1200),
-        primaryBegin: Alignment.centerRight,
-        primaryEnd: Alignment.centerRight,
-        secondaryBegin: Alignment.centerLeft,
-        secondaryEnd: Alignment.centerLeft,
-        primaryColors: [
-          Color.fromARGB(202, 255, 255, 255),
-          Color.fromARGB(160, 255, 172, 64)
-        ],
-        secondaryColors: [
-          Color.fromARGB(113, 255, 172, 64),
-          Color.fromARGB(101, 255, 255, 255)
-        ]);
     return Padding(
-      padding: const EdgeInsets.all(0.0),
+      padding: const EdgeInsets.only(left: 25.0),
       child: Column(
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(25, 0, 0, 8),
+            child: const Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
               child: Text(
                 'Rezerwacje',
                 textAlign: TextAlign.start,
@@ -40,81 +47,82 @@ class BookingCardPlaceholder extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () async {},
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.88,
-              height: MediaQuery.of(context).size.height * 0.13,
-              margin: const EdgeInsets.only(right: 16.0, bottom: 20, top: 5),
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                color: AppColors.lightColorTextField,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.14,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white,
-                        ),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: animateGradient)),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            height: 20,
-                            width: 130,
-                            child: animateGradient,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .center, // Align contents to the left
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                    width: 80,
-                                    child: animateGradient,
-                                  ),
-                                  const SizedBox(height: 2),
-                                  SizedBox(
-                                    height: 20,
-                                    width: 90,
-                                    child: animateGradient,
-                                  ),
-                                ],
+          SingleChildScrollView(
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () async {},
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.16,
+                    margin:
+                        const EdgeInsets.only(right: 16.0, bottom: 20, top: 5),
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.lightColorTextField,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.18,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
                               ),
-                            ],
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  child: animatedBG(
+                                      70,
+                                      MediaQuery.of(context).size.height *
+                                          0.13))),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                animatedBG(130, 20),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment
+                                      .center, // Align contents to the left
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        animatedBG(80, 20),
+                                        const SizedBox(height: 2),
+                                        animatedBG(90, 20),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.sizeOf(context).height,
+                          width: 30,
+                          child: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.primaryLightColorText,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.sizeOf(context).height,
-                    width: 30,
-                    child: const Icon(
-                      Icons.arrow_forward_ios,
-                      color: AppColors.primaryLightColorText,
-                    ),
-                  )
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

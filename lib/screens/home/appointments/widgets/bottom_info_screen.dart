@@ -48,12 +48,12 @@ class BookingDetails extends StatelessWidget {
                     salonModel, // Zakładam, że salonInfo to Future<SalonModel>
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Wyświetl loader podczas oczekiwania na dane
+                    return const CircularProgressIndicator(); // Wyświetl loader podczas oczekiwania na dane
                   } else if (snapshot.hasError) {
                     return Text(
                         'Wystąpił błąd: ${snapshot.error}'); // Wyświetl komunikat w przypadku błędu
                   } else if (!snapshot.hasData || snapshot.data == null) {
-                    return Text(
+                    return const Text(
                         'Brak danych'); // Wyświetl komunikat, jeśli brak danych
                   } else {
                     final salon = snapshot.data!;

@@ -1,9 +1,8 @@
-import 'package:findovio/controllers/user_data_provider.dart';
 import 'package:findovio/screens/home/profile/widgets/profile_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/consts.dart';
-import 'package:provider/provider.dart'; // Import your necessary dependencies
+// Import your necessary dependencies
 
 class PasswordChangeBottomSheet extends StatefulWidget {
   const PasswordChangeBottomSheet({super.key});
@@ -28,8 +27,6 @@ class _PasswordChangeBottomSheetState extends State<PasswordChangeBottomSheet> {
     super.initState();
     oldPassController = TextEditingController();
     controller = TextEditingController();
-    var userDataProvider =
-        Provider.of<UserDataProvider>(context, listen: false);
   }
 
   @override
@@ -52,7 +49,7 @@ class _PasswordChangeBottomSheetState extends State<PasswordChangeBottomSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 const Text(
@@ -118,6 +115,7 @@ class _PasswordChangeBottomSheetState extends State<PasswordChangeBottomSheet> {
                   ),
                 ConstsWidgets.gapH20,
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   enableInteractiveSelection: false,
                   controller: oldPassController,
                   obscureText: isObscured,
@@ -143,6 +141,7 @@ class _PasswordChangeBottomSheetState extends State<PasswordChangeBottomSheet> {
                 ),
                 ConstsWidgets.gapH8,
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   enableInteractiveSelection: false,
                   controller: controller,
                   obscureText: isObscured,

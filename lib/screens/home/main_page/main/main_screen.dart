@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:animate_gradient/animate_gradient.dart';
 import 'package:findovio/consts.dart';
 import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:findovio/eula/privacy_screen.dart';
 import 'package:findovio/models/firebase_py_get_model.dart';
 import 'package:findovio/providers/advertisements_provider.dart';
 import 'package:findovio/providers/firebase_py_user_provider.dart';
@@ -16,7 +16,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'screens/widgets/main_screen_widgets/nearby_salons.dart';
 import 'screens/widgets/main_screen_widgets/list_of_categories.dart';
@@ -32,7 +31,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late User? user;
+  late FirebasePyUserProvider userProvider;
   late FirebasePyGetModel? userPy;
+  bool isDataToShow = false;
 
   @override
   void initState() {
@@ -42,31 +43,45 @@ class _MainScreenState extends State<MainScreen> {
       Provider.of<AdvertisementProvider>(context, listen: false)
           .fetchAdvertisements();
       Provider.of<FirebasePyUserProvider>(context, listen: false).fetchData();
+      setState(() {
+        isDataToShow =
+            (Provider.of<FirebasePyUserProvider>(context, listen: false)
+                        .appointments !=
+                    null)
+                ? true
+                : false;
+      });
     }
   }
 
-  final animateGradient = AnimateGradient(
-      duration: const Duration(milliseconds: 1200),
-      primaryBegin: Alignment.centerRight,
-      primaryEnd: Alignment.centerRight,
-      secondaryBegin: Alignment.centerLeft,
-      secondaryEnd: Alignment.centerLeft,
-      primaryColors: [
-        Color.fromARGB(202, 255, 255, 255),
-        Color.fromARGB(160, 255, 172, 64)
-      ],
-      secondaryColors: [
-        Color.fromARGB(113, 255, 172, 64),
-        Color.fromARGB(101, 255, 255, 255)
-      ]);
+  final animateGradient = SizedBox(
+    width: 120,
+    height: 24,
+    child: AnimateGradient(
+        duration: const Duration(milliseconds: 1200),
+        primaryBegin: Alignment.centerRight,
+        primaryEnd: Alignment.centerRight,
+        secondaryBegin: Alignment.centerLeft,
+        secondaryEnd: Alignment.centerLeft,
+        primaryColors: const [
+          Color.fromARGB(202, 255, 255, 255),
+          Color.fromARGB(159, 238, 238, 238),
+        ],
+        secondaryColors: const [
+          Color.fromARGB(159, 238, 238, 238),
+          Color.fromARGB(202, 255, 255, 255),
+        ]),
+  );
 
   @override
   Widget build(BuildContext context) {
     user = FirebaseAuth.instance.currentUser;
-    userPy = Provider.of<FirebasePyUserProvider>(context).user;
+    userProvider = Provider.of<FirebasePyUserProvider>(context);
+    userPy = userProvider.user;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             SafeArea(
@@ -90,16 +105,15 @@ class _MainScreenState extends State<MainScreen> {
                       Row(
                         children: [
                           if (userPy?.firebaseName == null)
-                            Container(
-                              width: 120,
-                              height: 24,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
                               child: animateGradient,
                             ),
                           if (userPy?.firebaseName != null)
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
                               child: Text(
-                                'hej, ${userPy?.firebaseName}  ',
+                                'hej, ${userPy?.firebaseName} ',
                                 style: const TextStyle(
                                   letterSpacing: 0.1,
                                   fontSize: 20,
@@ -110,11 +124,18 @@ class _MainScreenState extends State<MainScreen> {
                                 softWrap: true,
                               ),
                             ),
-                          Text('😁'),
+                          const Text(
+                            '😁',
+                            style: TextStyle(
+                              letterSpacing: 0.1,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.only(right: 10),
+                        margin: const EdgeInsets.only(right: 10),
                         height: 35,
                         width: 35,
                         decoration: BoxDecoration(
@@ -153,6 +174,7 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(
               height: 50,
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25.0, vertical: 5),
@@ -196,11 +218,12 @@ class _MainScreenState extends State<MainScreen> {
             //const BannerCard(),
             //ConstsWidgets.gapH12,
             // Upcoming appointments - disabled when no appointments coming in
+
             if (user != null) UpcomingAppointments(userId: user!.uid),
 
             //Banner
-            const AdvertisementsWidget(optionalString: ''),
-            ConstsWidgets.gapH12,
+            const AdvertisementsWidget(optionalString: 'ss'),
+            ConstsWidgets.gapH16,
 
             // Nearby salons
             const NearbySalons(),

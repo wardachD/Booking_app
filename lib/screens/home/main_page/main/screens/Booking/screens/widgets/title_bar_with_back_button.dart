@@ -4,14 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class TitleBarWithBackButton extends StatelessWidget {
+class TitleBarWithBackButton extends StatefulWidget {
   final String title;
-  VoidCallback? callbackToChangeIsSearchActive;
 
-  TitleBarWithBackButton({
+  const TitleBarWithBackButton({
     super.key,
     required this.title,
   });
+
+  @override
+  State<TitleBarWithBackButton> createState() => _TitleBarWithBackButtonState();
+}
+
+class _TitleBarWithBackButtonState extends State<TitleBarWithBackButton> {
+  VoidCallback? callbackToChangeIsSearchActive;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,7 @@ class TitleBarWithBackButton extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text(
-                title,
+                widget.title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,

@@ -13,8 +13,7 @@ import 'widgets/upcoming_appointments_list.dart';
 class AppointmentsScreen extends StatefulWidget {
   final bool? isBridgeNavigation; // Optional boolean variable
 
-  const AppointmentsScreen({Key? key, this.isBridgeNavigation})
-      : super(key: key);
+  const AppointmentsScreen({super.key, this.isBridgeNavigation});
 
   @override
   State<AppointmentsScreen> createState() => _AppointmentsScreenState();
@@ -69,7 +68,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                   children: [
                     const SizedBox(height: 4),
                     Container(
-                      padding: EdgeInsets.only(left: 5),
+                      padding: const EdgeInsets.only(left: 5),
                       child: Stack(children: [
                         Container(
                           margin: const EdgeInsets.only(top: 10.0),

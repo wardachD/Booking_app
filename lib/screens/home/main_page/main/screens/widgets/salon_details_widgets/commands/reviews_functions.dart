@@ -31,9 +31,9 @@ Widget getImageIfExists(String url) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 8),
-        Text('Zdjęcia: '),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
+        const Text('Zdjęcia: '),
+        const SizedBox(height: 8),
         ClipRRect(
             borderRadius: BorderRadius.circular(12),
             clipBehavior: Clip.hardEdge,

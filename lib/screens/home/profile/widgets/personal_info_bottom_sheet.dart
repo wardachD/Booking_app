@@ -2,7 +2,6 @@ import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/providers/firebase_py_user_provider.dart';
 import 'package:findovio/screens/home/discover/widgets/gender_choose.dart';
 import 'package:findovio/screens/home/profile/widgets/profile_widgets.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/consts.dart';
@@ -29,13 +28,6 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
   bool hasDigit = false;
   bool hasSpecialChar = false;
   bool isObscured = true;
-
-  @override
-  void initState() {
-    super.initState();
-    var userDataProvider =
-        Provider.of<FirebasePyUserProvider>(context, listen: false);
-  }
 
   @override
   void dispose() {
@@ -87,6 +79,7 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
 
                 //DISPLAY NAME
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: displayNamecontroller,
                   decoration: InputDecoration(
                     suffixText: 'Imię i nazwisko',
@@ -105,6 +98,7 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
 
                 //CITY
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: cityController,
                   decoration: InputDecoration(
                     suffixText: 'Miasto',
@@ -123,6 +117,7 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
 
                 //ULICA
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: streetController,
                   decoration: InputDecoration(
                     suffixText: 'Ulica',
@@ -141,6 +136,7 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
 
                 //NUMER TELEFONU
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: phoneNumberController,
                   decoration: InputDecoration(
                     suffixText: 'Numer Telefonu',
@@ -160,6 +156,7 @@ class _PersonalInfoBottomSheetState extends State<PersonalInfoBottomSheet> {
 
                 //EMAIL
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: emailController,
                   decoration: InputDecoration(
                     enabled: false,

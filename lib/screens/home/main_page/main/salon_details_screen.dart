@@ -193,7 +193,6 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
     } else {
       var userDataProvider =
           Provider.of<FavoriteSalonsProvider>(context, listen: false);
-      bool isSalonFavorite = userDataProvider.salons.contains(salonModel);
       String locationString = salonModel.location;
 
       RegExp regExp = RegExp(r"(\d+\.\d+)");
@@ -257,9 +256,10 @@ class _SalonDetailsScreenState extends State<SalonDetailsScreen>
                                             width: 80.0,
                                             height: 80.0,
                                             point: latLng,
-                                            builder: (ctx) => const Icon(
+                                            child: const Icon(
                                               Icons.location_on,
-                                              color: Colors.red,
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
                                               size: 40.0,
                                             ),
                                           ),

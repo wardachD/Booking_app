@@ -1,4 +1,4 @@
-import 'package:findovio/consts.dart';
+import 'package:findovio/eula/privacy_screen.dart';
 import 'package:findovio/screens/home/profile/widgets/Address_bottom_sheet.dart';
 import 'package:findovio/screens/home/profile/widgets/faq_bottom_sheet.dart';
 import 'package:findovio/screens/home/profile/widgets/favorite_bottom_sheet.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 void showUserProfileOptions(BuildContext context, String optionText) {
   showModalBottomSheet(
     showDragHandle: true,
-    barrierColor: Color.fromARGB(214, 0, 0, 0),
+    barrierColor: const Color.fromARGB(214, 0, 0, 0),
     isScrollControlled: true,
     context: context,
     builder: (BuildContext context) {
@@ -21,17 +21,22 @@ void showUserProfileOptions(BuildContext context, String optionText) {
           builder: (BuildContext context, StateSetter setState) {
             switch (optionText) {
               case 'Dane osobiste':
-                return PersonalInfoBottomSheet();
+                return const PersonalInfoBottomSheet();
               case 'Ulubione':
-                return FavoriteBottomSheet();
+                return const FavoriteBottomSheet();
               case 'Zmień hasło':
-                return PasswordChangeBottomSheet();
+                return const PasswordChangeBottomSheet();
               case 'FAQ':
-                return FaqBottomSheet();
+                return const FaqBottomSheet();
               case 'Powiadomienia':
-                return PasswordChangeBottomSheet();
+                return const PasswordChangeBottomSheet();
+              case 'Polityka prywatności':
+                return const PrivacyPolicyPage(
+                    policyType: "polityka_prywatności");
+              case 'Regulamin':
+                return const PrivacyPolicyPage(policyType: "regulamin");
               case 'Mój adres':
-                return AddressBottomSheet();
+                return const AddressBottomSheet();
               default:
                 return Container(); // Return an empty container or default widget
             }

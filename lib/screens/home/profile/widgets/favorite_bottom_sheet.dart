@@ -1,13 +1,15 @@
 import 'package:findovio/consts.dart';
 import 'package:findovio/providers/favorite_salons_provider.dart';
-import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/salon_avatar_list.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main_page/main/screens/widgets/main_screen_widgets/salon_avatar.dart';
+
 class FavoriteBottomSheet extends StatefulWidget {
+  const FavoriteBottomSheet({super.key});
+
   @override
-  _FavoriteBottomSheetState createState() => _FavoriteBottomSheetState();
+  State<FavoriteBottomSheet> createState() => _FavoriteBottomSheetState();
 }
 
 class _FavoriteBottomSheetState extends State<FavoriteBottomSheet> {
@@ -67,7 +69,7 @@ class _FavoriteBottomSheetState extends State<FavoriteBottomSheet> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(

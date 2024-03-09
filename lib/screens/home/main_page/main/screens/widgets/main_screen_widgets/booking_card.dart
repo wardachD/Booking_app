@@ -1,12 +1,10 @@
 import 'package:findovio/consts.dart';
-import 'package:findovio/controllers/bottom_app_bar_index_controller.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/models/user_appointment.dart';
 import 'package:findovio/providers/api_service.dart';
 import 'package:findovio/screens/home/appointments/widgets/open_google_maps_button_with_address.dart';
 import 'package:findovio/utilities/authentication/months_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,10 +16,6 @@ class BookingCard extends StatelessWidget {
       {Key? key, required this.appointment, required this.amountOfAppointments})
       : super(key: key);
 
-  void _goToAppointmentTabSelectedAppointmentPage() {
-    Get.find<BottomAppBarIndexController>().setBottomAppBarIndex(2);
-  }
-
   @override
   Widget build(BuildContext context) {
     DateTime jsonToDate = DateTime.parse(appointment.dateOfBooking);
@@ -32,7 +26,7 @@ class BookingCard extends StatelessWidget {
         (amountOfServicesToPrint > 1) ? '+ $amountOfServicesToPrint more' : '';
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 0, 0, 8),
+      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
       child: GestureDetector(
         onTap: () async {
           final Future<SalonModel> salonInfo =
@@ -194,25 +188,21 @@ class BookingCard extends StatelessWidget {
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               children: [
-                                Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Usługi',
-                                        style: TextStyle(),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      // Wyświetlenie listy zabookowanych usług
-                                      for (final service
-                                          in appointment.services)
-                                        _buildDetailRow(service.title,
-                                            '${service.price} zł'),
-                                      ConstsWidgets.gapH4
-                                      // Wyświetlenie całkowitej kwoty
-                                    ],
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Usługi',
+                                      style: TextStyle(),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    // Wyświetlenie listy zabookowanych usług
+                                    for (final service in appointment.services)
+                                      _buildDetailRow(
+                                          service.title, '${service.price} zł'),
+                                    ConstsWidgets.gapH4
+                                    // Wyświetlenie całkowitej kwoty
+                                  ],
                                 ),
                               ],
                             ),
@@ -280,7 +270,7 @@ class BookingCard extends StatelessWidget {
           width: amountOfAppointments < 2
               ? MediaQuery.of(context).size.width * 0.88
               : MediaQuery.of(context).size.width * 0.7,
-          height: MediaQuery.of(context).size.height * 0.15,
+          height: MediaQuery.of(context).size.height * 0.16,
           margin: const EdgeInsets.only(right: 0.0, bottom: 20, top: 5),
           padding: const EdgeInsets.all(5.0),
           decoration: BoxDecoration(
@@ -361,12 +351,13 @@ class BookingCard extends StatelessWidget {
                                     color: Color.fromARGB(255, 80, 80, 80),
                                   ),
                                   const SizedBox(width: 4),
-                                  Container(
+                                  SizedBox(
                                     width:
-                                        MediaQuery.sizeOf(context).width * 0.4,
+                                        MediaQuery.sizeOf(context).width * 0.38,
                                     child: Text(
                                       appointment.salonName,
                                       style: const TextStyle(
+                                          overflow: TextOverflow.ellipsis,
                                           color:
                                               AppColors.primaryLightColorText,
                                           fontSize: 14,
@@ -427,15 +418,14 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // In future make the salon name overflow in better way than now
-              // SizedBox(
-              //   height: MediaQuery.sizeOf(context).height,
-              //   width: 30,
-              //   child: const Icon(
-              //     Icons.arrow_forward_ios,
-              //     color: AppColors.primaryLightColorText,
-              //   ),
-              // )
+              SizedBox(
+                height: MediaQuery.sizeOf(context).height,
+                width: 30,
+                child: Icon(
+                  MdiIcons.dotsHorizontal,
+                  color: AppColors.primaryLightColorText,
+                ),
+              )
             ],
           ),
         ),

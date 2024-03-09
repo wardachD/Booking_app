@@ -12,11 +12,11 @@ class FindovioAdvertisementWidget extends StatelessWidget {
       primaryEnd: Alignment.centerRight,
       secondaryBegin: Alignment.centerLeft,
       secondaryEnd: Alignment.centerLeft,
-      primaryColors: [
+      primaryColors: const [
         Color.fromARGB(202, 255, 255, 255),
         Color.fromARGB(160, 255, 172, 64)
       ],
-      secondaryColors: [
+      secondaryColors: const [
         Color.fromARGB(113, 255, 172, 64),
         Color.fromARGB(101, 255, 255, 255)
       ]);
@@ -35,14 +35,14 @@ class FindovioAdvertisementWidget extends StatelessWidget {
                 return Center(
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Container(
+                        child: SizedBox(
                             width: MediaQuery.sizeOf(context).width,
                             height: 213,
                             child: animateGradient)));
               } else if (snapshot.hasError) {
                 return Center(child: Text('Wystąpił błąd: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.id == 0) {
-                return Container(
+                return SizedBox(
                     width: 164.0, height: 92.4, child: animateGradient);
               } else {
                 String imageUrl = snapshot.data!.url;
@@ -79,7 +79,7 @@ class FindovioAdvertisementWidget extends StatelessWidget {
             width: MediaQuery.sizeOf(context).width * 0.7,
             child: const Center(
               child: Text(
-                'Oferta aktualna do 31.01.2024, potrzebujesz tylko zweryfikowany numer telefonu oraz wysłanie kodu polecającego',
+                'Oferta aktualna do 31.03.2024, potrzebujesz tylko zweryfikowany numer telefonu oraz wysłanie kodu polecającego',
                 textAlign: TextAlign.center,
                 // Dowolne ustawienia stylu tekstu, np.:
                 style: TextStyle(

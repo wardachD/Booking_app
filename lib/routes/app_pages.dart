@@ -1,3 +1,6 @@
+import 'package:findovio/screens/intro/register_screen_name_email.dart';
+import 'package:findovio/screens/intro_test/intro_3pages_screen.dart';
+import 'package:findovio/screens/unknown_route/internet_dialog.dart';
 import 'package:get/get.dart';
 
 // Intro
@@ -24,10 +27,19 @@ part './app_routes.dart';
 
 class AppPages {
   static final pages = [
-    GetPage(name: Routes.INTRO, page: () => const IntroScreen()),
+    GetPage(name: Routes.INTRO_test, page: () => const IntroScreen()),
+    GetPage(name: Routes.INTRO, page: () => const Intro3PagesScreen()),
     GetPage(name: Routes.INTRO_SIGN, page: () => const LoginOrRegisterScreen()),
     GetPage(name: Routes.INTRO_LOGIN, page: () => const LoginScreen()),
-    GetPage(name: Routes.INTRO_REGISTER, page: () => const RegisterScreen()),
+    GetPage(
+        name: Routes.INTRO_REGISTER_EMAIL_NAME,
+        page: () => RegisterScreenNameEmail()),
+    GetPage(
+        name: Routes.INTRO_REGISTER,
+        page: () => const RegisterScreen(
+              email: '',
+              name: '',
+            )),
     GetPage(
         name: Routes.HOME,
         page: () => const HomeScreen(),
@@ -37,8 +49,9 @@ class AppPages {
     GetPage(name: Routes.PROFILE, page: () => const ProfileScreen()),
     GetPage(
         name: Routes.DISCOVER_SEARCH,
-        page: () => SearchFieldScreen(
+        page: () => const SearchFieldScreen(
               isKeywordSearch: true,
             )),
+    GetPage(name: Routes.NO_INTERNET, page: () => const InternetAlertDialog()),
   ];
 }

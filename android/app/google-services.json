@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "1093354743941-4pd0t67spl13t7cqaedru1ll33hr6np4.apps.googleusercontent.com",
+          "client_id": "1093354743941-v0d8esp0k2kgllkgcpeftuunlas1g49j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dwardach.findovio",
+            "certificate_hash": "f19a75c18569e1b05fbd49849ec880ddaf2346da"
+          }
+        },
+        {
+          "client_id": "1093354743941-93u7ndgcvh0049e4jtoiivdjjtpibshk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -30,6 +38,13 @@
             {
               "client_id": "1093354743941-4pd0t67spl13t7cqaedru1ll33hr6np4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1093354743941-id9h1t0aafmaoufkvjicefl3d51bldse.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.findovio"
+              }
             }
           ]
         }

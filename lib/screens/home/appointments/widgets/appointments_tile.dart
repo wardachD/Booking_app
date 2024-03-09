@@ -9,8 +9,8 @@ import 'package:findovio/providers/firebase_py_user_provider.dart';
 import 'package:findovio/screens/home/appointments/widgets/cancel_appointment_progress_indicator.dart';
 import 'package:findovio/screens/home/appointments/widgets/show_appointment_description_with_friactionally_sizedbox.dart';
 import 'package:findovio/screens/home/appointments/widgets/top_of_appointment_tile_with_date_and_status.dart';
+import 'package:findovio/screens/home/main_page/main/salon_details_screen.dart';
 import 'package:findovio/screens/home/main_page/main/screens/Booking/screens/booking_schedule.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -21,10 +21,10 @@ class AppointmentTile extends StatefulWidget {
   final VoidCallback callback;
 
   const AppointmentTile({
-    Key? key,
+    super.key,
     required this.userAppointment,
     required this.callback,
-  }) : super(key: key);
+  });
 
   @override
   State<AppointmentTile> createState() => _AppointmentTileState();
@@ -33,7 +33,7 @@ class AppointmentTile extends StatefulWidget {
 class _AppointmentTileState extends State<AppointmentTile> {
   bool agreedToPublish = false;
   String userOpinion = '';
-  int userStarOpinion = 1;
+  int userStarOpinion = 4;
   double userRating = 0;
   String userName = '';
   final GlobalKey<_AppointmentTileState> myWidgetKey = GlobalKey();
@@ -114,27 +114,34 @@ class _AppointmentTileState extends State<AppointmentTile> {
                             } else {
                               String imageUrl =
                                   snapshot.data ?? ''; // Get the image URL
-                              return Container(
-                                width: double.infinity,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 0),
-                                decoration: BoxDecoration(
-                                  color: AppColors.backgroundColor,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 0,
-                                      blurRadius: 1,
-                                      offset: const Offset(0, 2),
+                              return InkWell(
+                                onTap: () async {
+                                  var salonToMove = await salonInfo;
+                                  Get.to(() => SalonDetailsScreen(
+                                      salonModel: salonToMove));
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 0),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.backgroundColor,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 0,
+                                        blurRadius: 1,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                    image: DecorationImage(
+                                      image: NetworkImage(imageUrl),
+                                      fit: BoxFit.cover,
                                     ),
-                                  ],
-                                  image: DecorationImage(
-                                    image: NetworkImage(imageUrl),
-                                    fit: BoxFit.cover,
                                   ),
+                                  child: const Column(),
                                 ),
-                                child: const Column(),
                               );
                             }
                           })),
@@ -358,39 +365,39 @@ class _AppointmentTileState extends State<AppointmentTile> {
       };
 
       try {
-        showDialog(
-          barrierColor: Colors.transparent,
-          context: context,
-          builder: (BuildContext context) {
-            return Center(
-              heightFactor: 1,
-              widthFactor: 1,
-              child: Container(
-                width: MediaQuery.of(context).size.height * 0.10,
-                height: MediaQuery.of(context).size.height * 0.10,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color.fromARGB(255, 65, 65, 65)
-                          .withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: const Offset(0, 2), // Zmiana offsetu dla cienia
-                    ),
-                  ],
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const CircularProgressIndicator(
-                    backgroundColor: Colors.transparent,
-                  ),
-                ),
-              ),
-            );
-          },
-        );
+        // showDialog(
+        //   barrierColor: Colors.transparent,
+        //   context: context,
+        //   builder: (BuildContext context) {
+        //     return Center(
+        //       heightFactor: 1,
+        //       widthFactor: 1,
+        //       child: Container(
+        //         width: MediaQuery.of(context).size.height * 0.10,
+        //         height: MediaQuery.of(context).size.height * 0.10,
+        //         decoration: BoxDecoration(
+        //           color: Colors.white,
+        //           borderRadius: BorderRadius.circular(12),
+        //           boxShadow: [
+        //             BoxShadow(
+        //               color: const Color.fromARGB(255, 65, 65, 65)
+        //                   .withOpacity(0.5),
+        //               spreadRadius: 2,
+        //               blurRadius: 6,
+        //               offset: const Offset(0, 2), // Zmiana offsetu dla cienia
+        //             ),
+        //           ],
+        //         ),
+        //         child: Container(
+        //           padding: const EdgeInsets.all(20),
+        //           child: const CircularProgressIndicator(
+        //             backgroundColor: Colors.transparent,
+        //           ),
+        //         ),
+        //       ),
+        //     );
+        //   },
+        // );
 
         // Simulate sending the request (Replace this with your actual HTTP request)
 
@@ -399,7 +406,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
 
         // Handle the response based on the result (Success/Error)
         if (result == 'success') {
-          if (context != null && context.mounted) {
+          if (context.mounted) {
             showDialog(
               barrierColor: Colors.transparent,
               context: context,
@@ -427,9 +434,13 @@ class _AppointmentTileState extends State<AppointmentTile> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle, size: 48, color: Colors.green),
-                        SizedBox(height: 8),
-                        Text(
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Icon(Icons.check_circle,
+                            size: 48, color: Colors.green),
+                        const SizedBox(height: 8),
+                        const Text(
                           'Komentarz dodany!',
                           style: TextStyle(
                             fontSize: 18,
@@ -438,13 +449,16 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                         ElevatedButton(
                           onPressed: () => {Navigator.pop(context)},
-                          child: Text(
+                          child: const Text(
                             'Ok',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 12,
                         ),
                       ],
                     ),
@@ -456,7 +470,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
 
 // Zniknięcie dialogu po 2 sekundach
         } else if (result == 'not unique') {
-          if (context != null && context.mounted) {
+          if (context.mounted) {
             showDialog(
               barrierColor: Colors.transparent,
               context: context,
@@ -467,7 +481,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                   widthFactor: 1,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.21,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -485,11 +499,14 @@ class _AppointmentTileState extends State<AppointmentTile> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle,
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Icon(Icons.check_circle,
                             size: 48,
                             color: Color.fromARGB(255, 255, 122, 113)),
-                        SizedBox(height: 8),
-                        Text(
+                        const SizedBox(height: 8),
+                        const Text(
                           'Możesz dodać tylko jeden komentarz',
                           style: TextStyle(
                             fontSize: 14,
@@ -498,13 +515,16 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                         ElevatedButton(
                           onPressed: () => {Navigator.pop(context)},
-                          child: Text(
+                          child: const Text(
                             'Ok',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 12,
                         ),
                       ],
                     ),
@@ -515,7 +535,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
           }
         } else {
           // Handle no connection scenario
-          if (context != null && context.mounted) {
+          if (context.mounted) {
             showDialog(
               barrierColor: Colors.transparent,
               context: context,
@@ -525,7 +545,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                   widthFactor: 1,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.21,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -543,11 +563,14 @@ class _AppointmentTileState extends State<AppointmentTile> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle,
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        const Icon(Icons.check_circle,
                             size: 48,
                             color: Color.fromARGB(255, 255, 122, 113)),
-                        SizedBox(height: 8),
-                        Text(
+                        const SizedBox(height: 8),
+                        const Text(
                           'Błąd',
                           style: TextStyle(
                             fontSize: 14,
@@ -556,13 +579,16 @@ class _AppointmentTileState extends State<AppointmentTile> {
                         ),
                         ElevatedButton(
                           onPressed: () => {Navigator.pop(context)},
-                          child: Text(
+                          child: const Text(
                             'Ok',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 12,
                         ),
                       ],
                     ),
@@ -573,7 +599,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
           }
         }
       } catch (e) {
-        if (context != null && context.mounted) {
+        if (context.mounted) {
           showDialog(
             barrierColor: Colors.transparent,
             context: context,
@@ -583,7 +609,7 @@ class _AppointmentTileState extends State<AppointmentTile> {
                 widthFactor: 1,
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.15,
+                  height: MediaQuery.of(context).size.height * 0.21,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -600,6 +626,9 @@ class _AppointmentTileState extends State<AppointmentTile> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const SizedBox(
+                        height: 12,
+                      ),
                       const Icon(Icons.check_circle,
                           size: 48, color: Color.fromARGB(255, 255, 122, 113)),
                       const SizedBox(height: 8),
@@ -612,13 +641,16 @@ class _AppointmentTileState extends State<AppointmentTile> {
                       ),
                       ElevatedButton(
                         onPressed: () => {Navigator.pop(context)},
-                        child: Text(
+                        child: const Text(
                           'Ok',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 12,
                       ),
                     ],
                   ),

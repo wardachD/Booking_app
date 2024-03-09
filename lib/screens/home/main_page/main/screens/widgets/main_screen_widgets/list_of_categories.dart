@@ -24,11 +24,11 @@ final List<CategoryItem> categoryCustomList = [
       imagePath: 'assets/icons/makeup.png',
       color: const Color.fromARGB(255, 207, 135, 255)),
   CategoryItem(
-      title: 'Pedicure',
+      title: 'Pielęgnacja stóp',
       imagePath: 'assets/icons/pedicure.png',
       color: const Color.fromARGB(255, 252, 137, 213)),
   CategoryItem(
-      title: 'Manicure',
+      title: 'Pielęgnacja dłoni',
       imagePath: 'assets/icons/manicure.png',
       color: const Color.fromARGB(255, 253, 145, 163)),
 ];

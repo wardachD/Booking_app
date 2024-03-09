@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapButton extends StatelessWidget {
   final String city;
@@ -24,9 +24,9 @@ class MapButton extends StatelessWidget {
     MapsLauncher.launchQuery(formattedAddress);
   }
 
-  _callNumber(phoneNumber) async {
-    String number = phoneNumber; //set the number here
-    bool? res = await FlutterPhoneDirectCaller.callNumber(number);
+  void openCall() async {
+    Uri phoneNumberToUri = Uri.parse("tel:$phoneNumber");
+    launchUrl(phoneNumberToUri);
   }
 
   @override
@@ -36,9 +36,32 @@ class MapButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          GestureDetector(
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: InkWell(
+              onTap: () async {
+                openCall();
+              },
+              child: Container(
+                  width: 120,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 32, 32, 32),
+                          width: 0.7)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(MdiIcons.phone),
+                      const Text('Zadzwoń'),
+                    ],
+                  )),
+            ),
+          ),
+          InkWell(
             onTap: () {
-              _callNumber(phoneNumber);
+              openMaps();
             },
             child: Container(
                 width: 120,
@@ -48,25 +71,6 @@ class MapButton extends StatelessWidget {
                     border: Border.all(
                         color: const Color.fromARGB(255, 32, 32, 32),
                         width: 0.7)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(MdiIcons.phone),
-                    Text('Zadzwoń'),
-                  ],
-                )),
-          ),
-          GestureDetector(
-            onTap: () {
-              openMaps();
-            },
-            child: Container(
-                width: 120,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: Color.fromARGB(255, 32, 32, 32), width: 0.7)),
                 child: Row(
                   children: [
                     Expanded(

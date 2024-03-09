@@ -1,6 +1,7 @@
 import 'package:animate_gradient/animate_gradient.dart';
 import 'package:findovio/consts.dart';
 import 'package:findovio/providers/firebase_py_user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class AppointmentCancellationButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AppointmentCancellationButtonState createState() =>
+  State<AppointmentCancellationButton> createState() =>
       _AppointmentCancellationButtonState();
 }
 
@@ -31,33 +32,66 @@ class _AppointmentCancellationButtonState
     });
 
     try {
-      await Future.delayed(const Duration(milliseconds: 1200));
-      var response = await http.put(
-        Uri.parse(Consts.dbApiSendStatusChange(appointmentId, status)),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      // Get the current Firebase user
+      User? user = FirebaseAuth.instance.currentUser;
 
-      if (response.statusCode == 200) {
-        userPy.updateWithFetch();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text('Wizyta została anulowana'),
-            duration: Duration(milliseconds: 3000),
-          ),
-        );
+      // Check if user is authenticated
+      if (user != null) {
+        // Get the Firebase user token
+        String? token = await user.getIdToken();
+
+        // Check if token is available
+        if (token != null && token.isNotEmpty) {
+          // Include the token in the headers
+          var response = await http.put(
+            Uri.parse(Consts.dbApiSendStatusChange(appointmentId, status)),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Authorization': 'Bearer $token',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            userPy.updateWithFetch();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.orangeAccent,
+                content: Text('Wizyta została anulowana'),
+                duration: Duration(milliseconds: 3000),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.orangeAccent,
+                content: Text('Nie udało się anulować wizyty.'),
+                duration: Duration(milliseconds: 3000),
+              ),
+            );
+          }
+        } else {
+          // Token is not available
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.orangeAccent,
+              content: Text('Token użytkownika niedostępny.'),
+              duration: Duration(milliseconds: 3000),
+            ),
+          );
+        }
       } else {
+        // User is not authenticated
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.orangeAccent,
-            content: Text('Nie udało się anulować wizyty.'),
+            content: Text('Użytkownik niezalogowany.'),
             duration: Duration(milliseconds: 3000),
           ),
         );
       }
     } catch (e) {
+      // Handle any exceptions
+      print('Błąd podczas wysyłania aktualizacji statusu: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.orangeAccent,

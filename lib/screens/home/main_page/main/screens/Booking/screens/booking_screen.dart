@@ -54,7 +54,7 @@ class _BookingScreenState extends State<BookingScreen> {
     // Fetch the working hours to determine the timeslot length
     widget.workingHours.then((List<SalonWorkingHours> workingHoursList) {
       if (workingHoursList.isNotEmpty) {
-        final timeslotLength = workingHoursList[1].timeSlotLength;
+        final timeslotLength = workingHoursList[0].timeSlotLength;
         setState(() {
           timeslotsNeeded = (totalDuration + timeslotLength - 1) ~/
               timeslotLength; // Rounded up division

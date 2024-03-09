@@ -17,15 +17,14 @@ class CategoryCard extends StatelessWidget {
     required this.icon,
     required this.option,
     this.callback,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    var isVisible = true;
     final userDataProvider = Provider.of<DiscoverPageFilterProvider>(context);
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       transitionBuilder: (child, animation) {
         return ScaleTransition(
           scale: animation,
@@ -60,12 +59,10 @@ class CategoryCard extends StatelessWidget {
                     userDataProvider.setCategory('');
                     callback!();
                   }
-
-                  isVisible = false;
                 },
                 child: Icon(icon, size: 18),
               ),
-            if (isSelected || category == "filtry") SizedBox(width: 10),
+            if (isSelected || category == "filtry") const SizedBox(width: 10),
             Text('${category.capitalize}'),
           ],
         ),

@@ -2,51 +2,46 @@ import 'package:flutter/material.dart';
 
 abstract class Consts {
   // Global Adress
-  static const dbApi = 'http://185.180.204.182:8000/api';
+  static const dbApi = 'https://api.findovio.nl';
 
   // SALON
-  static const dbApiGetAll =
-      'http://185.180.204.182:8000/api/salons/?format=json';
-  static const dbApiGetOne = 'http://185.180.204.182:8000/api/salons/';
-  static const dbApiSearch = 'http://185.180.204.182:8000/api/search/?';
+  static const dbApiGetAll = 'https://api.findovio.nl/api/salons/?format=json';
+  static const dbApiGetOne = 'https://api.findovio.nl/api/salons/';
+  static const dbApiSearch = 'https://api.findovio.nl/api/search/?';
 
   // SALON BOOKING
-  static const dbApiPostBooking =
-      'http://185.180.204.182:8000/api/appointments/';
+  static const dbApiPostBooking = 'https://api.findovio.nl/api/appointments/';
   static const dbApiGetUserBookings =
-      'http://185.180.204.182:8000/api/user-appointments/?format=json&user_id=';
+      'https://api.findovio.nl/api/user-appointments/?format=json&user_id=';
 
   // SALON SERVICES
-  static const dbApiGetSalonService =
-      'http://185.180.204.182:8000/api/services/';
+  static const dbApiGetSalonService = 'https://api.findovio.nl/api/services/';
 
   // USER
   static const dbApiRegisterFirebaseUser =
-      'http://185.180.204.182:8000/api/firebase-users/';
+      'https://api.findovio.nl/api/frb-users/';
   static const dbApiChangeFirebaseUser =
-      'http://185.180.204.182:8000/api/firebase-users/';
+      'https://api.findovio.nl/api/frb-users/';
   static const dbApiGetFirebaseUserByUid =
-      'http://185.180.204.182:8000/api/firebase-users/id/';
+      'https://api.findovio.nl/api/firebase-users/id/';
 
   // KEYWORDS-CITIES
-  static const dbApiGetKeywordsList =
-      'http://185.180.204.182:8000/api/keywords/';
-  static const dbApiGetCitiesList =
-      'http://185.180.204.182:8000/api/get-cities/';
+  static const dbApiGetKeywordsList = 'https://api.findovio.nl/api/keywords/';
+  static const dbApiGetCitiesList = 'https://api.findovio.nl/api/get-cities/';
 
   // ADS
   static const dbApiGetAllAdvertisements =
-      'http://185.180.204.182:8000/api/all-advertisements/';
+      'https://api.findovio.nl/api/all-advertisements/';
   static const dbApiGetFindovioAdvertisement =
-      'http://185.180.204.182:8000/api/findovioadvertisements/2/';
+      'https://api.findovio.nl/api/findovioadvertisements/2/';
   static String dbApiSendStatusChange(
       int appointmentId, String appointmentStatus) {
-    return 'http://185.180.204.182:8000/api/appointments/${appointmentId.toString()}/update_status/?status=${appointmentStatus.toString()}';
+    return 'https://api.findovio.nl/api/appointments/${appointmentId.toString()}/update_status/?status=${appointmentStatus.toString()}';
   }
 
   // REVIEW
-  static const dbApiPostReview = 'http://185.180.204.182:8000/api/reviews/';
-  static const dbApiGetReviews = 'http://185.180.204.182:8000/api/salons/';
+  static const dbApiPostReview = 'https://api.findovio.nl/api/reviews/';
+  static const dbApiGetReviews = 'https://api.findovio.nl/api/salons/';
 }
 
 abstract class ConstsWidgets {

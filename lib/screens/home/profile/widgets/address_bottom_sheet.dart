@@ -1,12 +1,13 @@
 import 'package:findovio/providers/firebase_py_user_provider.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/consts.dart';
 import 'package:provider/provider.dart'; // Import your necessary dependencies
 
 class AddressBottomSheet extends StatefulWidget {
+  const AddressBottomSheet({super.key});
+
   @override
-  _AddressBottomSheetState createState() => _AddressBottomSheetState();
+  State<AddressBottomSheet> createState() => _AddressBottomSheetState();
 }
 
 class _AddressBottomSheetState extends State<AddressBottomSheet> {
@@ -65,13 +66,14 @@ class _AddressBottomSheetState extends State<AddressBottomSheet> {
 
                 //CITY
                 TextFormField(
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   controller: cityController,
                   onChanged: (value) => setState(() {
                     isAddressValid = true;
                   }),
                   decoration: InputDecoration(
                     suffixText: 'Miasto',
-                    suffixIcon: Icon(Icons.edit),
+                    suffixIcon: const Icon(Icons.edit),
                     filled: true,
                     fillColor: AppColors.lightColorTextField,
                     labelText: userDataProvider.user!.userCity ?? 'Miasto',
@@ -90,7 +92,7 @@ class _AddressBottomSheetState extends State<AddressBottomSheet> {
                   onChanged: (value) => isAddressValid = true,
                   decoration: InputDecoration(
                     suffixText: 'Ulica',
-                    suffixIcon: Icon(Icons.edit),
+                    suffixIcon: const Icon(Icons.edit),
                     filled: true,
                     fillColor: AppColors.lightColorTextField,
                     labelText: userDataProvider.user!.userStreet ?? 'Ulica',

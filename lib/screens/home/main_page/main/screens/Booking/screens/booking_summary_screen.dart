@@ -6,7 +6,6 @@ import 'package:findovio/providers/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
 import 'booking_confirmation_screen.dart';
 import 'widgets/title_bar_with_back_button.dart';
 
@@ -51,6 +50,7 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    user.dispose();
     super.dispose();
   }
 
@@ -364,28 +364,34 @@ class _BookingSummaryScreenState extends State<BookingSummaryScreen>
             children: [
               GestureDetector(
                 onTap: () async {
-                  setState(() {
-                    isBookingInProgress = true; // Set booking status to true
-                  });
+                  if (mounted) {
+                    setState(() {
+                      isBookingInProgress = true; // Set booking status to true
+                    });
+                  }
 
                   var bookingResult = await sendPostRequest(data);
-                  setState(() {
-                    if (bookingResult == 'success') {
-                      isSuccess = true;
-                      Get.to(() => BookingConfirmationScreen(
-                            response: bookingResult,
-                          ));
-                    } else {
-                      isSuccess = false;
-                    }
-                    Future.delayed(Duration(seconds: 2), () async {
-                      setState(() {
-                        isBookingInProgress =
-                            false; // Set booking status to true
+                  if (mounted) {
+                    setState(() {
+                      if (bookingResult == 'success') {
+                        isSuccess = true;
+                        Get.to(() => BookingConfirmationScreen(
+                              response: bookingResult,
+                            ));
+                      } else {
+                        isSuccess = false;
+                      }
+                      Future.delayed(const Duration(seconds: 2), () async {
+                        if (mounted) {
+                          setState(() {
+                            isBookingInProgress =
+                                false; // Set booking status to true
+                          });
+                        }
                       });
+                      // Reset booking status
                     });
-                    // Reset booking status
-                  });
+                  }
                 },
                 child: AnimatedContainer(
                   decoration: BoxDecoration(

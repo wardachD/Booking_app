@@ -1,11 +1,14 @@
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/screens/home/discover/provider/animated_top_bar_provider.dart';
 import 'package:findovio/screens/home/main_page/main/salon_details_screen.dart';
-import 'package:findovio/screens/home/main_page/main/screens/widgets/main_screen_widgets/salon_avatar_list.dart';
+import 'package:findovio/screens/home/main_page/main/screens/widgets/salon_details_widgets/advertisements_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
+import '../../main_page/main/screens/widgets/main_screen_widgets/compact_salon_tile.dart';
+import '../../main_page/main/screens/widgets/main_screen_widgets/salon_avatar.dart';
 
 class SalonSearchList extends StatefulWidget {
   final Stream<List<SalonModel>> salonsSearchFuture;
@@ -14,12 +17,11 @@ class SalonSearchList extends StatefulWidget {
   final bool? isCompact;
 
   const SalonSearchList(
-      {Key? key,
+      {super.key,
       required this.salonsSearchFuture,
       required this.isDistanceNeeded,
       required this.sortByDistance,
-      this.isCompact})
-      : super(key: key);
+      this.isCompact});
 
   @override
   State<SalonSearchList> createState() => _SalonSearchListState();
@@ -27,10 +29,6 @@ class SalonSearchList extends StatefulWidget {
 
 class _SalonSearchListState extends State<SalonSearchList> {
   ScrollController _scrollViewController = ScrollController();
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  bool _showAppbar = true;
-  bool _isOnTop = true;
-  bool _isSearchWithDistance = false;
   bool isScrollingDown = false;
 
   @override
@@ -42,7 +40,6 @@ class _SalonSearchListState extends State<SalonSearchList> {
           ScrollDirection.reverse) {
         if (!isScrollingDown) {
           isScrollingDown = true;
-          _showAppbar = false;
           Provider.of<AnimatedTopBarProvider>(context, listen: false)
               .updateField(false);
         }
@@ -52,7 +49,6 @@ class _SalonSearchListState extends State<SalonSearchList> {
           ScrollDirection.forward) {
         if (isScrollingDown && _scrollViewController.position.pixels < 70) {
           isScrollingDown = false;
-          _showAppbar = true;
           Provider.of<AnimatedTopBarProvider>(context, listen: false)
               .updateField(true);
         }
@@ -85,8 +81,8 @@ class _SalonSearchListState extends State<SalonSearchList> {
             }
 
             return AnimatedSwitcher(
-              reverseDuration: Duration(milliseconds: 500),
-              duration: Duration(milliseconds: 500),
+              reverseDuration: const Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               switchInCurve: Curves.easeInOut,
               switchOutCurve:
                   Curves.easeInOut, // Set the duration for the switch animation
@@ -94,13 +90,19 @@ class _SalonSearchListState extends State<SalonSearchList> {
                   ? ListView.builder(
                       cacheExtent: (MediaQuery.of(context).size.height * 0.4) *
                           salons.length,
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       key:
                           UniqueKey(), // Set a unique key to trigger the animation
                       controller: _scrollViewController,
                       itemCount: salons.length,
                       itemBuilder: (context, index) {
                         var salon = salons[index];
+
+                        /// if i want to place some widget between output
+                        // if (index == 1) {
+                        //   return const AdvertisementsWidget(
+                        //       optionalString: 'ss');
+                        // }
 
                         if (widget.isDistanceNeeded) {
                           return GestureDetector(
@@ -149,6 +151,7 @@ class _SalonSearchListState extends State<SalonSearchList> {
                                       : CompactSalonTile(
                                           salon: salon, showDistances: false));
                         }
+                        return const SizedBox();
                       },
                     )
                   : Center(
@@ -168,21 +171,19 @@ class _SalonSearchListState extends State<SalonSearchList> {
 }
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key}) : super(key: key);
+  const LoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return const AlertDialog(
       backgroundColor: Colors.white,
-      content: Container(
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 20),
-            Text('Proszę czekać...'),
-          ],
-        ),
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(width: 20),
+          Text('Proszę czekać...'),
+        ],
       ),
     );
   }

@@ -4,23 +4,23 @@ class NoInternetDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Row(
+      title: const Row(
         children: [
           Icon(Icons.warning, color: Colors.red),
           SizedBox(width: 10),
           Text('Brak połączenia z internetem'),
         ],
       ),
-      content: Text(
+      content: const Text(
           'Nie można nawiązać połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie.'),
       actions: <Widget>[
         TextButton(
-          child: Text('Zamknij'),
+          child: const Text('Zamknij'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        Text('Zrestartuj aplikację'),
+        const Text('Zrestartuj aplikację'),
       ],
     );
   }

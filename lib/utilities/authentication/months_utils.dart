@@ -1,7 +1,7 @@
 class MonthsUtils {
   static const List<String> _monthNames = [
     "", // Placeholder for index 0
-    "Styczeń", "Marzec", "Luty", "Kwiecień", "Maj", "Czerwiec",
+    "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
     "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
   ];
 

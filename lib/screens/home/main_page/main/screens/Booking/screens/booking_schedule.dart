@@ -42,10 +42,12 @@ class _BookingScheduleState extends State<BookingSchedule> {
   DateTime? selectedDate;
   List<SalonSchedule> selectedDaySlots = [];
   SalonSchedule? selectedSlot;
+  final _scrollController = ScrollController();
+  ScrollController _scrollControllerDays = ScrollController();
+  int firstHasTimeSlotsIndex = -1;
 
   bool isPressed = false;
 
-  static const double rowHeight = 65.0;
   static const int slotsPerRow = 3;
 
   @override
@@ -53,23 +55,51 @@ class _BookingScheduleState extends State<BookingSchedule> {
     super.initState();
     selectedDate = null;
     selectedSlot = null;
+    Future.delayed(Duration(milliseconds: 100), () {
+      _scrollToFirstHasTimeSlots();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToFirstHasTimeSlots() {
+    if (firstHasTimeSlotsIndex != -1) {
+      _scrollControllerDays.animateTo(
+        firstHasTimeSlotsIndex * MediaQuery.of(context).size.height * 0.11,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Widget buildSlotsContainer(List<SalonSchedule> slots) {
     int numberOfRows = (slots.length / slotsPerRow).ceil();
-    double containerHeight = numberOfRows * rowHeight / 1.5;
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      height: containerHeight,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: slotsPerRow,
-          childAspectRatio: 3,
-        ),
-        itemCount: slots.length,
-        itemBuilder: (context, index) {
-          return buildTimeSlotButton(slots[index]);
+      height: 80,
+      child: ListView.builder(
+        controller: _scrollController,
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemCount: numberOfRows,
+        itemBuilder: (context, rowIndex) {
+          return Row(
+            children: List.generate(
+              slotsPerRow,
+              (columnIndex) {
+                int index = rowIndex * slotsPerRow + columnIndex;
+                if (index < slots.length) {
+                  return buildTimeSlotButton(slots[index]);
+                } else {
+                  return SizedBox(width: 0); // Placeholder for empty slot
+                }
+              },
+            ),
+          );
         },
       ),
     );
@@ -81,6 +111,8 @@ class _BookingScheduleState extends State<BookingSchedule> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
       child: AnimatedContainer(
+        height: 40,
+        width: 80,
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           color: isSelected ? Colors.orange : Colors.white,
@@ -196,6 +228,8 @@ class _BookingScheduleState extends State<BookingSchedule> {
                               SizedBox(
                                 height: itemHeight,
                                 child: ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  controller: _scrollControllerDays,
                                   scrollDirection: Axis.horizontal,
                                   itemCount: 31,
                                   itemBuilder: (context, index) {
@@ -211,11 +245,26 @@ class _BookingScheduleState extends State<BookingSchedule> {
                                         dayToTimeSlots.containsKey(
                                             normalizeDate(currentDate));
 
+                                    // Update the firstHasTimeSlotsIndex if it's not already found and hasTimeSlots is true
+                                    if (firstHasTimeSlotsIndex == -1 &&
+                                        hasTimeSlots) {
+                                      firstHasTimeSlotsIndex = index;
+                                    }
+
+                                    // UPDATE THE FIRSTHASTIMESLOTS TO YOUR NEED FINDOVIODB+E[TO,ES;PTS AMD FOMDPVOPDB+IIMFOXEDP[ERATOMGHPIRS #SPATIAL_REF_SYS TRIGGER FNCTIONS TYYPES]]
                                     return InkWell(
                                       borderRadius: BorderRadius.circular(5.0),
                                       onTap: hasTimeSlots
                                           ? () {
                                               setState(() {
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                  _scrollController.animateTo(
+                                                      0.0,
+                                                      duration: const Duration(
+                                                          milliseconds: 500),
+                                                      curve: Curves.easeInOut);
+                                                });
                                                 isPressed = true;
                                                 selectedSlot = null;
                                                 selectedDate = currentDate;
@@ -249,7 +298,6 @@ class _BookingScheduleState extends State<BookingSchedule> {
                                       padding: EdgeInsets.only(left: 12.0),
                                       child: Text("Rano"),
                                     ),
-                                    ConstsWidgets.gapH12,
                                     buildSlotsContainer(morningSlots),
                                   ],
                                   if (noonSlots.isNotEmpty) ...[
@@ -258,7 +306,6 @@ class _BookingScheduleState extends State<BookingSchedule> {
                                       padding: EdgeInsets.only(left: 12.0),
                                       child: Text("Południe"),
                                     ),
-                                    ConstsWidgets.gapH12,
                                     buildSlotsContainer(noonSlots),
                                   ],
                                   if (afternoonSlots.isNotEmpty) ...[
@@ -267,7 +314,6 @@ class _BookingScheduleState extends State<BookingSchedule> {
                                       padding: EdgeInsets.only(left: 12.0),
                                       child: Text("Popołudnie"),
                                     ),
-                                    ConstsWidgets.gapH12,
                                     buildSlotsContainer(afternoonSlots),
                                   ],
                                 ],

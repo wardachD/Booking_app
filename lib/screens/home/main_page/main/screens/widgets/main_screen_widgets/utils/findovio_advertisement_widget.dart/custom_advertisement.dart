@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomAdvertisement extends StatelessWidget {
   final FindovioAdvertisement advertisement;
 
-  CustomAdvertisement({required this.advertisement});
+  const CustomAdvertisement({super.key, required this.advertisement});
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class CustomAdvertisement extends StatelessWidget {
       children: <Widget>[
         Container(
           width: MediaQuery.sizeOf(context).width,
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black,
                 offset: Offset(0, 10),
@@ -39,7 +39,7 @@ class CustomAdvertisement extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(height: 10.0),
+              const SizedBox(height: 4.0),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.0),
                 child: Image.network(
@@ -53,27 +53,36 @@ class CustomAdvertisement extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 24.0),
               Text(
                 advertisement.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 12.0),
               Text(
                 advertisement.content,
-                style: TextStyle(
-                  fontSize: 16.0,
+                style: const TextStyle(
+                  fontSize: 14.0,
                 ),
               ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Zamknij'),
+              const SizedBox(height: 32.0),
+              InkWell(
+                onTap: () => {Navigator.of(context).pop()},
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  height: 32,
+                  decoration: BoxDecoration(
+                      color: Colors.orangeAccent,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Center(
+                      child: const Text(
+                    'Zamknij',
+                    style: TextStyle(color: Colors.white),
+                  )),
+                ),
               ),
             ],
           ),

@@ -44,7 +44,7 @@ class TitleBar extends StatelessWidget {
             Icon(
               MdiIcons.chevronDoubleDown,
               weight: 900,
-              color: Color.fromARGB(255, 53, 53, 53),
+              color: const Color.fromARGB(255, 53, 53, 53),
             ),
         ],
       ),
@@ -84,7 +84,7 @@ class TitleBarWithoutHeight extends StatelessWidget {
           Icon(
             MdiIcons.chevronDoubleDown,
             weight: 900,
-            color: Color.fromARGB(255, 53, 53, 53),
+            color: const Color.fromARGB(255, 53, 53, 53),
           ),
         ],
       ),

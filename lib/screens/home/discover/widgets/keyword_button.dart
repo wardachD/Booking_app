@@ -1,4 +1,3 @@
-import 'package:findovio/consts.dart';
 import 'package:findovio/models/discover_page_keywords_list.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +17,7 @@ class KeywordButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Color.fromARGB(255, 219, 219, 219)),
+          border: Border.all(color: const Color.fromARGB(255, 219, 219, 219)),
           color: const Color.fromARGB(255, 250, 250, 250),
         ), // Dostosuj szerokość kontenera do własnych potrzeb.
         height: 30,

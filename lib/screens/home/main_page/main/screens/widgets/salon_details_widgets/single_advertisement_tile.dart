@@ -15,26 +15,21 @@ class SingleAdvertisementTile extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SingleAdvertisementTileState createState() =>
+  State<SingleAdvertisementTile> createState() =>
       _SingleAdvertisementTileState();
 }
 
 class _SingleAdvertisementTileState extends State<SingleAdvertisementTile> {
-  bool _isPressed = false;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: GestureDetector(
         onTap: () async {
-          setState(() {
-            _isPressed = true;
-          });
+          setState(() {});
           SalonModel salon =
               await fetchOneSalons(http.Client(), widget.advertisement.salon);
 
-          _isPressed = false;
           // Navigating to the SalonDetailsScreen with a hero animation
           Get.to(() => SalonDetailsScreen(salonModel: salon));
         },
@@ -52,7 +47,7 @@ class _SingleAdvertisementTileState extends State<SingleAdvertisementTile> {
                           blurRadius: 5.5,
                           spreadRadius: 3)
                     ]
-                  : [BoxShadow()],
+                  : [const BoxShadow()],
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: ClipRRect(
@@ -70,11 +65,11 @@ class _SingleAdvertisementTileState extends State<SingleAdvertisementTile> {
                           primaryEnd: Alignment.centerRight,
                           secondaryBegin: Alignment.centerLeft,
                           secondaryEnd: Alignment.centerLeft,
-                          primaryColors: [
+                          primaryColors: const [
                             Color.fromARGB(202, 255, 255, 255),
                             Color.fromARGB(160, 255, 172, 64)
                           ],
-                          secondaryColors: [
+                          secondaryColors: const [
                             Color.fromARGB(113, 255, 172, 64),
                             Color.fromARGB(101, 255, 255, 255)
                           ]),
@@ -117,7 +112,7 @@ class _SingleAdvertisementTileState extends State<SingleAdvertisementTile> {
                                         spreadRadius: 1,
                                         offset: Offset(0, 1))
                                   ]
-                                : [BoxShadow()],
+                                : [const BoxShadow()],
                         color: const Color.fromARGB(255, 88, 88, 88)
                             .withOpacity(0.8),
                         borderRadius: BorderRadius.circular(12),

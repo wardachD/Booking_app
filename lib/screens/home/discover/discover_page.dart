@@ -37,10 +37,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   bool _sortByDistance = false;
   bool _isCompact = false;
   bool _isSearchActive = false;
-  bool _showAppbar = true;
+  final bool _showAppbar = true;
   List<DiscoverPageKeywordsList>? keywordsList;
   KeywordProvider keywordProvider = KeywordProvider();
-  StreamController<List<SalonModel>> _filteredSearchStreamController =
+  final StreamController<List<SalonModel>> _filteredSearchStreamController =
       StreamController<List<SalonModel>>();
 
   late Future<List<SalonModel>> searchResult = Future.value([]);
@@ -85,12 +85,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
       // Use the setKeywords method of KeywordProvider to provide the list
       keywordProvider.setKeywords(fetchedKeywords);
-      print("done");
     } catch (error) {
       // Handle errors if needed
-      print('Error fetching keywords: $error');
     }
-    print('done');
   }
 
   @override
@@ -197,104 +194,109 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     children: [
                       Stack(
                         children: [
-                          SingleChildScrollView(
-                            padding: const EdgeInsets.symmetric(horizontal: 14),
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  key: userDataProvider.userData.city != ''
-                                      ? Key('withCity')
-                                      : Key('withoutCity'),
-                                  child: CategoryCard(
-                                    category: 'filtry',
-                                    isSelected:
-                                        userDataProvider.userData.city != '' ||
-                                            userDataProvider
-                                                    .userData.category !=
-                                                '',
-                                    icon: MdiIcons.filterVariant,
-                                    option: 0,
+                          Container(
+                            width: MediaQuery.sizeOf(context).width * 0.7,
+                            child: SingleChildScrollView(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14),
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    key: userDataProvider.userData.city != ''
+                                        ? const Key('withCity')
+                                        : const Key('withoutCity'),
+                                    child: CategoryCard(
+                                      category: 'filtry',
+                                      isSelected: userDataProvider
+                                                  .userData.city !=
+                                              '' ||
+                                          userDataProvider.userData.category !=
+                                              '',
+                                      icon: MdiIcons.filterVariant,
+                                      option: 0,
+                                    ),
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        showDragHandle: true,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return CustomBottomSheet(
+                                            filterOption: 'Filtry',
+                                            salonList: list,
+                                            callbackFetch: updateSearchResults,
+                                          );
+                                        },
+                                      );
+                                    },
                                   ),
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      showDragHandle: true,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return CustomBottomSheet(
-                                          filterOption: 'Filtry',
-                                          salonList: list,
-                                          callbackFetch: updateSearchResults,
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                if (userDataProvider.userData.category != '')
+                                  if (userDataProvider.userData.category != '')
+                                    InkWell(
+                                      splashColor: Colors.orangeAccent,
+                                      child: CategoryCard(
+                                        category:
+                                            userDataProvider.userData.category,
+                                        isSelected: userDataProvider
+                                                    .userData.category ==
+                                                ''
+                                            ? false
+                                            : true,
+                                        icon: MdiIcons.close,
+                                        option: 3,
+                                        callback: () => {updateSearchResults()},
+                                      ),
+                                      onTap: () {},
+                                    ),
                                   InkWell(
                                     splashColor: Colors.orangeAccent,
+                                    onTap: () async {
+                                      await showModalBottomSheet(
+                                        barrierColor:
+                                            const Color.fromARGB(225, 0, 0, 0),
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (BuildContext context) {
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.95,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                      top: Radius.circular(20)),
+                                              child: Container(
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.white,
+                                                ),
+                                                child: SearchFieldScreen(
+                                                  isKeywordSearch: false,
+                                                  salonListToTakeCities: list,
+                                                  callbackFetch:
+                                                      updateSearchResults,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
                                     child: CategoryCard(
                                       category:
-                                          userDataProvider.userData.category,
+                                          userDataProvider.userData.city == ''
+                                              ? 'Lokalizacja'
+                                              : userDataProvider.userData.city,
                                       isSelected:
-                                          userDataProvider.userData.category ==
-                                                  ''
+                                          userDataProvider.userData.city == ''
                                               ? false
                                               : true,
                                       icon: MdiIcons.close,
-                                      option: 3,
-                                      callback: () => {updateSearchResults()},
-                                    ),
-                                    onTap: () {},
-                                  ),
-                                InkWell(
-                                  splashColor: Colors.orangeAccent,
-                                  onTap: () async {
-                                    await showModalBottomSheet(
-                                      barrierColor:
-                                          const Color.fromARGB(225, 0, 0, 0),
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return FractionallySizedBox(
-                                          heightFactor: 0.95,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(20)),
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                              ),
-                                              child: SearchFieldScreen(
-                                                isKeywordSearch: false,
-                                                salonListToTakeCities: list,
-                                                callbackFetch:
-                                                    updateSearchResults,
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                      option: 1,
+                                      callback: () {
+                                        _sortByDistance = false;
+                                        updateSearchResults();
                                       },
-                                    );
-                                  },
-                                  child: CategoryCard(
-                                    category:
-                                        userDataProvider.userData.city == ''
-                                            ? 'Lokalizacja'
-                                            : userDataProvider.userData.city,
-                                    isSelected:
-                                        userDataProvider.userData.city == ''
-                                            ? false
-                                            : true,
-                                    icon: MdiIcons.close,
-                                    option: 1,
-                                    callback: () {
-                                      _sortByDistance = false;
-                                      updateSearchResults();
-                                    },
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           if (userDataProvider.userData.city != '' &&
@@ -305,13 +307,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   width: 15,
                                   height: MediaQuery.of(context).size.height *
                                       0.045,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     gradient: LinearGradient(
                                       begin: Alignment.centerRight,
                                       end: Alignment.centerLeft,
                                       colors: [
                                         Color.fromARGB(255, 255, 255, 255),
-                                        const Color.fromARGB(0, 255, 255, 255),
+                                        Color.fromARGB(0, 255, 255, 255),
                                       ],
                                     ),
                                   ),
@@ -326,7 +328,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             });
                           },
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 150),
+                            duration: const Duration(milliseconds: 150),
                             alignment: Alignment.centerRight,
                             margin: const EdgeInsets.only(bottom: 5, right: 2),
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -344,7 +346,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   : Border.all(color: Colors.orange),
                             ),
                             child: AnimatedContainer(
-                              duration: Duration(milliseconds: 1500),
+                              duration: const Duration(milliseconds: 1500),
                               child: Icon(
                                 _sortByDistance
                                     ? MdiIcons.star
@@ -361,7 +363,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           });
                         },
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 150),
+                          duration: const Duration(milliseconds: 150),
                           alignment: Alignment.centerRight,
                           margin: const EdgeInsets.only(bottom: 5, right: 15),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -379,7 +381,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                 : Border.all(color: Colors.orange),
                           ),
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 1500),
+                            duration: const Duration(milliseconds: 1500),
                             child: Icon(
                               _isCompact
                                   ? MdiIcons.viewCompact
@@ -447,7 +449,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             ),
           ),
         );
-      }).toList(),
+      }),
     ];
     // Show the dropdown menu anchored to the widget's position
     showMenu(
@@ -559,8 +561,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final address = userDataProvider.userData.city;
     final radius = _selectedDistance;
     _isDistanceNeeded = false;
-    print(keywords);
-    print(address);
     String tempOptionalCategory =
         Provider.of<OptionalCategoryProvider>(context, listen: false)
             .optionalCategory;

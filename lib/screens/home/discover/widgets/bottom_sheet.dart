@@ -1,10 +1,8 @@
 import 'package:findovio/consts.dart';
 import 'package:findovio/models/salon_model.dart';
 import 'package:findovio/providers/discover_page_filters.dart';
-import 'package:findovio/screens/home/discover/widgets/additional_filters.dart';
 import 'package:findovio/screens/home/discover/widgets/category_choose.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 String returnTitleFromProvider(String userData, String userTitle) {
@@ -28,7 +26,7 @@ class CustomBottomSheet extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomBottomSheetState createState() => _CustomBottomSheetState();
+  State<CustomBottomSheet> createState() => _CustomBottomSheetState();
 }
 
 class _CustomBottomSheetState extends State<CustomBottomSheet> {
@@ -45,10 +43,6 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    final userDataProvider = Provider.of<DiscoverPageFilterProvider>(context);
-    // Utwórz listę unikalnych kategorii z widget.salonList.flutterCategory.
-
     uniqueCategories =
         widget.salonList.map((salon) => salon.flutterCategory).toSet().toList();
   }
@@ -83,7 +77,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               selectedCat: selectedCat,
             ),
             ConstsWidgets.gapH16,
-            Text(
+            const Text(
               'Filtruj',
               style: TextStyle(
                 color: Colors.white,
@@ -137,7 +131,9 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                                         .userData
                                         .category);
                             await widget.callbackFetch();
-                            Navigator.of(context).pop();
+                            if (mounted) {
+                              Navigator.of(context).pop();
+                            }
                             isFilterButtonPressed = true;
                           },
                           child: Container(

@@ -1,65 +1,65 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:animate_gradient/animate_gradient.dart';
+import 'package:findovio/models/salon_working_hours.dart';
+import 'package:findovio/providers/api_service.dart';
+import 'package:findovio/screens/home/appointments/widgets/open_google_maps_button_with_address.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/models/salon_model.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:flutter_map/flutter_map.dart';
-//import 'package:latlong2/latlong.dart';
-//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SalonDetails extends StatelessWidget {
   final SalonModel salonModel;
-  const SalonDetails({Key? key, required this.salonModel}) : super(key: key);
+  SalonDetails({super.key, required this.salonModel});
+
+  final animateGradient = ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      width: 100,
+      height: 20,
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: AnimateGradient(
+          duration: const Duration(milliseconds: 1200),
+          primaryBegin: Alignment.centerRight,
+          primaryEnd: Alignment.centerRight,
+          secondaryBegin: Alignment.centerLeft,
+          secondaryEnd: Alignment.centerLeft,
+          primaryColors: const [
+            Color.fromARGB(202, 255, 255, 255),
+            Color.fromARGB(55, 230, 230, 230),
+          ],
+          secondaryColors: const [
+            Color.fromARGB(57, 212, 212, 212),
+            Color.fromARGB(202, 255, 255, 255),
+          ]),
+    ),
+  );
+
+  String _formatTime(String time) {
+    // Podziel czas na części
+    List<String> parts = time.split(':');
+    // Sprawdź, czy pierwsza część ma długość 2 i zaczyna się od zera, jeśli tak, usuń zero wiodące
+    if (parts.isNotEmpty && parts[0].length == 2 && parts[0][0] == '0') {
+      time = parts[0].substring(1) + ':' + parts[1];
+    }
+    // Usuń sekundy, jeśli są obecne
+    if (time.length > 5 && time[5] == ':') {
+      return time.substring(0, 5);
+    }
+    // W przeciwnym razie zwróć oryginalny czas
+    return time;
+  }
 
   @override
   Widget build(BuildContext context) {
-    //String locationString = salonModel.location;
-
-    //RegExp regExp = RegExp(r"(\d+\.\d+)");
-
-    //Iterable<RegExpMatch> matches = regExp.allMatches(locationString);
-    //double latitude = double.parse(matches.elementAt(0).group(0) ?? '0');
-    //double longitude = double.parse(matches.elementAt(1).group(0) ?? '0');
-    //LatLng latLng = LatLng(latitude, longitude);
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(5),
-              //   child: SizedBox(
-              //     height: MediaQuery.sizeOf(context).height * 0.25,
-              //     child: FlutterMap(
-              //       options: MapOptions(
-              //         center: latLng,
-              //         zoom: 13.0,
-              //       ),
-              //       children: [
-              //         TileLayer(
-              //           urlTemplate:
-              //               "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              //           subdomains: const ['a', 'b', 'c'],
-              //         ),
-              //         MarkerLayer(
-              //           markers: [
-              //             Marker(
-              //               width: 80.0,
-              //               height: 80.0,
-              //               point: latLng,
-              //               builder: (ctx) => const Icon(
-              //                 Icons.location_on,
-              //                 color: Colors.red,
-              //                 size: 40.0,
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
@@ -67,70 +67,115 @@ class SalonDetails extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('o nas',
+                      const Text('O nas',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           )),
                       const SizedBox(height: 5),
                       Text(
-                        "${salonModel.about} there are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+                        "${salonModel.about}",
                         style: const TextStyle(
                             letterSpacing: 0.7,
                             fontSize: 14,
                             color: Color.fromARGB(255, 90, 89, 89)),
                       ),
                       const SizedBox(height: 25),
-                      const Text('pracownicy',
+                      const Text('Godziny otwarcia',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           )),
-                      const SizedBox(height: 15),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List<Widget>.generate(
-                            6,
-                            (index) => Column(
+                      const SizedBox(height: 8),
+
+                      // Użycie Row do wyświetlenia dni tygodnia i godzin otwarcia
+                      Row(
+                        children: [
+                          // Kolumna z dniami tygodnia
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 13.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Container(
-                                      width: 75.0,
-                                      height: 75.0,
-                                      color: Colors.white,
-                                      child: CachedNetworkImage(
-                                          imageUrl:
-                                              'http://185.180.204.182/avatar.gif'),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'MAJA ${index + 1}',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0.7,
-                                      fontSize: 14,
-                                      color: Color.fromARGB(255, 90, 89, 89)),
-                                ),
+                                Text('Poniedziałek'),
+                                Text('Wtorek'),
+                                Text('Środa'),
+                                Text('Czwartek'),
+                                Text('Piątek'),
+                                Text('Sobota'),
+                                Text('Niedziela'),
                               ],
                             ),
                           ),
-                        ),
-                      )
+
+                          // Kolumna z godzinami otwarcia
+                          Expanded(
+                            child: FutureBuilder<List<SalonWorkingHours>>(
+                              future: fetchSalonWorkingHours(
+                                  http.Client(), salonModel.id),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  // Pokaż kolumnę z 7 wierszami podczas ładowania
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: List.generate(7, (index) {
+                                      return animateGradient;
+                                    }),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  // Pokaż błąd, jeśli wystąpił
+                                  return Text('Błąd: ${snapshot.error}');
+                                } else {
+                                  // Po załadowaniu, generuj kolumnę z 7 wierszami
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: List.generate(7, (index) {
+                                      // Sprawdź, czy są dostępne godziny otwarcia dla danego dnia tygodnia
+                                      var hoursForDay =
+                                          snapshot.data!.firstWhere(
+                                        (element) =>
+                                            element.dayOfWeek == (index + 1),
+                                        orElse: () => SalonWorkingHours(
+                                          id: 0,
+                                          dayOfWeek: 0,
+                                          openTime: '',
+                                          closeTime: '',
+                                          timeSlotLength: 0,
+                                          salon: 0,
+                                        ),
+                                      );
+
+                                      // Wyświetl godziny otwarcia dla danego dnia tygodnia
+                                      // Wyświetl godziny otwarcia dla danego dnia tygodnia
+                                      return Text(
+                                        hoursForDay.dayOfWeek == index + 1
+                                            ? '${_formatTime(hoursForDay.openTime)} - ${_formatTime(hoursForDay.closeTime)}'
+                                            : 'Zamknięte',
+                                      );
+                                    }),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      const Text('Kontakt',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          )),
                     ],
                   ),
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () =>
-                    launchUrl("tel:${salonModel.phoneNumber}" as Uri),
-                icon: const Icon(Icons.phone),
-                label: Text(salonModel.phoneNumber),
+              MapButton(
+                city: salonModel.addressCity,
+                street: salonModel.addressStreet,
+                streetNumber: salonModel.addressNumber,
+                postcode: salonModel.addressPostalCode,
+                phoneNumber: salonModel.phoneNumber,
               ),
             ],
           ),

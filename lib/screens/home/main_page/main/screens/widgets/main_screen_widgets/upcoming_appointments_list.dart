@@ -9,7 +9,7 @@ class UpcomingAppointmentsList extends StatefulWidget {
       : super(key: key);
 
   @override
-  _UpcomingAppointmentsListState createState() =>
+  State<UpcomingAppointmentsList> createState() =>
       _UpcomingAppointmentsListState();
 }
 
@@ -32,7 +32,7 @@ class _UpcomingAppointmentsListState extends State<UpcomingAppointmentsList> {
         SizedBox(
           width: MediaQuery.of(context).size.width,
           child: const Padding(
-            padding: const EdgeInsets.fromLTRB(25, 0, 0, 8),
+            padding: EdgeInsets.fromLTRB(25, 0, 0, 8),
             child: Text(
               'Rezerwacje',
               textAlign: TextAlign.start,
@@ -46,7 +46,7 @@ class _UpcomingAppointmentsListState extends State<UpcomingAppointmentsList> {
         ),
         Container(
           width: double.infinity, // Adjust the width as needed
-          padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

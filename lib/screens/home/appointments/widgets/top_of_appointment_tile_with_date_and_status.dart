@@ -22,8 +22,8 @@ class topOfAppointmentTileWithDateAndStatus extends StatelessWidget {
           Row(
             children: [
               Text(
-                ' $formattedDate - ${widget.userAppointment.getFormattedFirstTimeSlot()}',
-                style: const TextStyle(fontWeight: FontWeight.w500),
+                'Termin: $formattedDate, ${widget.userAppointment.getFormattedFirstTimeSlot()}',
+                style: const TextStyle(),
               ),
             ],
           ),

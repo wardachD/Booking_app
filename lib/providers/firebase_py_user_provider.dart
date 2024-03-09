@@ -11,10 +11,21 @@ class FirebasePyUserProvider extends ChangeNotifier {
 
   List<SalonModel>? _salons;
   List<UserAppointment>? _appointments; // Add a property for appointments
+  bool _hideMe = false;
 
   FirebasePyGetModel? get user => _user;
   List<SalonModel>? get salons => _salons;
   List<UserAppointment>? get appointments => _appointments;
+  bool get hideMe => _hideMe;
+
+  void setHideMe(bool value) {
+    _hideMe = value;
+    notifyListeners(); // Notify listeners after updating the property
+  }
+
+  void setHideMeWithoutNotification(bool value) {
+    _hideMe = value; // Notify listeners after updating the property
+  }
 
   void setUserUid(String uid) {
     _userUid = uid;

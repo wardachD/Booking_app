@@ -1,4 +1,5 @@
 import 'package:findovio/controllers/user_data_provider.dart';
+import 'package:findovio/dependency_injection.dart';
 import 'package:findovio/providers/advertisements_provider.dart';
 import 'package:findovio/providers/discover_page_filters.dart';
 import 'package:findovio/providers/favorite_salons_provider.dart';
@@ -7,6 +8,7 @@ import 'package:findovio/screens/home/discover/provider/animated_top_bar_provide
 import 'package:findovio/screens/home/discover/provider/keywords_provider.dart';
 import 'package:findovio/screens/home/discover/provider/optional_category_provider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:findovio/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,16 +17,38 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes/app_pages.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-Future<void> initializeFirebase() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-}
-
+/// [Main] function of the app
 void main() async {
+  final FlutterLocalNotificationsPlugin notifications =
+      FlutterLocalNotificationsPlugin();
   // Splash
   WidgetsFlutterBinding.ensureInitialized();
-  // Firebase moved from main thread
+// Firebase moved from main thread
   await initializeFirebase();
+  // FCM
+  if (!GetPlatform.isWeb) {
+    await notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channelHigh);
+    await notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channelAd);
+    await notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channelLow);
+    await notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(defaultChannel);
+  }
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarIconBrightness: Brightness.dark, // dark text for status bar
       statusBarColor: Colors.transparent));
@@ -59,12 +83,122 @@ void main() async {
       child: MyApp(),
     ),
   );
+
+  DependencyInjection.init();
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
+/// [Firebase] notifications
+///
+/// There is default channel ovveriden to make it maximum quiet
+/// to do not show it double
 
-  final Stream<User?> authStream = FirebaseAuth.instance.authStateChanges();
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  final FlutterLocalNotificationsPlugin notificatons =
+      FlutterLocalNotificationsPlugin();
+
+  print('x');
+  AndroidNotification android;
+
+  print('x');
+  AppleNotification ios;
+
+  print('x');
+  if (GetPlatform.isIOS) {
+  } else {
+    android = message.data["android"];
+
+    if (message.data != null) {
+      print('x');
+      notificatons.show(
+          message.data.hashCode,
+          message.data["title"],
+          message.data["body"],
+          message.data["title"] == "Aktualizacja"
+              ?
+
+              /// [AndroidNotification] Powiadomienia aktualizacji
+              /// fcm channel config: [high_importance_channel]
+              NotificationDetails(
+                  android: AndroidNotificationDetails(
+                  channelHigh.id,
+                  channelHigh.name,
+                  importance: Importance.max,
+                  sound: const RawResourceAndroidNotificationSound('sound'),
+                  playSound: true,
+                ))
+
+              /// [AndroidNotification] inne aktualizacji
+              /// fcm channel config: [high_importance_channel_ad]
+              : NotificationDetails(
+                  android: AndroidNotificationDetails(
+                  channelAd.id,
+                  channelAd.name,
+                  importance: Importance.max,
+                  sound: const RawResourceAndroidNotificationSound('sound'),
+                  playSound: true,
+                )));
+    }
+    print('x');
+  }
+}
+
+Future<void> initializeFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  print('User granted permission: ${settings.authorizationStatus}');
+  final FCMToken = await messaging.getToken();
+  print('User token: $FCMToken');
+}
+
+AndroidNotificationChannel channelHigh = const AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'Ważne powiadomienia', // title
+  description:
+      'Te powiadomienia pokazują najważniejsze wydarzenia', //description
+  importance: Importance.high,
+  sound: RawResourceAndroidNotificationSound('sound'),
+  playSound: true,
+);
+
+AndroidNotificationChannel channelAd = const AndroidNotificationChannel(
+  'high_importance_channel_ad', // id
+  'Oferty', // title
+  description: 'Wyświetlanie ofert', //description
+  importance: Importance.high,
+  sound: RawResourceAndroidNotificationSound('sound'),
+  playSound: true,
+);
+
+AndroidNotificationChannel channelLow = const AndroidNotificationChannel(
+  'low_importance_channel', // id
+  'Aktualizacje', // title
+  description: 'Wyświetlanie ofert', //description
+  importance: Importance.defaultImportance,
+  playSound: false,
+);
+
+AndroidNotificationChannel defaultChannel = const AndroidNotificationChannel(
+  'default_channel', // id
+  'default Notifications', // title
+  importance: Importance.none,
+  playSound: false,
+);
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +208,13 @@ class MyApp extends StatelessWidget {
         Provider.of<UserDataProvider>(context, listen: false);
 
     return StreamBuilder<User?>(
-      stream: authStream,
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         FlutterNativeSplash.remove();
         if (snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.data != null) {
+            snapshot.data?.reload();
+          }
           final bool isLoggedIn = snapshot.hasData;
           final initialRoute = isLoggedIn ? Routes.HOME : Routes.INTRO;
 
@@ -99,12 +236,8 @@ class MyApp extends StatelessWidget {
             initialRoute: initialRoute,
           );
         } else {
-          return const MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
+          return const Center(
+            child: CircularProgressIndicator(),
           );
         }
       },

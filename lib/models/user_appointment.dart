@@ -59,7 +59,7 @@ class UserAppointment {
       DateTime date = DateTime.parse(dateOfBooking);
 
       // Format the DateTime object to the desired format
-      String formattedDate = DateFormat('MMM d, y', 'pl_PL').format(date);
+      String formattedDate = DateFormat('d MMMM', 'pl_PL').format(date);
 
       return formattedDate.capitalizeFirst;
     } catch (e) {
@@ -75,7 +75,7 @@ class UserAppointment {
     DateTime time = DateFormat('HH:mm:ss').parse(timeslots[0].timeFrom);
 
     // Formatuj obiekt DateTime do pożądanego formatu (bez sekund)
-    String formattedTime = DateFormat('HH:mm').format(time);
+    String formattedTime = DateFormat('H:mm').format(time);
 
     return formattedTime;
   }

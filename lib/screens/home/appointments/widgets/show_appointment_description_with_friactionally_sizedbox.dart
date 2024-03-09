@@ -4,7 +4,6 @@ import 'package:findovio/screens/home/appointments/widgets/appointments_tile.dar
 import 'package:findovio/screens/home/appointments/widgets/build_detail_row.dart';
 import 'package:findovio/screens/home/appointments/widgets/open_google_maps_button_with_address.dart';
 import 'package:findovio/screens/home/appointments/widgets/status_box.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

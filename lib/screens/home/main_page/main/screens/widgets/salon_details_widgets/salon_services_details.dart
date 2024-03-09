@@ -46,7 +46,9 @@ class _SalonServicesDetailsState extends State<SalonServicesDetails>
       if (selectedServices.contains(service)) {
         selectedServices.remove(service);
       } else {
-        selectedServices.add(service);
+        if (selectedServices.length < 3) {
+          selectedServices.add(service);
+        }
       }
     });
   }
@@ -230,7 +232,7 @@ class _SalonServicesDetailsState extends State<SalonServicesDetails>
                   }
                 },
                 child: AnimatedOpacity(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   opacity: selectedServices.isNotEmpty ? 1 : 0,
                   child: Container(
                     padding:
@@ -243,10 +245,10 @@ class _SalonServicesDetailsState extends State<SalonServicesDetails>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Zarezerwuj',
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 41, 41, 41)),
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 41, 41, 41)),
                         ),
                         const SizedBox(width: 10),
                         Container(

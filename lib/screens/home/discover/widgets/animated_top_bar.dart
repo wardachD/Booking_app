@@ -10,14 +10,13 @@ class AnimatedTopBar extends StatefulWidget {
   final BuildContext context;
 
   AnimatedTopBar(
-      {Key? key,
+      {super.key,
       required this.showAppbar,
       required this.context,
-      this.optionalCategry})
-      : super(key: key);
+      this.optionalCategry});
 
   @override
-  _AnimatedTopBarState createState() => _AnimatedTopBarState();
+  State<AnimatedTopBar> createState() => _AnimatedTopBarState();
 }
 
 class _AnimatedTopBarState extends State<AnimatedTopBar> {

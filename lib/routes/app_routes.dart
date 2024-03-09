@@ -4,9 +4,13 @@ part of 'app_pages.dart';
 
 abstract class Routes {
 // Intro
+  static const INTRO_test = '/intro_test/';
+
   static const INTRO = '/intro';
   static const INTRO_SIGN = '/intro/login_or_register';
   static const INTRO_LOGIN = '/intro/login_or_register/login';
+  static const INTRO_REGISTER_EMAIL_NAME =
+      '/intro/login_or_register/register_email_name';
   static const INTRO_REGISTER = '/intro/login_or_register/register';
 // Home
   static const HOME = '/home';
@@ -19,4 +23,6 @@ abstract class Routes {
   static const APPOINTMENTS_SELECTED = '/appointments/selected_appointment';
 // Profile
   static const PROFILE = '/profile';
+// No internet
+  static const NO_INTERNET = '/no_internet';
 }

@@ -17,11 +17,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
     final FirebasePyGetModel? userPy =
         Provider.of<FirebasePyUserProvider>(context).user;
     return Scaffold(
@@ -49,33 +48,33 @@ class ProfileScreen extends StatelessWidget {
               ]),
               Text(
                 userPy!.firebaseName.toString(),
-                style: TextStyle(fontSize: 24),
+                style: const TextStyle(fontSize: 24),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 4,
               ),
               Container(
                 width: 165,
-                padding: EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Color.fromARGB(255, 255, 203, 135),
+                  color: const Color.fromARGB(255, 255, 203, 135),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       MdiIcons.seal,
-                      color: Color.fromARGB(255, 58, 58, 58),
+                      color: const Color.fromARGB(255, 58, 58, 58),
                     ),
-                    Text(
+                    const Text(
                       "   Brązowy poziom",
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -99,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -115,54 +114,88 @@ class ProfileScreen extends StatelessWidget {
                     ]),
                 child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      children: [
-                        _buildRow(
-                            Icons.person, 'Dane osobiste', false, context),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the previous icon
-                        const Divider(
-                          color: AppColors.lightColorTextField,
-                          height: 1,
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the next icon
-                        _buildRow(Icons.lock, 'Zmień hasło', false, context),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the next icon
-                        const Divider(
-                          color: AppColors.lightColorTextField,
-                          height: 1,
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the next icon
-                        _buildRow(Icons.help, 'FAQ', false, context),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the next icon
-                        const Divider(
-                          color: AppColors.lightColorTextField,
-                          height: 1,
-                          thickness: 1,
-                        ),
-                        const SizedBox(
-                            height:
-                                6), // Adjust the space between the divider and the next icon
+                    child: SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.4,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _buildRow(
+                                Icons.person, 'Dane osobiste', false, context),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the previous icon
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the next icon
+                            _buildRow(
+                                Icons.lock, 'Zmień hasło', false, context),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the next icon
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the next icon
+                            _buildRow(Icons.help, 'FAQ', false, context),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the next icon
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(height: 6),
+                            _buildRow(Icons.my_library_books, 'Regulamin', true,
+                                context),
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the next icon// Adjust the space between the divider and the next icon
 
-                        _buildRow(Icons.notifications, 'Powiadomienia', true,
-                            context),
-                      ],
+                            _buildRow(Icons.my_library_books,
+                                'Polityka prywatności', true, context),
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(
+                                height:
+                                    6), // Adjust the space between the divider and the// Adjust the space between the divider and the next icon
+
+                            _buildRow(Icons.notifications, 'Powiadomienia',
+                                true, context),
+                            const Divider(
+                              color: AppColors.lightColorTextField,
+                              height: 1,
+                              thickness: 1,
+                            ),
+                            const SizedBox(height: 6),
+
+                            _buildRow(Icons.delete_forever, 'Usuń konto', true,
+                                context),
+                          ],
+                        ),
+                      ),
                     )),
               ),
-              Spacer(),
+              const Spacer(),
               InkWell(
-                splashColor: Color.fromARGB(92, 255, 172, 64),
+                splashColor: const Color.fromARGB(92, 255, 172, 64),
                 borderRadius: BorderRadius.circular(12),
                 onTap: () async {
                   await signOut(context);
@@ -175,7 +208,7 @@ class ProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.orangeAccent, width: 1.5),
                   ),
-                  child: Text('Wyloguj'),
+                  child: const Text('Wyloguj'),
                 ),
               )
             ],
@@ -212,15 +245,13 @@ class ProfileScreen extends StatelessWidget {
       context.read<FirebasePyUserProvider>().clearData();
       Get.find<BottomAppBarIndexController>().setBottomAppBarIndex(0);
       Get.offAllNamed(Routes.INTRO);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   // ... existing imports and other code ...
 
   Widget _buildCircularIcon(BuildContext context, IconData icon, String text) {
-    return Container(
+    return SizedBox(
       width: 80,
       child: GestureDetector(
         onTap: () {
@@ -280,7 +311,7 @@ class ProfileScreen extends StatelessWidget {
         splashColor: const Color.fromARGB(38, 255, 172, 64),
         borderRadius:
             BorderRadius.circular(12), // Adjust the border radius as needed
-        onTap: () {
+        onTap: () async {
           if (text == 'Powiadomienia') {
             try {
               AppSettings.openAppSettings(type: AppSettingsType.notification);
@@ -289,6 +320,18 @@ class ProfileScreen extends StatelessWidget {
                 content: Text(e.toString()),
               );
             }
+          } else if (text == "Usuń konto") {
+            try {
+              FirebaseAuth.instance.currentUser!.delete();
+            } catch (e) {}
+            Provider.of<UserDataProvider>(context, listen: false).refreshUser();
+            Provider.of<FavoriteSalonsProvider>(context, listen: false)
+                .clearFavorites();
+            await _deleteAppDir();
+            await _deleteCacheDir();
+            context.read<FirebasePyUserProvider>().clearData();
+            Get.find<BottomAppBarIndexController>().setBottomAppBarIndex(0);
+            Get.offAllNamed(Routes.INTRO);
           } else {
             showUserProfileOptions(context, text);
           }
@@ -316,7 +359,7 @@ class ProfileScreen extends StatelessWidget {
                   const Spacer(),
                   Icon(
                     MdiIcons.chevronRight,
-                    color: Color.fromARGB(255, 80, 80, 80),
+                    color: const Color.fromARGB(255, 80, 80, 80),
                   ),
                 ],
               ),

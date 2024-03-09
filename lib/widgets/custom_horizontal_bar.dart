@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomHorizontalBar extends StatelessWidget {
+  const CustomHorizontalBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -11,14 +13,14 @@ class CustomHorizontalBar extends StatelessWidget {
             Container(
               height: 6,
               width: MediaQuery.of(context).size.width * 0.15,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 194, 194, 194),
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 12,
         ),
       ],

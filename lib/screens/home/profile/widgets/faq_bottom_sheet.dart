@@ -1,13 +1,14 @@
 import 'package:findovio/providers/firebase_py_user_provider.dart';
-import 'package:findovio/widgets/custom_horizontal_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:findovio/consts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import your necessary dependencies
 
 class FaqBottomSheet extends StatefulWidget {
+  const FaqBottomSheet({super.key});
+
   @override
-  _FaqBottomSheetState createState() => _FaqBottomSheetState();
+  State<FaqBottomSheet> createState() => _FaqBottomSheetState();
 }
 
 class _FaqBottomSheetState extends State<FaqBottomSheet> {
@@ -72,7 +73,7 @@ class _FaqBottomSheetState extends State<FaqBottomSheet> {
                 ),
 
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   height: 200,
                   width: 200,
                   child: Image.asset(
@@ -108,9 +109,9 @@ class _FaqBottomSheetState extends State<FaqBottomSheet> {
   }
 
   void _composeEmail(BuildContext context) async {
-    final email =
+    const email =
         'wardachd@outlook.com'; // Zmień na właściwy adres e-mail odbiorcy
-    final subject = 'Mój problem';
+    const subject = 'Mój problem';
     var userDataProvider = Provider.of<FirebasePyUserProvider>(context,
         listen:
             false); // Dodaj odwołanie do Twojego dostawcy danych użytkownika

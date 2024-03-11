@@ -19,11 +19,11 @@ class CustomBottomSheet extends StatefulWidget {
   final Function() callbackFetch;
 
   const CustomBottomSheet({
-    Key? key,
+    super.key,
     required this.filterOption,
     required this.salonList,
     required this.callbackFetch,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomBottomSheet> createState() => _CustomBottomSheetState();
@@ -106,13 +106,14 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
-                                  color: Colors.orangeAccent, width: 1),
+                                  color: const Color.fromARGB(255, 31, 31, 31),
+                                  width: 1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
                               'Cofnij',
                               style: TextStyle(
-                                color: Colors.orange,
+                                color: Color.fromARGB(255, 43, 43, 43),
                               ),
                             ),
                           ),

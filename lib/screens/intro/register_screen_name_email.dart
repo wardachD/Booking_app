@@ -155,7 +155,7 @@ class _RegisterScreenNameEmailState extends State<RegisterScreenNameEmail> {
                 Form(
                   key: formKeys[1],
                   child: TextFormField(
-                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    onTapOutside: (event) => {FocusScope.of(context).unfocus()},
                     controller: _emailController,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -224,6 +224,7 @@ class _RegisterScreenNameEmailState extends State<RegisterScreenNameEmail> {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
                       _isEmailVerified = true;
+                      _emailController.text.replaceAll(' ', '');
                     } else {
                       _isEmailVerified = false;
                     }

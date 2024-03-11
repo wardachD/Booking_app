@@ -69,18 +69,17 @@ class _CategoryChooseWidgetState extends State<CategoryChooseWidget> {
         userDataProvider.setCategoryWithoutNotifying(selectCategory(category));
         setState(() {});
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 400),
         margin: const EdgeInsets.symmetric(horizontal: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           border: isSelected
               ? Border.all(color: const Color.fromARGB(255, 255, 141, 33))
               : Border.all(color: const Color.fromARGB(255, 165, 165, 165)),
-          color: isSelected
-              ? Colors.white
-              : const Color.fromARGB(255, 243, 243, 243),
-        ),
-        width: 100, // Dostosuj szerokość kontenera do własnych potrzeb.
+          color: isSelected ? Colors.white : Color.fromARGB(255, 247, 247, 247),
+        ), // Dostosuj szerokość kontenera do własnych potrzeb.
         height: 40, // Dostosuj wysokość kontenera do własnych potrzeb.
         child: Center(
           child: Text(

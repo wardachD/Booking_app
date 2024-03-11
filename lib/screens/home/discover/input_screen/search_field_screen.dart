@@ -53,6 +53,9 @@ class _SearchFieldScreenState extends State<SearchFieldScreen> {
       _isFetchingLocation = true;
     });
 
+    var userDataProvider =
+        Provider.of<DiscoverPageFilterProvider>(context, listen: false);
+
     try {
       // Sprawdź, czy udzielono zgody na lokalizację
       var status = await Permission.location.request();
@@ -70,19 +73,26 @@ class _SearchFieldScreenState extends State<SearchFieldScreen> {
         );
 
         // Pobierz miasto z informacji o lokalizacji
-        String city = placemarks.first.postalCode ?? 'Nieznane miasto';
+        String city = placemarks.first.locality ?? '';
 
         // Wyświetl miasto w polu tekstowym
-        _textController.text = '$city';
+        _textController.text = city;
+        if (mounted) {
+          userDataProvider.setCity(_textController.text);
+          await widget.callbackFetch!();
+          Get.back();
+        }
       } else {
         // Obsłuż przypadek, gdy użytkownik odmówił zgody na lokalizację
       }
     } catch (e) {
       // Obsłuż błędy
     } finally {
-      setState(() {
-        _isFetchingLocation = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isFetchingLocation = false;
+        });
+      }
     }
   }
 
@@ -153,7 +163,11 @@ class _SearchFieldScreenState extends State<SearchFieldScreen> {
                           border: Border.all(color: Colors.orange),
                         ),
                         child: InkWell(
-                          onTap: () => _fetchUserLocation(),
+                          onTap: () async {
+                            _fetchUserLocation();
+
+                            // Close the search field screen
+                          },
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
@@ -287,126 +301,7 @@ class _SearchFieldScreenState extends State<SearchFieldScreen> {
                     if (widget.isKeywordSearch)
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child:
-                            // FutureBuilder<List<DiscoverPageKeywordsList>>(
-                            //   future: fetchKeywordsList(http.Client()),
-                            //   builder: (context, snapshot) {
-                            //     if (snapshot.hasError) {
-                            //       return Center(
-                            //           child:
-                            //               Text('Error: ${snapshot.error}'));
-                            //     }
-                            //     if (!snapshot.hasData) {
-                            //       return Padding(
-                            //         padding: const EdgeInsets.all(8.0),
-                            //         child: Row(
-                            //           children: [
-                            //             SizedBox(
-                            //               width: 87,
-                            //               height: 18,
-                            //               child: AnimateGradient(
-                            //                   duration: const Duration(
-                            //                       milliseconds: 1200),
-                            //                   primaryBegin:
-                            //                       Alignment.centerRight,
-                            //                   primaryEnd:
-                            //                       Alignment.centerRight,
-                            //                   secondaryBegin:
-                            //                       Alignment.centerLeft,
-                            //                   secondaryEnd:
-                            //                       Alignment.centerLeft,
-                            //                   primaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         202, 255, 255, 255),
-                            //                     Color.fromARGB(
-                            //                         160, 255, 172, 64)
-                            //                   ],
-                            //                   secondaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         113, 255, 172, 64),
-                            //                     Color.fromARGB(
-                            //                         101, 255, 255, 255)
-                            //                   ]),
-                            //             ),
-                            //             SizedBox(
-                            //               width: 56,
-                            //               height: 18,
-                            //               child: AnimateGradient(
-                            //                   duration: const Duration(
-                            //                       milliseconds: 1200),
-                            //                   primaryBegin:
-                            //                       Alignment.centerRight,
-                            //                   primaryEnd:
-                            //                       Alignment.centerRight,
-                            //                   secondaryBegin:
-                            //                       Alignment.centerLeft,
-                            //                   secondaryEnd:
-                            //                       Alignment.centerLeft,
-                            //                   primaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         202, 255, 255, 255),
-                            //                     Color.fromARGB(
-                            //                         160, 255, 172, 64)
-                            //                   ],
-                            //                   secondaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         113, 255, 172, 64),
-                            //                     Color.fromARGB(
-                            //                         101, 255, 255, 255)
-                            //                   ]),
-                            //             ),
-                            //             SizedBox(
-                            //               width: 72,
-                            //               height: 18,
-                            //               child: AnimateGradient(
-                            //                   duration: const Duration(
-                            //                       milliseconds: 1200),
-                            //                   primaryBegin:
-                            //                       Alignment.centerRight,
-                            //                   primaryEnd:
-                            //                       Alignment.centerRight,
-                            //                   secondaryBegin:
-                            //                       Alignment.centerLeft,
-                            //                   secondaryEnd:
-                            //                       Alignment.centerLeft,
-                            //                   primaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         202, 255, 255, 255),
-                            //                     Color.fromARGB(
-                            //                         160, 255, 172, 64)
-                            //                   ],
-                            //                   secondaryColors: const [
-                            //                     Color.fromARGB(
-                            //                         113, 255, 172, 64),
-                            //                     Color.fromARGB(
-                            //                         101, 255, 255, 255)
-                            //                   ]),
-                            //             ),
-                            //           ],
-                            //         ),
-                            //       );
-                            //     }
-                            //     final keywords = snapshot.data;
-
-                            //     return Wrap(
-                            //       spacing:
-                            //           0, // Adjust the spacing between buttons as needed
-                            //       children: keywords!.map((keyword) {
-                            //         return GestureDetector(
-                            //           child: KeywordButton(keyword: keyword),
-                            //           onTap: () {
-                            //             _textController.text = keyword.word;
-                            //             if (widget.isKeywordSearch != true) {
-                            //               userDataProvider
-                            //                   .setCity(_textController.text);
-                            //             }
-                            //           },
-                            //         );
-                            //       }).toList(),
-                            //     );
-                            //   },
-                            // )
-                            Wrap(
+                        child: Wrap(
                           spacing:
                               0, // Adjust the spacing between buttons as needed
                           children: keywordProvider.keywords.map((keyword) {

@@ -24,7 +24,7 @@ import 'widgets/salon_search_list.dart';
 class DiscoverScreen extends StatefulWidget {
   String? optionalCategry;
 
-  DiscoverScreen({Key? key, this.optionalCategry}) : super(key: key);
+  DiscoverScreen({super.key, this.optionalCategry});
 
   @override
   State<DiscoverScreen> createState() => _DiscoverScreenState();
@@ -59,12 +59,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       OptionalCategoryProvider();
 
   late bool _isDistanceNeeded = false;
-
-  void changeIsSearchActiveToFalse(bool newValue) {
-    setState(() {
-      _isSearchActive = newValue;
-    });
-  }
 
   @override
   void initState() {
@@ -118,7 +112,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
+              Column(
+                children: [],
+              ),
+              InkWell(
                 onTap: () => showDropdownMenu(context),
                 child: AnimatedTopBar(
                     context: context,
@@ -189,139 +186,107 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               if (_isSearchActive)
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Stack(
-                        children: [
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.7,
-                            child: SingleChildScrollView(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 14),
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    key: userDataProvider.userData.city != ''
-                                        ? const Key('withCity')
-                                        : const Key('withoutCity'),
-                                    child: CategoryCard(
-                                      category: 'filtry',
-                                      isSelected: userDataProvider
-                                                  .userData.city !=
-                                              '' ||
-                                          userDataProvider.userData.category !=
-                                              '',
-                                      icon: MdiIcons.filterVariant,
-                                      option: 0,
-                                    ),
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                        showDragHandle: true,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return CustomBottomSheet(
-                                            filterOption: 'Filtry',
-                                            salonList: list,
-                                            callbackFetch: updateSearchResults,
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                  if (userDataProvider.userData.category != '')
-                                    InkWell(
-                                      splashColor: Colors.orangeAccent,
-                                      child: CategoryCard(
-                                        category:
-                                            userDataProvider.userData.category,
-                                        isSelected: userDataProvider
-                                                    .userData.category ==
-                                                ''
-                                            ? false
-                                            : true,
-                                        icon: MdiIcons.close,
-                                        option: 3,
-                                        callback: () => {updateSearchResults()},
-                                      ),
-                                      onTap: () {},
-                                    ),
-                                  InkWell(
-                                    splashColor: Colors.orangeAccent,
-                                    onTap: () async {
-                                      await showModalBottomSheet(
-                                        barrierColor:
-                                            const Color.fromARGB(225, 0, 0, 0),
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return FractionallySizedBox(
-                                            heightFactor: 0.95,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                              child: Container(
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.white,
-                                                ),
-                                                child: SearchFieldScreen(
-                                                  isKeywordSearch: false,
-                                                  salonListToTakeCities: list,
-                                                  callbackFetch:
-                                                      updateSearchResults,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: CategoryCard(
-                                      category:
-                                          userDataProvider.userData.city == ''
-                                              ? 'Lokalizacja'
-                                              : userDataProvider.userData.city,
-                                      isSelected:
-                                          userDataProvider.userData.city == ''
-                                              ? false
-                                              : true,
-                                      icon: MdiIcons.close,
-                                      option: 1,
-                                      callback: () {
-                                        _sortByDistance = false;
-                                        updateSearchResults();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          key: userDataProvider.userData.city != ''
+                              ? const Key('withCity')
+                              : const Key('withoutCity'),
+                          child: CategoryCard(
+                            category: 'filtry',
+                            isSelected: userDataProvider.userData.city != '' ||
+                                userDataProvider.userData.category != '',
+                            icon: MdiIcons.filterVariant,
+                            option: 0,
                           ),
-                          if (userDataProvider.userData.city != '' &&
-                              userDataProvider.userData.category != '')
-                            Positioned(
-                                right: 0,
-                                child: Container(
-                                  width: 15,
-                                  height: MediaQuery.of(context).size.height *
-                                      0.045,
-                                  decoration: const BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.centerRight,
-                                      end: Alignment.centerLeft,
-                                      colors: [
-                                        Color.fromARGB(255, 255, 255, 255),
-                                        Color.fromARGB(0, 255, 255, 255),
-                                      ],
+                          onTap: () {
+                            showModalBottomSheet(
+                              showDragHandle: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomBottomSheet(
+                                  filterOption: 'Filtry',
+                                  salonList: list,
+                                  callbackFetch: updateSearchResults,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        if (userDataProvider.userData.category != '')
+                          InkWell(
+                            splashColor: Colors.orangeAccent,
+                            child: CategoryCard(
+                              category: userDataProvider.userData.category,
+                              isSelected:
+                                  userDataProvider.userData.category == ''
+                                      ? false
+                                      : true,
+                              icon: MdiIcons.close,
+                              option: 3,
+                              callback: () => {updateSearchResults()},
+                            ),
+                            onTap: () {},
+                          ),
+                        InkWell(
+                          splashColor: Colors.orangeAccent,
+                          onTap: () async {
+                            await showModalBottomSheet(
+                              barrierColor: const Color.fromARGB(225, 0, 0, 0),
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return FractionallySizedBox(
+                                  heightFactor: 0.95,
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(20)),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      child: SearchFieldScreen(
+                                        isKeywordSearch: false,
+                                        salonListToTakeCities: list,
+                                        callbackFetch: updateSearchResults,
+                                      ),
                                     ),
                                   ),
-                                )),
-                        ],
-                      ),
+                                );
+                              },
+                            );
+                          },
+                          child: CategoryCard(
+                            category: userDataProvider.userData.city == ''
+                                ? 'Lokalizacja'
+                                : userDataProvider.userData.city,
+                            isSelected: userDataProvider.userData.city == ''
+                                ? false
+                                : true,
+                            icon: MdiIcons.close,
+                            option: 1,
+                            callback: () {
+                              _sortByDistance = false;
+                              updateSearchResults();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                child: Row(
+                  children: [
+                    if (_isSearchActive)
                       if (userDataProvider.userData.city != '')
-                        GestureDetector(
+                        // [View Distance]
+                        InkWell(
                           onTap: () {
                             setState(() {
                               _sortByDistance = !_sortByDistance;
@@ -333,7 +298,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             margin: const EdgeInsets.only(bottom: 5, right: 2),
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             height: MediaQuery.of(context).size.height * 0.045,
-                            width: MediaQuery.sizeOf(context).width * 0.105,
                             decoration: BoxDecoration(
                               color: !_sortByDistance
                                   ? AppColors.lightColorTextField
@@ -347,16 +311,23 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             ),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 1500),
-                              child: Icon(
-                                _sortByDistance
-                                    ? MdiIcons.star
-                                    : MdiIcons.navigationVariantOutline,
-                                size: 18,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    _sortByDistance
+                                        ? MdiIcons.star
+                                        : MdiIcons.navigationVariantOutline,
+                                    size: 18,
+                                  ),
+                                  Text('  Najbliższe'),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      GestureDetector(
+                    // [View Compact]
+                    if (_isSearchActive)
+                      InkWell(
                         onTap: () {
                           setState(() {
                             _isCompact = !_isCompact;
@@ -368,7 +339,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           margin: const EdgeInsets.only(bottom: 5, right: 15),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           height: MediaQuery.of(context).size.height * 0.045,
-                          width: MediaQuery.sizeOf(context).width * 0.105,
                           decoration: BoxDecoration(
                             color: !_isCompact
                                 ? AppColors.lightColorTextField
@@ -382,19 +352,24 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           ),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 1500),
-                            child: Icon(
-                              _isCompact
-                                  ? MdiIcons.viewCompact
-                                  : MdiIcons.viewCompactOutline,
-                              size: 18,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _isCompact
+                                      ? MdiIcons.viewCompact
+                                      : MdiIcons.viewCompactOutline,
+                                  size: 18,
+                                ),
+                                Text('  Widok kompaktowy'),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
-              const SizedBox(height: 12),
+              ),
+              const SizedBox(height: 6),
               Expanded(
                 child: Container(
                   margin: AppMargins.defaultMargin,
@@ -524,6 +499,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             keywords: keywords, address: address, radius: radius);
       } else if (keywords != "") {
         if (tempOptionalCategory != '') {
+          setState(() {
+            _isSearchActive = true;
+          });
           return fetchSearchSalons(http.Client(),
               keywords: keywords, category: tempOptionalCategory);
         }
@@ -533,7 +511,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         // Send the API request with keywords only
         return fetchSearchSalons(http.Client(), keywords: keywords);
       } else if (address != "") {
+        setState(() {
+          _isSearchActive = true;
+        });
         if (tempOptionalCategory != '') {
+          setState(() {
+            _isSearchActive = true;
+          });
           return fetchSearchSalons(http.Client(),
               address: address, radius: radius, category: tempOptionalCategory);
         }

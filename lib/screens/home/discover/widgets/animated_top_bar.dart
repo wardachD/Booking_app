@@ -34,39 +34,38 @@ class _AnimatedTopBarState extends State<AnimatedTopBar> {
   Widget build(BuildContext context) {
     return Consumer<AnimatedTopBarProvider>(builder: (context, myProvider, _) {
       return AnimatedContainer(
-        height: myProvider.isTopBarVisible ? 82 : 0.0,
+        height: myProvider.isTopBarVisible ? 36 : 0.0,
         duration: const Duration(milliseconds: 200),
         child: Column(
           children: [
-            const SizedBox(height: 20),
             Container(
               padding: AppMargins.defaultMargin,
               child: Stack(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 11.0),
-                    clipBehavior: Clip.none,
-                    width: MediaQuery.sizeOf(context).width * 0.2,
-                    height: 13, // Adjust the height of the line as needed
-                    color: Colors.orange,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (widget.optionalCategry == '')
-                        const TitleBar(text: 'co dziś znajdziemy?'),
-                      if (widget.optionalCategry == '')
-                        const Icon(Icons.search),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
-                      if (widget.optionalCategry != '')
-                        const Icon(Icons.search),
-                    ],
-                  ),
+                  //   Container(
+                  //     margin: const EdgeInsets.only(top: 11.0),
+                  //     clipBehavior: Clip.none,
+                  //     width: MediaQuery.sizeOf(context).width * 0.2,
+                  //     height: 13, // Adjust the height of the line as needed
+                  //     color: Colors.orange,
+                  //   ),
+                  //   Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       if (widget.optionalCategry == '')
+                  //         const TitleBar(text: 'co dziś znajdziemy?'),
+                  //       if (widget.optionalCategry == '')
+                  //         const Icon(Icons.search),
+                  //     ],
+                  //   ),
+                  //   Row(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       TitleBarWithoutHeight(text: widget.optionalCategry ?? ''),
+                  //       if (widget.optionalCategry != '')
+                  //         const Icon(Icons.search),
+                  //     ],
+                  //   ),
                 ],
               ),
             ),
